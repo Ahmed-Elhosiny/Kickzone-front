@@ -7,6 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./body.css'],
 })
 export class Body {
-  missionImage: string = 'assets/images/mission.jpg';
-  vissionImage: string = 'assets/images/vission.jpg';
+  missionImage: string = '/images/mission.jpg';
+  vissionImage: string = '/images/vission.jpg';
 }
