@@ -5,6 +5,7 @@
   min-height: 100vh;
   background: #f0f2f5;
   padding: 20px;
+  flex-flow:column;
 
 
 }
@@ -48,3 +49,8 @@ button {
   cursor: pointer;
   transition: background 0.3s;
 }
+.login{
+ text-decoration: none;
+  color:chocolate;
+}
+
