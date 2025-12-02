@@ -23,10 +23,11 @@ export class AuthService {
 
   //login method
   login(payload: IloginRequest): Observable<IloginResponse> {
-    return this.http.post<IloginResponse>(`${this.loginUrl}/login`, payload).pipe(
+    return this.http.post<IloginResponse>(this.loginUrl, payload).pipe(
       tap(res => {
         if (res?.token) {
           localStorage.setItem(this.tokenKey, res.token);
+           console.log('Token stored in localStorage:', localStorage.getItem(this.tokenKey));
         }
         if (res?.refreshToken) {
           localStorage.setItem('refresh_token', res.refreshToken);
@@ -51,8 +52,13 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 //authentication status
-  isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
+ isAuthenticated(): boolean {
+  const token = this.getToken();
+  if (!token) return false;
+
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  return payload.exp * 1000 > Date.now();
+}
+
 }
 
