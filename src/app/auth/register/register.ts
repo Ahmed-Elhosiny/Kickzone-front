@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth';
 import { IRegister } from '../../Interfaces/iregister';
@@ -8,7 +9,8 @@ import { IRegister } from '../../Interfaces/iregister';
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
   standalone: true,
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, CommonModule]
+
 })
 export class Register {
   registerForm: FormGroup;
@@ -17,16 +19,21 @@ export class Register {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       userName: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
+      phoneNumber: ['', [Validators.required,Validators.pattern(/^(010|012|015|011)[0-9]{8}$/)]],
       name: ['', Validators.required],
       location: ['', Validators.required],
-      role: ['User'],
-      password: ['', Validators.required]
+      role: ['User', Validators.required],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*\W).+$/)]],
     });
   }
-
+  get f() {
+    return this.registerForm.controls;
+  }
   onSubmit() {
-    if (this.registerForm.invalid) return;
+     if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
 
     const user: IRegister = this.registerForm.value;
 

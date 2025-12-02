@@ -34,7 +34,7 @@ input {
 
 input:focus { border-color: #007bff; }
 
-/* .error { color: #e74c3c; font-size: 12px; margin-top: 4px; } */
+.error { color: #e74c3c; font-size: 12px; margin-top: 4px; }
 
 button {
   width: 100%;
