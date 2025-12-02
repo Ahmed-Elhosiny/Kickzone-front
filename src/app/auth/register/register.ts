@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth';
-import { IUser } from '../../iuser';
+import { IRegister } from '../../Interfaces/iregister';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +28,7 @@ export class Register {
   onSubmit() {
     if (this.registerForm.invalid) return;
 
-    const user: IUser = this.registerForm.value;
+    const user: IRegister = this.registerForm.value;
 
     this.authService.register(user).subscribe({
       next: res => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IUser } from '../iuser';
+import { IRegister } from '../Interfaces/iregister';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  register(userData: IUser): Observable<any> {
+  register(userData: IRegister): Observable<any> {
     return this.http.post(this.apiUrl, userData);
   }
 }
