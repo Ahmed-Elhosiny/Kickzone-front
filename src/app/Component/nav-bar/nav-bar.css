@@ -1,14 +1,17 @@
 .navbar {
-
-  background: 
-   linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)),
-  url('/images/Header1.jpg') no-repeat center center/cover;
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1));
+  /* background-color: #172554; */
+  background-color: #323a52;
   padding: 1rem 0;
+}
+
+.login{
+  color: #53d977;
+  border: none;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: 'Nunito', sans-serif;
+  text-decoration: none;
 }
 
 .nav-link {
@@ -32,7 +35,7 @@
     margin-left: 10px;
   }
 
-  .navbar-collapse .btn {
+  .navbar-collapse .login {
     display: none;
   }
 }
@@ -69,7 +72,7 @@
     margin-left: 10px;
   }
 
-  .navbar-collapse .btn {
+  .navbar-collapse .login {
     display: none;
   }
 }
@@ -88,7 +91,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .navbar-collapse .btn {
+  .navbar-collapse .login {
     display: none;
   }
 }

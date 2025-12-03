@@ -1,0 +1,36 @@
+<div class="container">
+<form [formGroup]="registerForm" (submit)="onSubmit()" class="form-card">
+
+    <h2>Register</h2>
+
+    <label>Email</label>
+    <input type="email" formControlName="email" placeholder="Enter your email">
+
+
+    <label>User Name</label>
+    <input type="text" formControlName="userName" placeholder="Enter your username">
+
+
+    <label>Phone Number</label>
+    <input type="text" formControlName="phoneNumber" placeholder="Enter your phone number">
+
+
+    <label>Name</label>
+    <input type="text" formControlName="name" placeholder="Enter your full name">
+
+
+    <label>Location</label>
+    <input type="text" formControlName="location" placeholder="Enter your location">
+
+
+    <label>Role</label>
+    <input type="text" formControlName="role" placeholder="User">
+
+    <label>Password</label>
+    <input type="password" formControlName="password" placeholder="Enter password">
+
+
+  <button type="submit" class="btn btn-primary">Register</button>
+
+</form>
+</div>

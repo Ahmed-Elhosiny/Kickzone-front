@@ -1,0 +1,71 @@
+<mat-card class="card">
+  <mat-card-header class="pb-4 cardHeader">
+    <mat-card-title class="text-2xl font-bold text-gray-800 cardTitle">
+      Find <span class="word">Your</span> Play
+    </mat-card-title>
+    <p class="text">Book sports pitches and courts in Egypt</p>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="flex flex-col gap-6" #f="ngForm" (ngSubmit)="f.form.valid && applyFilter()">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Choose your sport</mat-label>
+
+        <!-- Icon -->
+        <mat-icon matPrefix>sports</mat-icon>
+
+        <!-- (Category Select) -->
+        <mat-select
+          class="select"
+          [(ngModel)]="selectedCategoryId"
+          name="category"
+          #categorySelect="ngModel"
+          placeholder="Choose your sport"
+          required
+        >
+          @for(cat of categories$ | async; track cat.id) {
+          <mat-option [value]="cat.id">
+            <div class="flex items-center gap-2">
+              <span class="text-base">{{ cat.name }}</span>
+            </div>
+          </mat-option>
+          }
+        </mat-select>
+
+        @if (categorySelect.invalid && (categorySelect.touched || f.submitted)) {
+        <mat-error> Choose your sport. </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>City</mat-label>
+
+        <!--Icon-->
+        <mat-icon matPrefix>near_me</mat-icon>
+
+        <!-- (City Select) -->
+        <mat-select
+          [(ngModel)]="selectedCityId"
+          name="city"
+          placeholder="City"
+          required
+          #citySelect="ngModel"
+        >
+          @for(city of cities$ | async; track city.id) {
+          <mat-option [value]="city.id">
+            <mat-icon class="text-base text-gray-600">near_me</mat-icon>
+            <span class="text-base">{{ city.name }}</span>
+          </mat-option>
+          }
+        </mat-select>
+
+        @if (citySelect.invalid && (citySelect.touched || f.submitted)) {
+        <mat-error> Location is required. </mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" class="w-full h-12 custom-btn">
+        <span> Find Venue</span>
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
