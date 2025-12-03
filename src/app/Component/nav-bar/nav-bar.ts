@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css',
 })
