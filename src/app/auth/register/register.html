@@ -1,64 +1,73 @@
 <div class="container">
-<form [formGroup]="registerForm" (submit)="onSubmit()" class="form-card">
-
+  <form [formGroup]="registerForm" (submit)="onSubmit()" class="form-card">
     <h2>Register</h2>
 
     <label>Email</label>
-    <input type="email" formControlName="email" placeholder="Enter your email">
-   <div class="error">
+    <input type="email" formControlName="email" placeholder="Enter your email" />
+
+    <div class="error">
       <p *ngIf="f['email'].touched && f['email'].errors?.['required']">Email is required.</p>
       <p *ngIf="f['email'].touched && f['email'].errors?.['email']">Invalid email format.</p>
-
-
     </div>
     <label>User Name</label>
-    <input type="text" formControlName="userName" placeholder="Enter your username">
-     <div class="error">
-      <p *ngIf="f['userName'].touched && f['userName'].errors?.['required']">User Name is required.</p>
+    <input type="text" formControlName="userName" placeholder="Enter your username" />
+    <div class="error">
+      <p *ngIf="f['userName'].touched && f['userName'].errors?.['required']">
+        User Name is required.
+      </p>
     </div>
 
     <label>Phone Number</label>
-    <input type="text" formControlName="phoneNumber" placeholder="Enter your phone number">
+    <input type="text" formControlName="phoneNumber" placeholder="Enter your phone number" />
     <div class="error">
-      <p *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">Phone Number is required.</p>
+      <p *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
+        Phone Number is required.
+      </p>
       <p *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
         Phone number must start with 010, 011, 012, or 015 and be 11 digits.
       </p>
     </div>
 
     <label>Name</label>
-    <input type="text" formControlName="name" placeholder="Enter your full name">
+    <input type="text" formControlName="name" placeholder="Enter your full name" />
     <div class="error">
       <p *ngIf="f['name'].touched && f['name'].errors?.['required']">Name is required.</p>
     </div>
 
     <label>Location</label>
-    <input type="text" formControlName="location" placeholder="Enter your location">
+    <input type="text" formControlName="location" placeholder="Enter your location" />
     <div class="error">
-      <p *ngIf="f['location'].touched && f['location'].errors?.['required']">Location is required.</p>
+      <p *ngIf="f['location'].touched && f['location'].errors?.['required']">
+        Location is required.
+      </p>
     </div>
 
     <label>Role</label>
     <select formControlName="role" id="role">
-    <option value="User">User</option>
-    <option value="FieldOwner">FieldOwner</option>
+      <option value="User">User</option>
+      <option value="FieldOwner">FieldOwner</option>
     </select>
     <div class="error">
       <p *ngIf="f['role'].touched && f['role'].errors?.['required']">Role is required.</p>
     </div>
 
     <label>Password</label>
-    <input type="password" formControlName="password" placeholder="Enter password">
+    <input type="password" formControlName="password" placeholder="Enter password" />
     <div class="error">
-      <p *ngIf="f['password'].touched && f['password'].errors?.['required']">Password is required.</p>
+      <p *ngIf="f['password'].touched && f['password'].errors?.['required']">
+        Password is required.
+      </p>
       <p *ngIf="f['password'].touched && f['password'].errors?.['pattern']">
-        Password must be 6 char minimum ,contain at least one uppercase letter,one lower case, one digit, and one special character.
+        Password must be 6 char minimum ,contain at least one uppercase letter,one lower case, one
+        digit, and one special character.
       </p>
     </div>
 
-  <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Register</button>
-
-</form>
-<p class="text-primary fw-bold">Already have an account? <a routerLink="/login" class="login">Login</a></p>
-
+    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">
+      Register
+    </button>
+  </form>
+  <p class="text-primary fw-bold">
+    Already have an account? <a routerLink="/login" class="login">Login</a>
+  </p>
 </div>

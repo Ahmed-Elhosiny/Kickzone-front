@@ -1,12 +1,21 @@
 <div class="login-container">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-
     <h2>Login</h2>
 
     <div class="form-group">
       <label for="emailOrUserName">Email or Username</label>
-      <input id="emailOrUserName" formControlName="emailOrUserName" type="text" placeholder="Email or username">
-      <div class="error" *ngIf="loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid">
+      <input
+        id="emailOrUserName"
+        formControlName="emailOrUserName"
+        type="text"
+        placeholder="Email or username"
+      />
+      <div
+        class="error"
+        *ngIf="
+          loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid
+        "
+      >
         This field is required.
       </div>
     </div>
@@ -14,12 +23,25 @@
     <div class="form-group">
       <label for="password">Password</label>
       <div class="password-wrapper">
-        <input id="password" formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password">
-        <button type="button" class="eye" (click)="showPassword = !showPassword" aria-label="Toggle password">
+        <input
+          id="password"
+          formControlName="password"
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Password"
+        />
+        <button
+          type="button"
+          class="eye"
+          (click)="showPassword = !showPassword"
+          aria-label="Toggle password"
+        >
           {{ showPassword ? 'Hide' : 'Show' }}
         </button>
       </div>
-      <div class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+      <div
+        class="error"
+        *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+      >
         Password is required.
       </div>
     </div>
@@ -30,6 +52,5 @@
       <span *ngIf="!loading">Login</span>
       <span *ngIf="loading">Logging in…</span>
     </button>
-
   </form>
 </div>

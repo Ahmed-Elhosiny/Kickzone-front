@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
+
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
-   loginForm: FormGroup;
+  loginForm: FormGroup;
   loading = false;
   serverError: string | null = null;
   showPassword = false;
@@ -51,4 +52,3 @@ export class Login {
     });
   }
 }
-
