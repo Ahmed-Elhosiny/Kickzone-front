@@ -29,7 +29,10 @@ export class RegisterComponent {
       name: ['', Validators.required],
       location: ['', Validators.required],
       role: ['User', Validators.required],
-      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$/)]],
+      password: [
+        '',
+        [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$/)],
+      ],
     });
   }
   get f() {
@@ -43,7 +46,8 @@ export class RegisterComponent {
 
     const user: IRegister = this.registerForm.value;
 
-    this.authService.register(user)
+    this.authService
+      .register(user)
       .pipe(takeUntilDestroyed())
       .subscribe({
         next: (res) => {

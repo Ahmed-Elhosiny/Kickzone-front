@@ -40,7 +40,8 @@ export class LoginComponent {
 
     const { emailOrUserName, password } = this.loginForm.value;
 
-    this.auth.login({ emailOrUserName, password })
+    this.auth
+      .login({ emailOrUserName, password })
       .pipe(takeUntilDestroyed())
       .subscribe({
         next: (res) => {
