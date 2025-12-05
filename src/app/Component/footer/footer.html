@@ -1,40 +1,105 @@
-<footer class="footer bg-dark text-white py-5">
-  <div class="container">
-    <div class="row">
-      <!-- Left Side: Site Name & Social Media -->
-      <div class="col-md-4 text-center mb-4 mb-md-0">
-        <h3>Kick Zone</h3>
-        <p>Where Sport Time Starts</p>
-        <div class="d-flex gap-3 justify-content-center">
-          <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
-          <a href="mailto:kickzone.info.egypt@gmail.com" class="text-white fs-4"><i class="bi bi-envelope-at-fill"></i></a>
-          <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <!-- Brand Section -->
+      <div class="footer-section brand-section">
+        <div class="brand">
+          <h2 class="brand-name">KickZone</h2>
+          <p class="brand-tagline">Where Sport Time Starts</p>
+        </div>
+
+        <div class="social-links">
+          <a
+            *ngFor="let social of socialLinks"
+            [href]="social.url"
+            [attr.aria-label]="social.label"
+            class="social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <mat-icon>{{ social.icon }}</mat-icon>
+          </a>
         </div>
       </div>
 
-      <!-- Right Side: Site Map & Legal -->
-      <div class="col-md-8 d-flex flex-row justify-content-evenly gap-4 gap-md-5">
-        <!-- Site Map -->
-        <div>
-          <h5>Site Map</h5>
-          <ul class="list-unstyled">
-            <li><a href="#" class="text-white text-decoration-none">Home</a></li>
-            <li><a href="#" class="text-white text-decoration-none">About Us</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Services</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
-          </ul>
-        </div>
-        <!-- Legal -->
-        <div>
-          <h5>Legal</h5>
-          <ul class="list-unstyled">
-            <li><a href="#" class="text-white text-decoration-none">Privacy Policy</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Terms of Service</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Cookie Policy</a></li>
-          </ul>
-        </div>
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3 class="section-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li>
+            <a [routerLink]="['/home']" class="footer-link">
+              <mat-icon class="link-icon">home</mat-icon>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/result']" class="footer-link">
+              <mat-icon class="link-icon">sports_soccer</mat-icon>
+              <span>Find Fields</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/register']" class="footer-link">
+              <mat-icon class="link-icon">person_add</mat-icon>
+              <span>Sign Up</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/login']" class="footer-link">
+              <mat-icon class="link-icon">login</mat-icon>
+              <span>Login</span>
+            </a>
+          </li>
+        </ul>
       </div>
+
+      <!-- Legal -->
+      <div class="footer-section">
+        <h3 class="section-title">Legal</h3>
+        <ul class="footer-links">
+          <li>
+            <a class="footer-link" [routerLink]="['/privacy']">
+              <mat-icon class="link-icon">privacy_tip</mat-icon>
+              <span>Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <a class="footer-link" [routerLink]="['/terms']">
+              <mat-icon class="link-icon">gavel</mat-icon>
+              <span>Terms of Service</span>
+            </a>
+          </li>
+          <li>
+            <a class="footer-link" [routerLink]="['/cookies']">
+              <mat-icon class="link-icon">cookie</mat-icon>
+              <span>Cookie Policy</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-section">
+        <h3 class="section-title">Contact Us</h3>
+        <ul class="footer-links">
+          <li class="contact-item">
+            <mat-icon class="link-icon">email</mat-icon>
+            <a [href]="'mailto:' + companyEmail" class="footer-link contact-link">
+              {{ companyEmail }}
+            </a>
+          </li>
+          <li class="contact-item">
+            <mat-icon class="link-icon">location_on</mat-icon>
+            <span class="contact-text">Cairo, Egypt</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright Bar -->
+    <div class="footer-bottom">
+      <p class="copyright">&copy; {{ currentYear }} KickZone. All rights reserved.</p>
+      <p class="made-with">Made with <mat-icon class="heart-icon">favorite</mat-icon> in Egypt</p>
     </div>
   </div>
 </footer>
-
