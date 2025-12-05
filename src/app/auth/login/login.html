@@ -1,56 +1,87 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-    <h2>Login</h2>
-
-    <div class="form-group">
-      <label for="emailOrUserName">Email or Username</label>
-      <input
-        id="emailOrUserName"
-        formControlName="emailOrUserName"
-        type="text"
-        placeholder="Email or username"
-      />
-      <div
-        class="error"
-        *ngIf="
-          loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid
-        "
-      >
-        This field is required.
-      </div>
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-header">
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Sign in to continue to KickZone</p>
     </div>
 
-    <div class="form-group">
-      <label for="password">Password</label>
-      <div class="password-wrapper">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="login-form">
+      <div class="form-group">
+        <label for="emailOrUserName" class="form-label">
+          <mat-icon class="label-icon">person</mat-icon>
+          Email or Username
+        </label>
         <input
-          id="password"
-          formControlName="password"
-          [type]="showPassword ? 'text' : 'password'"
-          placeholder="Password"
+          id="emailOrUserName"
+          formControlName="emailOrUserName"
+          type="text"
+          class="form-input"
+          placeholder="Enter your email or username"
+          [class.invalid]="loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid"
         />
-        <button
-          type="button"
-          class="eye"
-          (click)="showPassword = !showPassword"
-          aria-label="Toggle password"
+        <div
+          class="error-message"
+          *ngIf="loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid"
         >
-          {{ showPassword ? 'Hide' : 'Show' }}
-        </button>
+          <mat-icon class="error-icon">error</mat-icon>
+          Email or username is required
+        </div>
       </div>
-      <div
-        class="error"
-        *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
-      >
-        Password is required.
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <mat-icon class="label-icon">lock</mat-icon>
+          Password
+        </label>
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-input password-input"
+            placeholder="Enter your password"
+            [class.invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            mat-icon-button
+            aria-label="Toggle password visibility"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <div
+          class="error-message"
+          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+        >
+          <mat-icon class="error-icon">error</mat-icon>
+          Password is required
+        </div>
       </div>
-    </div>
 
-    <div class="server-error" *ngIf="serverError">{{ serverError }}</div>
+      <div class="form-actions">
+        <a class="forgot-password" [routerLink]="['/forgot-password']">
+          Forgot Password?
+        </a>
+      </div>
 
-    <button type="submit" [disabled]="loginForm.invalid || loading">
-      <span *ngIf="!loading">Login</span>
-      <span *ngIf="loading">Logging in…</span>
-    </button>
-  </form>
+      <button type="submit" class="login-button" [disabled]="loginForm.invalid || loading">
+        <span *ngIf="!loading" class="button-content">
+          <mat-icon>login</mat-icon>
+          <span>Sign In</span>
+        </span>
+        <span *ngIf="loading" class="button-content loading">
+          <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+          <span>Signing in...</span>
+        </span>
+      </button>
+
+      <div class="signup-prompt">
+        <span>Don't have an account?</span>
+        <a [routerLink]="['/register']" class="signup-link">Sign Up</a>
+      </div>
+    </form>
+  </div>
 </div>
