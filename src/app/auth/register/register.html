@@ -39,7 +39,10 @@
             placeholder="Choose a username"
             [class.invalid]="f['userName'].touched && f['userName'].errors"
           />
-          <div class="error-message" *ngIf="f['userName'].touched && f['userName'].errors?.['required']">
+          <div
+            class="error-message"
+            *ngIf="f['userName'].touched && f['userName'].errors?.['required']"
+          >
             <mat-icon class="error-icon">error</mat-icon>
             Username is required
           </div>
@@ -83,11 +86,17 @@
             placeholder="01X XXXX XXXX"
             [class.invalid]="f['phoneNumber'].touched && f['phoneNumber'].errors"
           />
-          <div class="error-message" *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
+          <div
+            class="error-message"
+            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']"
+          >
             <mat-icon class="error-icon">error</mat-icon>
             Phone is required
           </div>
-          <div class="error-message" *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
+          <div
+            class="error-message"
+            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']"
+          >
             <mat-icon class="error-icon">error</mat-icon>
             Must be 11 digits starting with 010/011/012/015
           </div>
@@ -106,7 +115,10 @@
             placeholder="Enter your city"
             [class.invalid]="f['location'].touched && f['location'].errors"
           />
-          <div class="error-message" *ngIf="f['location'].touched && f['location'].errors?.['required']">
+          <div
+            class="error-message"
+            *ngIf="f['location'].touched && f['location'].errors?.['required']"
+          >
             <mat-icon class="error-icon">error</mat-icon>
             Location is required
           </div>
@@ -148,11 +160,17 @@
             <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        <div class="error-message" *ngIf="f['password'].touched && f['password'].errors?.['required']">
+        <div
+          class="error-message"
+          *ngIf="f['password'].touched && f['password'].errors?.['required']"
+        >
           <mat-icon class="error-icon">error</mat-icon>
           Password is required
         </div>
-        <div class="error-message" *ngIf="f['password'].touched && f['password'].errors?.['pattern']">
+        <div
+          class="error-message"
+          *ngIf="f['password'].touched && f['password'].errors?.['pattern']"
+        >
           <mat-icon class="error-icon">error</mat-icon>
           8+ chars with uppercase, lowercase, number & special char
         </div>
@@ -182,11 +200,17 @@
             <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        <div class="error-message" *ngIf="f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']">
+        <div
+          class="error-message"
+          *ngIf="f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']"
+        >
           <mat-icon class="error-icon">error</mat-icon>
           Please confirm your password
         </div>
-        <div class="error-message" *ngIf="f['confirmPassword'].touched && registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']">
+        <div
+          class="error-message"
+          *ngIf="f['confirmPassword'].touched && registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']"
+        >
           <mat-icon class="error-icon">error</mat-icon>
           Passwords do not match
         </div>

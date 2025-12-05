@@ -17,11 +17,15 @@
           type="text"
           class="form-input"
           placeholder="Enter your email or username"
-          [class.invalid]="loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid"
+          [class.invalid]="
+            loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid
+          "
         />
         <div
           class="error-message"
-          *ngIf="loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid"
+          *ngIf="
+            loginForm.get('emailOrUserName')?.touched && loginForm.get('emailOrUserName')?.invalid
+          "
         >
           <mat-icon class="error-icon">error</mat-icon>
           Email or username is required
@@ -40,7 +44,9 @@
             [type]="showPassword ? 'text' : 'password'"
             class="form-input password-input"
             placeholder="Enter your password"
-            [class.invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+            [class.invalid]="
+              loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+            "
           />
           <button
             type="button"
@@ -62,9 +68,7 @@
       </div>
 
       <div class="form-actions">
-        <a class="forgot-password" [routerLink]="['/forgot-password']">
-          Forgot Password?
-        </a>
+        <a class="forgot-password" [routerLink]="['/forgot-password']"> Forgot Password? </a>
       </div>
 
       <button type="submit" class="login-button" [disabled]="loginForm.invalid || loading">
