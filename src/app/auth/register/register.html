@@ -1,73 +1,212 @@
-<div class="container">
-  <form [formGroup]="registerForm" (submit)="onSubmit()" novalidate class="form-card">
-    <h2>Register</h2>
-
-    <label>Email</label>
-    <input type="email" formControlName="email" placeholder="Enter your email" />
-
-    <div class="error">
-      <p *ngIf="f['email'].touched && f['email'].errors?.['required']">Email is required.</p>
-      <p *ngIf="f['email'].touched && f['email'].errors?.['email']">Invalid email format.</p>
-    </div>
-    <label>User Name</label>
-    <input type="text" formControlName="userName" placeholder="Enter your username" />
-    <div class="error">
-      <p *ngIf="f['userName'].touched && f['userName'].errors?.['required']">
-        User Name is required.
-      </p>
+<div class="register-page">
+  <div class="register-container">
+    <div class="register-header">
+      <h1 class="register-title">Create Account</h1>
+      <p class="register-subtitle">Join KickZone and book your field</p>
     </div>
 
-    <label>Phone Number</label>
-    <input type="text" formControlName="phoneNumber" placeholder="Enter your phone number" />
-    <div class="error">
-      <p *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
-        Phone Number is required.
-      </p>
-      <p *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
-        Phone number must start with 010, 011, 012, or 015 and be 11 digits.
-      </p>
-    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="register-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name" class="form-label">
+            <mat-icon class="label-icon">badge</mat-icon>
+            Full Name
+          </label>
+          <input
+            id="name"
+            formControlName="name"
+            type="text"
+            class="form-input"
+            placeholder="Enter your full name"
+            [class.invalid]="f['name'].touched && f['name'].errors"
+          />
+          <div class="error-message" *ngIf="f['name'].touched && f['name'].errors?.['required']">
+            <mat-icon class="error-icon">error</mat-icon>
+            Full name is required
+          </div>
+        </div>
 
-    <label>Name</label>
-    <input type="text" formControlName="name" placeholder="Enter your full name" />
-    <div class="error">
-      <p *ngIf="f['name'].touched && f['name'].errors?.['required']">Name is required.</p>
-    </div>
+        <div class="form-group">
+          <label for="userName" class="form-label">
+            <mat-icon class="label-icon">person</mat-icon>
+            Username
+          </label>
+          <input
+            id="userName"
+            formControlName="userName"
+            type="text"
+            class="form-input"
+            placeholder="Choose a username"
+            [class.invalid]="f['userName'].touched && f['userName'].errors"
+          />
+          <div class="error-message" *ngIf="f['userName'].touched && f['userName'].errors?.['required']">
+            <mat-icon class="error-icon">error</mat-icon>
+            Username is required
+          </div>
+        </div>
+      </div>
 
-    <label>Location</label>
-    <input type="text" formControlName="location" placeholder="Enter your location" />
-    <div class="error">
-      <p *ngIf="f['location'].touched && f['location'].errors?.['required']">
-        Location is required.
-      </p>
-    </div>
+      <div class="form-group">
+        <label for="email" class="form-label">
+          <mat-icon class="label-icon">email</mat-icon>
+          Email Address
+        </label>
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          class="form-input"
+          placeholder="Enter your email"
+          [class.invalid]="f['email'].touched && f['email'].errors"
+        />
+        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['required']">
+          <mat-icon class="error-icon">error</mat-icon>
+          Email is required
+        </div>
+        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['email']">
+          <mat-icon class="error-icon">error</mat-icon>
+          Please enter a valid email
+        </div>
+      </div>
 
-    <label>Role</label>
-    <select formControlName="role" id="role">
-      <option value="User">User</option>
-      <option value="FieldOwner">FieldOwner</option>
-    </select>
-    <div class="error">
-      <p *ngIf="f['role'].touched && f['role'].errors?.['required']">Role is required.</p>
-    </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phoneNumber" class="form-label">
+            <mat-icon class="label-icon">phone</mat-icon>
+            Phone Number
+          </label>
+          <input
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            type="text"
+            class="form-input"
+            placeholder="01X XXXX XXXX"
+            [class.invalid]="f['phoneNumber'].touched && f['phoneNumber'].errors"
+          />
+          <div class="error-message" *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
+            <mat-icon class="error-icon">error</mat-icon>
+            Phone is required
+          </div>
+          <div class="error-message" *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
+            <mat-icon class="error-icon">error</mat-icon>
+            Must be 11 digits starting with 010/011/012/015
+          </div>
+        </div>
 
-    <label>Password</label>
-    <input type="password" formControlName="password" placeholder="Enter password" />
-    <div class="error">
-      <p *ngIf="f['password'].touched && f['password'].errors?.['required']">
-        Password is required.
-      </p>
-      <p *ngIf="f['password'].touched && f['password'].errors?.['pattern']">
-        Password must be 6 char minimum ,contain at least one uppercase letter,one lower case, one
-        digit, and one special character.
-      </p>
-    </div>
+        <div class="form-group">
+          <label for="location" class="form-label">
+            <mat-icon class="label-icon">location_on</mat-icon>
+            Location
+          </label>
+          <input
+            id="location"
+            formControlName="location"
+            type="text"
+            class="form-input"
+            placeholder="Enter your city"
+            [class.invalid]="f['location'].touched && f['location'].errors"
+          />
+          <div class="error-message" *ngIf="f['location'].touched && f['location'].errors?.['required']">
+            <mat-icon class="error-icon">error</mat-icon>
+            Location is required
+          </div>
+        </div>
+      </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">
-      Register
-    </button>
-  </form>
-  <p class="text-primary fw-bold">
-    Already have an account? <a routerLink="/login" class="login">Login</a>
-  </p>
+      <div class="form-group">
+        <label for="role" class="form-label">
+          <mat-icon class="label-icon">supervisor_account</mat-icon>
+          I am a
+        </label>
+        <select id="role" formControlName="role" class="form-select">
+          <option value="User">Player (Book Fields)</option>
+          <option value="FieldOwner">Field Owner (List Fields)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <mat-icon class="label-icon">lock</mat-icon>
+          Password
+        </label>
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-input password-input"
+            placeholder="Create a strong password"
+            [class.invalid]="f['password'].touched && f['password'].errors"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            mat-icon-button
+            aria-label="Toggle password visibility"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="f['password'].touched && f['password'].errors?.['required']">
+          <mat-icon class="error-icon">error</mat-icon>
+          Password is required
+        </div>
+        <div class="error-message" *ngIf="f['password'].touched && f['password'].errors?.['pattern']">
+          <mat-icon class="error-icon">error</mat-icon>
+          8+ chars with uppercase, lowercase, number & special char
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">
+          <mat-icon class="label-icon">lock_clock</mat-icon>
+          Confirm Password
+        </label>
+        <div class="password-input-wrapper">
+          <input
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            class="form-input password-input"
+            placeholder="Re-enter your password"
+            [class.invalid]="f['confirmPassword'].touched && (f['confirmPassword'].errors || registerForm.errors?.['passwordMismatch'])"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="toggleConfirmPasswordVisibility()"
+            mat-icon-button
+            aria-label="Toggle confirm password visibility"
+          >
+            <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']">
+          <mat-icon class="error-icon">error</mat-icon>
+          Please confirm your password
+        </div>
+        <div class="error-message" *ngIf="f['confirmPassword'].touched && registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']">
+          <mat-icon class="error-icon">error</mat-icon>
+          Passwords do not match
+        </div>
+      </div>
+
+      <button type="submit" class="register-button" [disabled]="registerForm.invalid || loading">
+        <span *ngIf="!loading" class="button-content">
+          <mat-icon>how_to_reg</mat-icon>
+          <span>Create Account</span>
+        </span>
+        <span *ngIf="loading" class="button-content loading">
+          <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+          <span>Creating account...</span>
+        </span>
+      </button>
+
+      <div class="login-prompt">
+        <span>Already have an account?</span>
+        <a [routerLink]="['/login']" class="login-link">Sign In</a>
+      </div>
+    </form>
+  </div>
 </div>
