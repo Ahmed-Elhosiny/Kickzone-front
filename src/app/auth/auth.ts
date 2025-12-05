@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
@@ -15,6 +16,8 @@ export class AuthService {
   private loginUrl = 'https://localhost:7263/api/Auth/login';
 
   private readonly tokenKey = 'access_token';
+  private platformId = inject(PLATFORM_ID);
+
   constructor(private http: HttpClient) {}
   //registration method
   register(userData: IRegister): Observable<any> {
@@ -25,12 +28,14 @@ export class AuthService {
   login(payload: IloginRequest): Observable<IloginResponse> {
     return this.http.post<IloginResponse>(this.loginUrl, payload).pipe(
       tap((res) => {
-        if (res?.token) {
-          localStorage.setItem(this.tokenKey, res.token);
-          console.log('Token stored in localStorage:', localStorage.getItem(this.tokenKey));
-        }
-        if (res?.refreshToken) {
-          localStorage.setItem('refresh_token', res.refreshToken);
+        if (isPlatformBrowser(this.platformId)) {
+          if (res?.token) {
+            localStorage.setItem(this.tokenKey, res.token);
+            console.log('Token stored in localStorage:', localStorage.getItem(this.tokenKey));
+          }
+          if (res?.refreshToken) {
+            localStorage.setItem('refresh_token', res.refreshToken);
+          }
         }
       }),
       catchError((err) => {
@@ -41,13 +46,18 @@ export class AuthService {
 
   //logout method
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem('refresh_token');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem('refresh_token');
+    }
   }
 
   //get token method
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem(this.tokenKey);
+    }
+    return null;
   }
   //authentication status
   isAuthenticated(): boolean {

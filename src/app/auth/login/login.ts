@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-
+import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth';
@@ -18,6 +18,7 @@ export class Login {
   loading = false;
   serverError: string | null = null;
   showPassword = false;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -41,8 +42,10 @@ export class Login {
     this.auth.login({ emailOrUserName, password }).subscribe({
       next: (res) => {
         console.log('Login successful:', res);
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/dashboard']);
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('token', res.token);
+        }
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;
