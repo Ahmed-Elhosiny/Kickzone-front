@@ -1,7 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
   <div class="container">
     <!-- Logo (Left) -->
-    <a class="navbar-brand fw-bold fs-2 text-warning logo" [routerLink]="['/home']"> KickZone </a>
+    <a
+      class="navbar-brand fw-bold fs-2 text-warning logo"
+      [routerLink]="['/home']"
+      aria-label="KickZone Home"
+    >
+      KickZone
+    </a>
 
     <!-- Toggle Button (Mobile) -->
     <button
@@ -9,6 +15,9 @@
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#mainNav"
+      aria-controls="mainNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -18,17 +27,59 @@
       <!-- Center Links -->
       <ul class="navbar-nav mx-lg-auto mb-2 mb-lg-0">
         <li class="nav-item mx-lg-3">
-          <a class="nav-link link fw-bold fs-5" [routerLink]="['/home']">Home</a>
+          <a
+            class="nav-link fw-bold fs-5"
+            [routerLink]="['/home']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            aria-label="Home page"
+          >
+            Home
+          </a>
         </li>
 
-        <li class="nav-item mx-lg-3"><a class="nav-link fw-bold fs-5" [routerLink]="['/partners']">Partners</a></li>
-        <li class="nav-item mx-lg-3"><a class="nav-link fw-bold fs-5" [routerLink]="['/about']">About Us</a></li>
-        <li class="nav-item mx-lg-3"><a class="nav-link fw-bold fs-5" [routerLink]="['/contact']">Contact Us</a></li>
+        <li class="nav-item mx-lg-3">
+          <a
+            class="nav-link fw-bold fs-5"
+            [routerLink]="['/result']"
+            routerLinkActive="active"
+            aria-label="Search results"
+          >
+            Fields
+          </a>
+        </li>
       </ul>
 
-      <!-- Login Button (Right) -->
-      <div>
-        <a [routerLink]="['/register']" class="login px-4">LOGIN</a>
+      <!-- Auth Buttons (Right) -->
+      <div class="auth-section d-flex align-items-center gap-3">
+        <ng-container *ngIf="!isAuthenticated; else userMenu">
+          <a
+            [routerLink]="['/login']"
+            class="btn-auth btn-login"
+            aria-label="Login to your account"
+          >
+            Login
+          </a>
+          <a
+            [routerLink]="['/register']"
+            class="btn-auth btn-register"
+            aria-label="Create new account"
+          >
+            Sign Up
+          </a>
+        </ng-container>
+
+        <ng-template #userMenu>
+          <div class="user-menu">
+            <button
+              class="btn-auth btn-logout"
+              (click)="logout()"
+              aria-label="Logout from your account"
+            >
+              Logout
+            </button>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>
