@@ -7,7 +7,7 @@ import { Header } from '../header/header';
   templateUrl: './Home.html',
   styleUrls: ['./Home.css'],
 })
-export class Home {
+export class HomeComponent {
   missionImage: string = '/images/mission.jpg';
   vissionImage: string = '/images/vission.jpg';
 }

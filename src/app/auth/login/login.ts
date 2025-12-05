@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class LoginComponent {
   loginForm: FormGroup;
   loading = false;
   serverError: string | null = null;
@@ -39,19 +40,21 @@ export class Login {
 
     const { emailOrUserName, password } = this.loginForm.value;
 
-    this.auth.login({ emailOrUserName, password }).subscribe({
-      next: (res) => {
-        console.log('Login successful:', res);
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('token', res.token);
-        }
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Login failed:', err);
-        this.serverError = err?.error?.message || 'Login failed';
-      },
-    });
+    this.auth.login({ emailOrUserName, password })
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (res) => {
+          console.log('Login successful:', res);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('token', res.token);
+          }
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Login failed:', err);
+          this.serverError = err?.error?.message || 'Login failed';
+        },
+      });
   }
 }

@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth';
 import { IRegister } from '../../Interfaces/iregister';
 import { RouterLink } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-register',
@@ -14,8 +16,9 @@ import { RouterLink } from '@angular/router';
 
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
 })
-export class Register {
+export class RegisterComponent {
   registerForm: FormGroup;
+  private snackBar = inject(MatSnackBar);
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
@@ -26,7 +29,7 @@ export class Register {
       name: ['', Validators.required],
       location: ['', Validators.required],
       role: ['User', Validators.required],
-      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*\W).+$/)]],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$/)]],
     });
   }
   get f() {
@@ -40,15 +43,17 @@ export class Register {
 
     const user: IRegister = this.registerForm.value;
 
-    this.authService.register(user).subscribe({
-      next: (res) => {
-        console.log('Registration successful:', res);
-        alert('Registration successful!');
-      },
-      error: (err) => {
-        console.error('Registration error:', err);
-        alert('Registration failed!');
-      },
-    });
+    this.authService.register(user)
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (res) => {
+          console.log('Registration successful:', res);
+          this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Registration error:', err);
+          this.snackBar.open('Registration failed!', 'Close', { duration: 3000 });
+        },
+      });
   }
 }
