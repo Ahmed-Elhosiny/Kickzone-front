@@ -1,8 +1,37 @@
-<div>
-  <img/>
-  <div>
-    <h4></h4>
-    <p></p>
+<div class="col-md-6 mb-4">
+  <div class="card shadow-sm h-100">
+
+    <div class="card-img-top text-center">
+      @if (field()?.fieldImages; as images) {
+        @if (images.length > 0) {
+          <img
+            [src]="images[0].imageUrl"
+            alt="Field Image"
+            class="img-fluid rounded-top"
+            style="height: 220px; object-fit: cover; width: 100%;" />
+        } @else {
+          <img
+            [src]="defaultImage"
+            alt="Default Field Image"
+            class="img-fluid rounded-top"
+            style="height: 220px; object-fit: cover; width: 100%;" />
+        }
+      }
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title">{{ field()?.name }}</h5>
+      <p class="text-muted mb-1">
+        <i class="bi bi-geo-alt-fill"></i> {{ field()?.location }}
+      </p>
+
+      <p class="mb-1"><strong>Size:</strong> {{ field()?.size }}</p>
+      <p class="mb-1"><strong>Price Per Hour:</strong> {{ field()?.pricePerHour }}</p>
+    </div>
+
+    <div class="card-footer bg-white border-0 text-end">
+      <button class="btn btn-primary px-4">Book Now</button>
+    </div>
+
   </div>
-  <button></button>
 </div>

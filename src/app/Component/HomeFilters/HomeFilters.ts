@@ -22,10 +22,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatIconModule,
   ],
-  templateUrl: './filters.html',
+  templateUrl: './HomeFilters.html',
   styleUrl: './filters.css',
 })
-export class Filters {
+export class HomeFilters {
   private router = inject(Router);
   private categoryService = inject(CategoryService);
   private cityService = inject(CityService);
@@ -34,15 +34,15 @@ export class Filters {
   cities$ = this.cityService.GetAllCities();
 
   // Selected values
-  selectedCategoryId: number | null = null;
-  selectedCityId: number | null = null;
+  selectedCategoryName: string | null = null;
+  selectedCityName: string | null = null;
 
   constructor() {}
 
   applyFilter() {
-    if (this.selectedCategoryId && this.selectedCityId) {
+    if (this.selectedCategoryName && this.selectedCityName) {
       this.router.navigate(['/result'], {
-        queryParams: { categoryId: this.selectedCategoryId, cityId: this.selectedCityId },
+        queryParams: { city: this.selectedCityName, category: this.selectedCategoryName },
       });
     }
   }

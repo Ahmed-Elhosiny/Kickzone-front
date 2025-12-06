@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Filters } from './filters';
+import { HomeFilters } from './HomeFilters';
 
 describe('Filters', () => {
-  let component: Filters;
-  let fixture: ComponentFixture<Filters>;
+  let component: HomeFilters;
+  let fixture: ComponentFixture<HomeFilters>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Filters]
-    })
-    .compileComponents();
+      imports: [HomeFilters],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(Filters);
+    fixture = TestBed.createComponent(HomeFilters);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

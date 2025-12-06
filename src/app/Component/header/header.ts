@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Filters } from "../filters/filters";
+import { HomeFilters } from "../HomeFilters/HomeFilters";
 
 @Component({
   selector: 'app-header',
-  imports: [Filters],
+  imports: [HomeFilters],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { IField } from '../../Model/IField/ifield';
+
 
 @Component({
   selector: 'app-field-card',
@@ -7,7 +9,6 @@ import { Component } from '@angular/core';
   styleUrl: './field-card.css',
 })
 export class FieldCard {
-  
-
-
+  field = input<IField>();
+  defaultImage: string = '';
 }

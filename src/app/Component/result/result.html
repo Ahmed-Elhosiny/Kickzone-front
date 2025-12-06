@@ -1,1 +1,27 @@
-<p>result works!</p>
+<app-result-page-filters
+  (searchValue)="updateSearchTerm($event)"
+  (SelectedSize)="updateSize($event)"
+  (minPrice)="updateMin($event)"
+  (maxPrice)="updateMax($event)"
+></app-result-page-filters>
+
+@if (fields().length > 0){
+<div class="row">
+  @for (fieldItem of fields(); track fieldItem.id) {
+  <div class="col-md-6 mb-4">
+    <app-field-card [field]="fieldItem"></app-field-card>
+  </div>
+  }
+</div>
+} @else if (!loading()) {
+<div class="alert alert-warning text-center mt-5" role="alert">
+  No results found matching your criteria.
+</div>
+} @else if (loading()) {
+<div class="text-center mt-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-2">Loading results...</p>
+</div>
+}

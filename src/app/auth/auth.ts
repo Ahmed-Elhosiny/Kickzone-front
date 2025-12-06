@@ -29,12 +29,14 @@ export class AuthService {
     return this.http.post<IloginResponse>(this.loginUrl, payload).pipe(
       tap((res) => {
         if (isPlatformBrowser(this.platformId)) {
-          if (res?.token) {
-            localStorage.setItem(this.tokenKey, res.token);
-            console.log('Token stored in localStorage:', localStorage.getItem(this.tokenKey));
-          }
-          if (res?.refreshToken) {
-            localStorage.setItem('refresh_token', res.refreshToken);
+          if (typeof window !== 'undefined') {
+            if (res?.token) {
+              localStorage.setItem(this.tokenKey, res.token);
+              console.log('Token stored in localStorage:', localStorage.getItem(this.tokenKey));
+            }
+            if (res?.refreshToken) {
+              localStorage.setItem('refresh_token', res.refreshToken);
+            }
           }
         }
       }),
@@ -50,17 +52,20 @@ export class AuthService {
       localStorage.removeItem(this.tokenKey);
       localStorage.removeItem('refresh_token');
     }
+
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('refresh_token');
   }
 
   //get token method
   getToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem(this.tokenKey);
-    }
-    return null;
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(this.tokenKey);
   }
   //authentication status
   isAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
     const token = this.getToken();
     if (!token) return false;
 

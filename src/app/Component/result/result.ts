@@ -1,12 +1,97 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
+import { FieldCard } from '../field-card/field-card';
+import { ActivatedRoute } from '@angular/router';
+import { IField } from '../../Model/IField/ifield';
+import { IFieldResponse } from '../../Model/IField/ifield-response';
+import { FiltrationResultService } from '../../services/Field/filtration-result';
+import { ResultPageFilters } from '../result-page-filters/result-page-filters';
 
 @Component({
   selector: 'app-result',
-  imports: [],
+  imports: [FieldCard, ResultPageFilters],
   templateUrl: './result.html',
-  styleUrl: './result.css',
+  styleUrls: ['./result.css'],
 })
 export class Result {
+  private route = inject(ActivatedRoute);
+  private filterService = inject(FiltrationResultService);
 
-  
+  fields = signal<IField[]>([]);
+  loading = signal(true);
+
+
+  category = signal<string | null>(null);
+  city = signal<string | null>(null);
+  searchTerm = signal<string>('');
+  size = signal<string[] | null>(null);
+  minPrice = signal<number | null>(0);
+  maxPrice = signal<number | null>(1000);
+  page = signal<number>(1);
+  pageSize = signal<number>(6);
+
+  constructor() {
+
+    this.route.queryParams.subscribe((params) => {
+      this.category.set(params['category'] || null);
+      this.city.set(params['city'] || null);
+    });
+
+
+    effect(() => {
+      this.fetchResults();
+    });
+  }
+
+
+  fetchResults() {
+    const cat = this.category();
+    const cty = this.city();
+    const search = this.searchTerm();
+    const sz = this.size();
+    const min = this.minPrice();
+    const max = this.maxPrice();
+    const pg = this.page();
+    const ps = this.pageSize();
+
+    this.loading.set(true);
+    this.fields.set([]);
+
+    if (cat && cty) {
+
+      this.filterService.HomeFilter(cty, cat, pg, ps).subscribe((res: IFieldResponse) => {
+        this.fields.set(res.fields);
+        this.loading.set(false);
+      });
+    } else {
+
+      this.filterService
+        .ResultPageFilter(search, sz, min, max, true, pg, ps)
+        .subscribe((res: IFieldResponse) => {
+          this.fields.set(res.fields);
+          this.loading.set(false);
+        });
+    }
+  }
+
+
+
+  updateSearchTerm(value: string) {
+    this.searchTerm.set(value);
+    this.page.set(1);
+  }
+
+  updateSize(values: string[] | null) {
+    this.size.set(values);
+    this.page.set(1);
+  }
+
+  updateMin(value: number | null) {
+    this.minPrice.set(value);
+    this.page.set(1);
+  }
+
+  updateMax(value: number | null) {
+    this.maxPrice.set(value);
+    this.page.set(1);
+  }
 }

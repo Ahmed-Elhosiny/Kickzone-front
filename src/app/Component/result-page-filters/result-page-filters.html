@@ -1,0 +1,106 @@
+<div class="filters-container container mt-3">
+  <div class="row g-2 mb-3">
+    <div class="col-12">
+      <div class="filter-block">
+        <label class="form-label visually-hidden">Search</label>
+        <input
+          #searchInput
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="Search..."
+          (input)="updateSearchFilter(searchInput.value)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-2">
+    <div class="col-lg-4 col-md-4 col-12">
+      <div class="filter-block">
+        <label class="form-label visually-hidden">Size</label>
+        <div class="dropdown w-100">
+          <button
+            class="btn btn-outline-primary dropdown-toggle w-100"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Select Sizes
+          </button>
+          <div class="dropdown-menu p-3">
+            @for(s of size; track s) {
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [id]="s"
+                [checked]="currentSizes.includes(s)"
+                (change)="updateSizeFilter(s)"
+              />
+              <label class="form-check-label" [for]="s">{{ s }}</label>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-12">
+      <div class="filter-block">
+        <div class="dropdown w-100">
+          <button
+            class="btn btn-outline-success dropdown-toggle w-100"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Min Price: {{ minPriceValue() === null ? 'Any' : minPriceValue() }}
+          </button>
+          <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
+            <label class="form-label d-block text-center mb-2"
+              >Min Price: {{ minPriceValue() === null ? '0' : minPriceValue() }}</label
+            >
+            <input
+              #MinPrice
+              type="range"
+              class="form-range"
+              min="0"
+              max="1000"
+              [value]="minPriceValue() === null ? 0 : minPriceValue()"
+              (input)="updateMinPriceFilter(MinPrice.valueAsNumber)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-12">
+      <div class="filter-block">
+        <div class="dropdown w-100">
+          <button
+            class="btn btn-outline-danger dropdown-toggle w-100"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Max Price: {{ maxPriceValue() === null ? 'Any' : maxPriceValue() }}
+          </button>
+          <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
+            <label class="form-label d-block text-center mb-2"
+              >Max Price: {{ maxPriceValue() === null ? '1000' : maxPriceValue() }}</label
+            >
+            <input
+              #MaxPrice
+              type="range"
+              class="form-range"
+              min="0"
+              max="1000"
+              [value]="maxPriceValue() === null ? 1000 : maxPriceValue()"
+              (input)="updateMaxPriceFilter(MaxPrice.valueAsNumber)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
