@@ -11,11 +11,11 @@
         <mat-icon class="avatar-icon">account_circle</mat-icon>
       </div>
       <div class="profile-info">
-        <h1 class="profile-name">{{ userProfile()?.name }}</h1>
+        <h1 class="profile-name">{{ userProfile()?.name || userProfile()?.userName }}</h1>
         <p class="profile-email">{{ userProfile()?.email }}</p>
-        <span class="profile-role" [class.owner]="userProfile()?.role === 'FieldOwner'">
-          <mat-icon>{{ userProfile()?.role === 'FieldOwner' ? 'store' : 'person' }}</mat-icon>
-          {{ userProfile()?.role === 'FieldOwner' ? 'Field Owner' : 'Player' }}
+        <span class="profile-role" [class.owner]="userProfile()?.roles?.includes('FieldOwner')">
+          <mat-icon>{{ userProfile()?.roles?.includes('FieldOwner') ? 'store' : 'person' }}</mat-icon>
+          {{ userProfile()?.roles?.includes('FieldOwner') ? 'Field Owner' : 'Player' }}
         </span>
       </div>
     </div>
