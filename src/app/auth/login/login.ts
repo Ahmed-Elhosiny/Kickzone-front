@@ -51,8 +51,17 @@ export class LoginComponent {
     const { emailOrUserName, password } = this.loginForm.value;
 
     this.auth.login({ emailOrUserName, password }).subscribe({
-      next: () => {
+      next: (response) => {
         this.loading = false;
+        
+        console.log('=== Login Success Debug ===');
+        console.log('Login response received:', !!response);
+        console.log('Token received:', !!response?.token);
+        console.log('Refresh token received:', !!response?.refreshToken);
+        console.log('Token stored:', !!this.auth.getToken());
+        console.log('Is authenticated:', this.auth.isAuthenticated());
+        console.log('=========================');
+        
         this.snackBar.open('Login successful! Welcome back.', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
