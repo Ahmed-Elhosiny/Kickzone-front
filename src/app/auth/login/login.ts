@@ -51,11 +51,8 @@ export class LoginComponent {
     const { emailOrUserName, password } = this.loginForm.value;
 
     this.auth.login({ emailOrUserName, password }).subscribe({
-      next: (res) => {
+      next: () => {
         this.loading = false;
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('token', res.token);
-        }
         this.snackBar.open('Login successful! Welcome back.', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
@@ -67,7 +64,19 @@ export class LoginComponent {
       error: (err) => {
         this.loading = false;
         console.error('Login failed:', err);
-        const errorMessage = err?.error?.message || 'Login failed. Please check your credentials.';
+        
+        // Extract error message from backend response
+        let errorMessage = 'Login failed. Please check your credentials.';
+        if (err?.error?.errors) {
+          // Validation errors
+          const errors = err.error.errors;
+          errorMessage = Object.values(errors).flat().join(', ');
+        } else if (err?.error?.message) {
+          errorMessage = err.error.message;
+        } else if (err?.error?.title) {
+          errorMessage = err.error.title;
+        }
+        
         this.serverError = errorMessage;
         this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
