@@ -3,8 +3,18 @@ export interface IloginRequest {
   password: string;
 }
 
-export interface IloginResponse{
+export interface IloginResponse {
   token: string;
-  refreshToken?: string;
-  expiresIn?: number;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface IRefreshRequest {
+  refreshToken: string;
+}
+
+export interface IRefreshResponse {
+  token: string;
+  refreshToken: string;
+  expiresIn: number;
 }
