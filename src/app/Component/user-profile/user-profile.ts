@@ -58,13 +58,47 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    const token = this.authService.getToken();
+    const isAuth = this.authService.isAuthenticated();
+    const allKeys = Object.keys(localStorage);
+    
+    console.log('===========================================');
+    console.log('🔍 PROFILE COMPONENT - AUTHENTICATION CHECK');
+    console.log('===========================================');
+    console.log('Has token:', !!token);
+    console.log('Is authenticated:', isAuth);
+    console.log('All localStorage keys:', allKeys);
+    console.log('Token key exists:', allKeys.includes('access_token'));
+    console.log('Refresh token exists:', allKeys.includes('refresh_token'));
+    
+    if (token) {
+      console.log('Token preview:', token.substring(0, 50) + '...');
+    } else {
+      console.error('❌ NO TOKEN FOUND - You are not logged in!');
+      console.error('➡️  You must LOGIN first before accessing profile');
+    }
+    console.log('===========================================');
+    
+    if (!token || !isAuth) {
+      console.warn('⚠️  Redirecting to login page...');
+      this.snackBar.open('🔒 Please login first to view your profile', 'Close', { 
+        duration: 5000,
+        panelClass: ['error-snackbar']
+      });
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    console.log('✅ Authentication OK - Loading profile...');
     this.loadUserProfile();
   }
 
   loadUserProfile() {
     this.loading.set(true);
+    console.log('Loading user profile...');
     this.userService.getCurrentUser().subscribe({
       next: (profile) => {
+        console.log('Profile loaded successfully:', profile);
         this.userProfile.set(profile);
         this.profileForm.patchValue({
           name: profile.name,
@@ -74,12 +108,45 @@ export class UserProfileComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Failed to load profile:', err);
+        console.error('Failed to load profile - Full error:', err);
+        console.error('Error status:', err?.status);
+        console.error('Error message:', err?.message);
+        console.error('Error URL:', err?.url);
+        console.error('Redirected:', err?.redirected);
+        console.error('Error details:', err?.error);
+        
         this.loading.set(false);
-        this.snackBar.open('Failed to load profile', 'Close', {
-          duration: 3000,
+        
+        let errorMessage = 'Failed to load profile';
+        let shouldLogout = false;
+        
+        // Check if backend redirected to /Account/Login (misconfigured authentication)
+        if (err?.url?.includes('/Account/Login') || err?.redirected) {
+          errorMessage = '⚠️ Backend authentication misconfigured. Please check BACKEND_FIX.md in project root.';
+          shouldLogout = true;
+          console.error('❌ Backend is redirecting instead of returning 401. Fix: Add OnChallenge event to JWT Bearer options.');
+        } else if (err?.status === 401) {
+          errorMessage = 'Session expired. Please login again.';
+          shouldLogout = true;
+        } else if (err?.status === 404) {
+          errorMessage = 'User profile endpoint not found. Please contact support.';
+        } else if (err?.error?.message) {
+          errorMessage = err.error.message;
+        }
+        
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 8000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
+        
+        if (shouldLogout) {
+          setTimeout(() => {
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }, 2000);
+        }
       },
     });
   }
