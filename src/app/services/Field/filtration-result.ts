@@ -36,26 +36,4 @@ export class FiltrationResultService {
     return this.http.post<IFieldResponse>(this.baseUrl, body, { params });
   }
 }
-// ResultPageFilter(
-//   searchValue: string,
-//   sizeValue: string[] | null,
-//   minPrice: number | null,
-//   maxPrice: number | null,
-//   isApproved: boolean | null,
-//   page = 1,
-//   pageSize = 1000
-// ) {
-//   const body = {
-//     searchTerm: searchValue,
-//     category: '',
-//     city: '',
-//     size: sizeValue,
-//     minPrice: minPrice,
-//     maxPrice: maxPrice,
-//     isApproved: isApproved,
-//   };
 
-//   const params = new HttpParams().set('page', page).set('pageSize', pageSize);
-
-//   return this.http.post<IFieldResponse>(this.baseUrl, body, { params });
-// }

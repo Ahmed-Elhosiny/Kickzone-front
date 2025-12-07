@@ -13,7 +13,6 @@ export class ResultPageFilters {
   SelectedSize = output<string | null>();
   selectedSize: string | null = null;
 
-
   minPriceValue = signal<number | null>(0);
   maxPriceValue = signal<number | null>(1000);
 
@@ -25,6 +24,7 @@ export class ResultPageFilters {
   }
 
   updateSizeFilter(value: string) {
+    this.selectedSize = value;
     this.SelectedSize.emit(value);
   }
 

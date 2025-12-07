@@ -14,10 +14,10 @@ import { ResultPageFilters } from '../result-page-filters/result-page-filters';
 })
 export class Result {
   private route = inject(ActivatedRoute);
-  private filterService = inject(FiltrationResultService); // === Signals ===
+  private filterService = inject(FiltrationResultService);
 
   fields = signal<IField[]>([]);
-  loading = signal(true); // ملاحظة: يجب أن تتطابق أسماء هذه الـ Signals مع ما ترسله من ResultPageFilters
+  loading = signal(true);
 
   category = signal<string | null>(null);
   city = signal<string | null>(null);
@@ -30,33 +30,30 @@ export class Result {
   noResultsMessage = signal<string | null>(null);
 
   constructor() {
-    // === جلب القيم الأولية من URL ===
+
     this.route.queryParams.subscribe((params) => {
       this.category.set(params['category'] || null);
       this.city.set(params['city'] || null);
-      // يمكنك هنا إضافة جلب قيم أخرى مثل Search أو Size إذا كانت في الـ URL
-    }); // === الـ Effect الذي يعمل عند تغيير أي Signal ===
+
+    });
 
     effect(() => {
       this.fetchResults();
     });
   }
-  /**
-   * دالة لجلب النتائج باستخدام جميع فلاتر الـ Signals، وإرسال null للقيم غير المحددة.
-   */
 
   fetchResults() {
     const cat = this.category();
     const cty = this.city();
-    const search = this.searchTerm() === '' ? null : this.searchTerm(); // إرسال null إذا كان حقل البحث فارغًا
     const sz = this.size();
+    const search = this.searchTerm() === '' ? null : this.searchTerm();
     const min = this.minPrice();
     const max = this.maxPrice();
     const pg = this.page();
     const ps = this.pageSize();
-    const isApproved = true; // نفترض أنها قيمة ثابتة للفلترة
+    const isApproved = true;
 
-    // إذا لم تكن هناك أي فلاتر (لا مدينة ولا فئة ولا بحث)، نوقف الجلب
+
     if (!cat && !cty && !search) {
       this.loading.set(false);
       this.fields.set([]);
@@ -64,7 +61,7 @@ export class Result {
     }
 
     this.loading.set(true);
-    this.fields.set([]); // === استدعاء HomeFilter مع جميع المعلمات ===
+    this.fields.set([]);
 
     this.filterService
       .HomeFilter(cty, cat, search, sz, min, max, isApproved, pg, ps)
@@ -73,13 +70,13 @@ export class Result {
         this.loading.set(false);
 
         if (res.fields.length === 0) {
-          this.noResultsMessage.set('لا توجد نتائج مطابقة للفلاتر');
+          this.noResultsMessage.set(' No results found matching your criteria.');
           this.loading.set(false);
         } else {
           this.noResultsMessage.set(null);
         }
       });
-  } // === دوال استقبال الأحداث من ResultPageFilters (كما هي) ===
+  }
 
   updateSearchTerm(value: string) {
     this.searchTerm.set(value);

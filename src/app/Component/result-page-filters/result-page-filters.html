@@ -1,5 +1,5 @@
 <div class="filters-container container mt-3">
-  <!-- Search (Always on top alone) -->
+  <!-- Search Filter-->
   <div class="row g-2 mb-3">
     <div class="col-12">
       <div class="filter-block">
@@ -15,7 +15,6 @@
     </div>
   </div>
 
-  <!-- Filters row (all filters next to each other) -->
   <div class="row g-2">
     <!-- Size Filter -->
     <div class="col-lg-4 col-md-4 col-12">
@@ -28,7 +27,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            {{ selectedSize || 'Select Size' }}
+            Size
           </button>
 
           <div class="dropdown-menu p-3">
@@ -61,7 +60,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Min Price: {{ minPriceValue() === null ? 'Any' : minPriceValue() }}
+            Min Price
           </button>
           <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
             <label class="form-label d-block text-center mb-2">
@@ -91,7 +90,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Max Price: {{ maxPriceValue() === null ? 'Any' : maxPriceValue() }}
+            Max Price
           </button>
           <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
             <label class="form-label d-block text-center mb-2">
