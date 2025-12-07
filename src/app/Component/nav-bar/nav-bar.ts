@@ -19,7 +19,14 @@ export class NavBarComponent {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        // Navigate to login even if API call fails (tokens already cleared)
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }
