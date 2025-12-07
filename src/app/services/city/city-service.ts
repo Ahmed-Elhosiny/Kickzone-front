@@ -3,13 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { ICity } from '../../Model/ICity/icity';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CityService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5184/api/Cities';
+  private apiUrl = `${environment.apiUrl}/Cities`;
 
   GetAllCities(): Observable<ICity[]> {
     return this.http.get<ICity[]>(this.apiUrl).pipe(
