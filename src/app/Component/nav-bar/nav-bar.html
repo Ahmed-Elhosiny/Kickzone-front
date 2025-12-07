@@ -71,6 +71,13 @@
 
         <ng-template #userMenu>
           <div class="user-menu">
+            <a
+              [routerLink]="['/profile']"
+              class="btn-auth btn-profile"
+              aria-label="View your profile"
+            >
+              Profile
+            </a>
             <button
               class="btn-auth btn-logout"
               (click)="logout()"
