@@ -1,5 +1,5 @@
 export interface IFieldImage {
   id: number;
-  imageUrl: string;
-  publicId: string;
+  imageUrl: string | null;
+  publicId: string | null;
 }
