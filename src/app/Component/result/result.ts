@@ -53,27 +53,35 @@ export class Result {
     const ps = this.pageSize();
     const isApproved = true;
 
-
+    // Require at least one filter to be set
     if (!cat && !cty && !search) {
       this.loading.set(false);
       this.fields.set([]);
+      this.noResultsMessage.set('Please select a category or city to search for fields.');
       return;
     }
 
     this.loading.set(true);
     this.fields.set([]);
+    this.noResultsMessage.set(null);
 
     this.filterService
       .HomeFilter(cty, cat, search, sz, min, max, isApproved, pg, ps)
-      .subscribe((res: IFieldResponse) => {
-        this.fields.set(res.fields);
-        this.loading.set(false);
-
-        if (res.fields.length === 0) {
-          this.noResultsMessage.set(' No results found matching your criteria.');
+      .subscribe({
+        next: (res: IFieldResponse) => {
+          this.fields.set(res.fields);
           this.loading.set(false);
-        } else {
-          this.noResultsMessage.set(null);
+
+          if (res.fields.length === 0) {
+            this.noResultsMessage.set('No results found matching your criteria. Try adjusting your filters.');
+          } else {
+            this.noResultsMessage.set(null);
+          }
+        },
+        error: (err) => {
+          console.error('Failed to fetch fields:', err);
+          this.loading.set(false);
+          this.noResultsMessage.set('Failed to load fields. Please try again.');
         }
       });
   }
