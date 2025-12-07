@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class CategoryService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7263/api/Categories';
+  private apiUrl = 'http://localhost:5184/api/Categories';
 
   GetAllCategories(): Observable<ICategory[]> {
     return this.http.get<ICategory[]>(this.apiUrl).pipe(

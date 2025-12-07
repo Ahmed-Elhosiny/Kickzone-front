@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class CityService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7263/api/Cities';
+  private apiUrl = 'http://localhost:5184/api/Cities';
 
   GetAllCities(): Observable<ICity[]> {
     return this.http.get<ICity[]>(this.apiUrl).pipe(

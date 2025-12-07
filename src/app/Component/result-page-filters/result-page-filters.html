@@ -1,4 +1,5 @@
 <div class="filters-container container mt-3">
+  <!-- Search (Always on top alone) -->
   <div class="row g-2 mb-3">
     <div class="col-12">
       <div class="filter-block">
@@ -14,7 +15,9 @@
     </div>
   </div>
 
+  <!-- Filters row (all filters next to each other) -->
   <div class="row g-2">
+    <!-- Size Filter -->
     <div class="col-lg-4 col-md-4 col-12">
       <div class="filter-block">
         <label class="form-label visually-hidden">Size</label>
@@ -25,16 +28,19 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Select Sizes
+            {{ selectedSize || 'Select Size' }}
           </button>
+
           <div class="dropdown-menu p-3">
-            @for(s of size; track s) {
+            @for (s of size; track s) {
             <div class="form-check">
               <input
-                type="checkbox"
                 class="form-check-input"
+                type="radio"
+                name="sizeOptions"
                 [id]="s"
-                [checked]="currentSizes.includes(s)"
+                [value]="s"
+                [checked]="selectedSize === s"
                 (change)="updateSizeFilter(s)"
               />
               <label class="form-check-label" [for]="s">{{ s }}</label>
@@ -45,6 +51,7 @@
       </div>
     </div>
 
+    <!-- Min Price Filter -->
     <div class="col-lg-4 col-md-4 col-12">
       <div class="filter-block">
         <div class="dropdown w-100">
@@ -57,9 +64,9 @@
             Min Price: {{ minPriceValue() === null ? 'Any' : minPriceValue() }}
           </button>
           <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
-            <label class="form-label d-block text-center mb-2"
-              >Min Price: {{ minPriceValue() === null ? '0' : minPriceValue() }}</label
-            >
+            <label class="form-label d-block text-center mb-2">
+              Min Price: {{ minPriceValue() === null ? '0' : minPriceValue() }}
+            </label>
             <input
               #MinPrice
               type="range"
@@ -74,6 +81,7 @@
       </div>
     </div>
 
+    <!-- Max Price Filter -->
     <div class="col-lg-4 col-md-4 col-12">
       <div class="filter-block">
         <div class="dropdown w-100">
@@ -86,9 +94,9 @@
             Max Price: {{ maxPriceValue() === null ? 'Any' : maxPriceValue() }}
           </button>
           <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
-            <label class="form-label d-block text-center mb-2"
-              >Max Price: {{ maxPriceValue() === null ? '1000' : maxPriceValue() }}</label
-            >
+            <label class="form-label d-block text-center mb-2">
+              Max Price: {{ maxPriceValue() === null ? '1000' : maxPriceValue() }}
+            </label>
             <input
               #MaxPrice
               type="range"

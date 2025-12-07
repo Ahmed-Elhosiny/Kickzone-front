@@ -5,6 +5,14 @@
   (maxPrice)="updateMax($event)"
 ></app-result-page-filters>
 
+
+@if(noResultsMessage() && !loading()){
+
+  <div  class="alert alert-warning text-center my-3">
+    {{ noResultsMessage() }}
+  </div>
+}
+
 @if (fields().length > 0){
 <div class="row">
   @for (fieldItem of fields(); track fieldItem.id) {

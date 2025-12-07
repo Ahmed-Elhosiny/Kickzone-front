@@ -10,8 +10,9 @@ export class ResultPageFilters {
   searchValue = output<string>();
 
   size = ['Side_2', 'Side_5', 'Side_6', 'Side_7', 'Side_11'];
-  SelectedSize = output<string[] | null>();
-  currentSizes: string[] = [];
+  SelectedSize = output<string | null>();
+  selectedSize: string | null = null;
+
 
   minPriceValue = signal<number | null>(0);
   maxPriceValue = signal<number | null>(1000);
@@ -24,12 +25,7 @@ export class ResultPageFilters {
   }
 
   updateSizeFilter(value: string) {
-    if (this.currentSizes.includes(value)) {
-      this.currentSizes = this.currentSizes.filter((v) => v !== value);
-    } else {
-      this.currentSizes = [...this.currentSizes, value];
-    }
-    this.SelectedSize.emit(this.currentSizes);
+    this.SelectedSize.emit(value);
   }
 
   updateMinPriceFilter(value: number) {
