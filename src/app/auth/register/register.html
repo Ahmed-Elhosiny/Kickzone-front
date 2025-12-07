@@ -46,6 +46,13 @@
             <mat-icon class="error-icon">error</mat-icon>
             Username is required
           </div>
+          <div
+            class="error-message"
+            *ngIf="f['userName'].touched && f['userName'].errors?.['minlength']"
+          >
+            <mat-icon class="error-icon">error</mat-icon>
+            Username must be at least 3 characters
+          </div>
         </div>
       </div>
 
@@ -112,16 +119,9 @@
             formControlName="location"
             type="text"
             class="form-input"
-            placeholder="Enter your city"
+            placeholder="Enter your city (optional)"
             [class.invalid]="f['location'].touched && f['location'].errors"
           />
-          <div
-            class="error-message"
-            *ngIf="f['location'].touched && f['location'].errors?.['required']"
-          >
-            <mat-icon class="error-icon">error</mat-icon>
-            Location is required
-          </div>
         </div>
       </div>
 
@@ -169,10 +169,10 @@
         </div>
         <div
           class="error-message"
-          *ngIf="f['password'].touched && f['password'].errors?.['pattern']"
+          *ngIf="f['password'].touched && f['password'].errors?.['minlength']"
         >
           <mat-icon class="error-icon">error</mat-icon>
-          8+ chars with uppercase, lowercase, number & special char
+          Password must be at least 6 characters
         </div>
       </div>
 

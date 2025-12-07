@@ -40,19 +40,12 @@ export class RegisterComponent {
     this.registerForm = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
-        userName: ['', Validators.required],
-
+        userName: ['', [Validators.required, Validators.minLength(3)]],
         phoneNumber: ['', [Validators.required, Validators.pattern(/^(010|012|015|011)[0-9]{8}$/)]],
-        name: ['', Validators.required],
-        location: ['', Validators.required],
+        name: ['', [Validators.required, Validators.maxLength(200)]],
+        location: [''],  // Optional field
         role: ['User', Validators.required],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$/),
-          ],
-        ],
+        password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.passwordMatchValidator }
@@ -99,7 +92,22 @@ export class RegisterComponent {
       error: (err) => {
         this.loading = false;
         console.error('Registration error:', err);
-        const errorMessage = err?.error?.message || 'Registration failed. Please try again.';
+        
+        // Extract error message from backend response
+        let errorMessage = 'Registration failed. Please try again.';
+        if (err?.error?.errors) {
+          // Validation errors from backend
+          const errors = err.error.errors;
+          const errorArray = Object.entries(errors).map(([field, messages]: [string, any]) => {
+            return `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
+          });
+          errorMessage = errorArray.join('\n');
+        } else if (err?.error?.message) {
+          errorMessage = err.error.message;
+        } else if (err?.error?.title) {
+          errorMessage = err.error.title;
+        }
+        
         this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
