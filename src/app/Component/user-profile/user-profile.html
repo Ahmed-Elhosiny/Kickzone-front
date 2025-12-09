@@ -258,6 +258,133 @@
           </mat-card>
         </div>
       </mat-tab>
+
+      <!-- Account Settings Tab -->
+      <mat-tab label="Account Settings">
+        <div class="tab-content">
+          <!-- Change Username -->
+          <mat-card class="info-card">
+            <mat-card-header>
+              <mat-card-title class="card-title">
+                <mat-icon>alternate_email</mat-icon>
+                Change Username
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="changeUsernameForm" (ngSubmit)="changeUsername()" class="account-form">
+                <div class="form-group">
+                  <label class="form-label">
+                    <mat-icon>person_outline</mat-icon>
+                    Current Username
+                  </label>
+                  <p class="current-value">{{ userProfile()?.userName }}</p>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <mat-icon>edit</mat-icon>
+                    New Username
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="newUserName"
+                    class="form-input"
+                    placeholder="Enter new username"
+                  />
+                  @if (changeUsernameForm.get('newUserName')?.touched && changeUsernameForm.get('newUserName')?.errors) {
+                  <div class="error-message">
+                    <mat-icon>error</mat-icon>
+                    Username is required
+                  </div>
+                  }
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="changeUsernameForm.invalid"
+                    class="save-button"
+                  >
+                    <mat-icon>check</mat-icon>
+                    Update Username
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Change Email -->
+          <mat-card class="info-card">
+            <mat-card-header>
+              <mat-card-title class="card-title">
+                <mat-icon>email</mat-icon>
+                Change Email
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="changeEmailForm" (ngSubmit)="requestEmailChange()" class="account-form">
+                <div class="form-group">
+                  <label class="form-label">
+                    <mat-icon>mail_outline</mat-icon>
+                    Current Email
+                  </label>
+                  <p class="current-value">{{ userProfile()?.email }}</p>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <mat-icon>edit</mat-icon>
+                    New Email
+                  </label>
+                  <input
+                    type="email"
+                    formControlName="newEmail"
+                    class="form-input"
+                    placeholder="Enter new email address"
+                  />
+                  @if (changeEmailForm.get('newEmail')?.touched && changeEmailForm.get('newEmail')?.errors?.['required']) {
+                  <div class="error-message">
+                    <mat-icon>error</mat-icon>
+                    Email is required
+                  </div>
+                  }
+                  @if (changeEmailForm.get('newEmail')?.touched && changeEmailForm.get('newEmail')?.errors?.['email']) {
+                  <div class="error-message">
+                    <mat-icon>error</mat-icon>
+                    Please enter a valid email
+                  </div>
+                  }
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="changeEmailForm.invalid"
+                    class="save-button"
+                  >
+                    <mat-icon>check</mat-icon>
+                    Request Email Change
+                  </button>
+                </div>
+              </form>
+
+              @if (emailChangeRequested()) {
+              <div class="info-box">
+                <mat-icon>info</mat-icon>
+                <p>
+                  A confirmation email has been sent to your new email address. 
+                  Please check your inbox and click the confirmation link to complete the process.
+                </p>
+              </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
     </mat-tab-group>
 
     <div class="profile-actions">
