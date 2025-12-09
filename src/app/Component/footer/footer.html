@@ -9,8 +9,8 @@
         </div>
 
         <div class="social-links">
+          @for (social of socialLinks; track social.url) {
           <a
-            *ngFor="let social of socialLinks"
             [href]="social.url"
             [attr.aria-label]="social.label"
             class="social-link"
@@ -19,6 +19,7 @@
           >
             <mat-icon>{{ social.icon }}</mat-icon>
           </a>
+          }
         </div>
       </div>
 

@@ -133,9 +133,10 @@ body {
   font-size: 16px;
 }
 
-/* Snackbar animation */
+/* Snackbar animation and positioning */
 .mat-mdc-snack-bar-container {
   animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+  margin-bottom: 16px !important; /* Add spacing between stacked snackbars */
 }
 
 @keyframes slideInRight {

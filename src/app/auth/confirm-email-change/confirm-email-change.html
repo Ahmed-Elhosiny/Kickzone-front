@@ -1,14 +1,17 @@
 <div class="confirm-container">
   <mat-card class="confirm-card">
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="loading-state">
+    @if (isLoading) {
+    <div class="loading-state">
       <mat-spinner diameter="60"></mat-spinner>
       <h2>Confirming Email Change...</h2>
       <p>Please wait while we update your email address.</p>
     </div>
+    }
 
     <!-- Success State -->
-    <div *ngIf="!isLoading && isSuccess" class="success-state">
+    @if (!isLoading && isSuccess) {
+    <div class="success-state">
       <div class="icon-container success">
         <mat-icon>check_circle</mat-icon>
       </div>
@@ -24,9 +27,11 @@
         </button>
       </div>
     </div>
+    }
 
     <!-- Error State -->
-    <div *ngIf="!isLoading && !isSuccess" class="error-state">
+    @if (!isLoading && !isSuccess) {
+    <div class="error-state">
       <div class="icon-container error">
         <mat-icon>error</mat-icon>
       </div>
@@ -45,5 +50,6 @@
         </button>
       </div>
     </div>
+    }
   </mat-card>
 </div>

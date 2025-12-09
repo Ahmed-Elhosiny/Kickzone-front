@@ -1,14 +1,17 @@
 <div class="confirm-email-container">
   <mat-card class="confirm-email-card">
     <!-- Loading State -->
-    <div *ngIf="isLoading && !isSuccess" class="loading-state">
+    @if (isLoading && !isSuccess) {
+    <div class="loading-state">
       <mat-spinner diameter="60"></mat-spinner>
       <h2>Confirming Your Email...</h2>
       <p>Please wait while we verify your email address.</p>
     </div>
+    }
 
     <!-- Email Input State -->
-    <div *ngIf="needsEmail && !isLoading" class="email-input-state">
+    @if (needsEmail && !isLoading) {
+    <div class="email-input-state">
       <div class="icon-container info">
         <mat-icon>email</mat-icon>
       </div>
@@ -20,12 +23,16 @@
           <mat-label>Email Address</mat-label>
           <input matInput type="email" formControlName="email" placeholder="your@email.com">
           <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="emailForm.get('email')?.hasError('required')">
+          @if (emailForm.get('email')?.hasError('required')) {
+          <mat-error>
             Email is required
           </mat-error>
-          <mat-error *ngIf="emailForm.get('email')?.hasError('email')">
+          }
+          @if (emailForm.get('email')?.hasError('email')) {
+          <mat-error>
             Please enter a valid email
           </mat-error>
+          }
         </mat-form-field>
 
         <div class="action-buttons">
@@ -40,9 +47,11 @@
         </div>
       </form>
     </div>
+    }
 
     <!-- Success State -->
-    <div *ngIf="!isLoading && isSuccess" class="success-state">
+    @if (!isLoading && isSuccess) {
+    <div class="success-state">
       <div class="icon-container success">
         <mat-icon>check_circle</mat-icon>
       </div>
@@ -61,9 +70,11 @@
         </button>
       </div>
     </div>
+    }
 
     <!-- Error State -->
-    <div *ngIf="!isLoading && !isSuccess && !needsEmail && errorMessage" class="error-state">
+    @if (!isLoading && !isSuccess && !needsEmail && errorMessage) {
+    <div class="error-state">
       <div class="icon-container error">
         <mat-icon>error</mat-icon>
       </div>
@@ -86,5 +97,6 @@
         </button>
       </div>
     </div>
+    }
   </mat-card>
 </div>

@@ -20,10 +20,12 @@
             placeholder="Enter your full name"
             [class.invalid]="f['name'].touched && f['name'].errors"
           />
-          <div class="error-message" *ngIf="f['name'].touched && f['name'].errors?.['required']">
+          @if (f['name'].touched && f['name'].errors?.['required']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             Full name is required
           </div>
+          }
         </div>
 
         <div class="form-group">
@@ -39,35 +41,36 @@
             placeholder="Choose a username"
             [class.invalid]="f['userName'].touched && f['userName'].errors"
           />
-          <div
-            class="error-message"
-            *ngIf="f['userName'].touched && f['userName'].errors?.['required']"
-          >
+          @if (f['userName'].touched && f['userName'].errors?.['required']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             Username is required
           </div>
-          <div
-            class="error-message"
-            *ngIf="f['userName'].touched && f['userName'].errors?.['minlength']"
-          >
+          }
+          @if (f['userName'].touched && f['userName'].errors?.['minlength']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             Username must be at least 3 characters
           </div>
-          <div class="checking-message" *ngIf="f['userName'].pending">
+          }
+          @if (f['userName'].pending) {
+          <div class="checking-message">
             <mat-icon class="checking-icon">hourglass_empty</mat-icon>
             Checking availability...
           </div>
-          <div
-            class="error-message"
-            *ngIf="f['userName'].touched && f['userName'].errors?.['usernameTaken']"
-          >
+          }
+          @if (f['userName'].touched && f['userName'].errors?.['usernameTaken']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             This username is already taken
           </div>
-          <div class="success-message" *ngIf="f['userName'].valid && !f['userName'].pending && f['userName'].value">
+          }
+          @if (f['userName'].valid && !f['userName'].pending && f['userName'].value) {
+          <div class="success-message">
             <mat-icon class="success-icon">check_circle</mat-icon>
             Username is available
           </div>
+          }
         </div>
       </div>
 
@@ -84,26 +87,36 @@
           placeholder="Enter your email"
           [class.invalid]="f['email'].touched && f['email'].errors"
         />
-        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['required']">
+        @if (f['email'].touched && f['email'].errors?.['required']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Email is required
         </div>
-        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['email']">
+        }
+        @if (f['email'].touched && f['email'].errors?.['email']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Please enter a valid email
         </div>
-        <div class="checking-message" *ngIf="f['email'].pending">
+        }
+        @if (f['email'].pending) {
+        <div class="checking-message">
           <mat-icon class="checking-icon">hourglass_empty</mat-icon>
           Checking availability...
         </div>
-        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['emailTaken']">
+        }
+        @if (f['email'].touched && f['email'].errors?.['emailTaken']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           This email is already registered
         </div>
-        <div class="success-message" *ngIf="f['email'].valid && !f['email'].pending && f['email'].value">
+        }
+        @if (f['email'].valid && !f['email'].pending && f['email'].value) {
+        <div class="success-message">
           <mat-icon class="success-icon">check_circle</mat-icon>
           Email is available
         </div>
+        }
       </div>
 
       <div class="form-row">
@@ -120,35 +133,36 @@
             placeholder="01X XXXX XXXX"
             [class.invalid]="f['phoneNumber'].touched && f['phoneNumber'].errors"
           />
-          <div
-            class="error-message"
-            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']"
-          >
+          @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             Phone is required
           </div>
-          <div
-            class="error-message"
-            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']"
-          >
+          }
+          @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             Must be 11 digits starting with 010/011/012/015
           </div>
-          <div class="checking-message" *ngIf="f['phoneNumber'].pending">
+          }
+          @if (f['phoneNumber'].pending) {
+          <div class="checking-message">
             <mat-icon class="checking-icon">hourglass_empty</mat-icon>
             Checking availability...
           </div>
-          <div
-            class="error-message"
-            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['phoneTaken']"
-          >
+          }
+          @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['phoneTaken']) {
+          <div class="error-message">
             <mat-icon class="error-icon">error</mat-icon>
             This phone number is already registered
           </div>
-          <div class="success-message" *ngIf="f['phoneNumber'].valid && !f['phoneNumber'].pending && f['phoneNumber'].value">
+          }
+          @if (f['phoneNumber'].valid && !f['phoneNumber'].pending && f['phoneNumber'].value) {
+          <div class="success-message">
             <mat-icon class="success-icon">check_circle</mat-icon>
             Phone number is available
           </div>
+          }
         </div>
 
         <div class="form-group">
@@ -202,20 +216,18 @@
             <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        <div
-          class="error-message"
-          *ngIf="f['password'].touched && f['password'].errors?.['required']"
-        >
+        @if (f['password'].touched && f['password'].errors?.['required']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Password is required
         </div>
-        <div
-          class="error-message"
-          *ngIf="f['password'].touched && f['password'].errors?.['minlength']"
-        >
+        }
+        @if (f['password'].touched && f['password'].errors?.['minlength']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Password must be at least 6 characters
         </div>
+        }
       </div>
 
       <div class="form-group">
@@ -242,31 +254,33 @@
             <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        <div
-          class="error-message"
-          *ngIf="f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']"
-        >
+        @if (f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Please confirm your password
         </div>
-        <div
-          class="error-message"
-          *ngIf="f['confirmPassword'].touched && registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']"
-        >
+        }
+        @if (f['confirmPassword'].touched && registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']) {
+        <div class="error-message">
           <mat-icon class="error-icon">error</mat-icon>
           Passwords do not match
         </div>
+        }
       </div>
 
       <button type="submit" class="register-button" [disabled]="registerForm.invalid || loading">
-        <span *ngIf="!loading" class="button-content">
+        @if (!loading) {
+        <span class="button-content">
           <mat-icon>how_to_reg</mat-icon>
           <span>Create Account</span>
         </span>
-        <span *ngIf="loading" class="button-content loading">
+        }
+        @if (loading) {
+        <span class="button-content loading">
           <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
           <span>Creating account...</span>
         </span>
+        }
       </button>
 
       <div class="login-prompt">

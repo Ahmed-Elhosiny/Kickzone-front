@@ -52,7 +52,7 @@
 
       <!-- Auth Buttons (Right) -->
       <div class="auth-section d-flex align-items-center gap-3">
-        <ng-container *ngIf="!isAuthenticated; else userMenu">
+        @if (!isAuthenticated) {
           <a
             [routerLink]="['/login']"
             class="btn-auth btn-login"
@@ -67,9 +67,7 @@
           >
             Sign Up
           </a>
-        </ng-container>
-
-        <ng-template #userMenu>
+        } @else {
           <div class="user-menu">
             <a
               [routerLink]="['/profile']"
@@ -86,7 +84,7 @@
               Logout
             </button>
           </div>
-        </ng-template>
+        }
       </div>
     </div>
   </div>
