@@ -31,8 +31,11 @@ export class UserProfileComponent implements OnInit {
   userProfile = signal<IUserProfile | null>(null);
   loading = signal(true);
   editMode = signal(false);
+  emailChangeRequested = signal(false);
   profileForm: FormGroup;
   changePasswordForm: FormGroup;
+  changeUsernameForm: FormGroup;
+  changeEmailForm: FormGroup;
   showCurrentPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
@@ -54,6 +57,14 @@ export class UserProfileComponent implements OnInit {
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
+    });
+
+    this.changeUsernameForm = this.fb.group({
+      newUserName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    });
+
+    this.changeEmailForm = this.fb.group({
+      newEmail: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -235,6 +246,67 @@ export class UserProfileComponent implements OnInit {
           errorMessage = err.error.message;
         }
         this.snackBar.open(errorMessage, 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
+  }
+
+  changeUsername() {
+    if (this.changeUsernameForm.invalid) {
+      this.changeUsernameForm.markAllAsTouched();
+      return;
+    }
+
+    const { newUserName } = this.changeUsernameForm.value;
+
+    this.userService.changeUsername({ newUserName }).subscribe({
+      next: () => {
+        this.snackBar.open('✅ Username changed successfully!', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar'],
+        });
+        this.changeUsernameForm.reset();
+        this.loadUserProfile();
+      },
+      error: (err) => {
+        console.error('Failed to change username:', err);
+        const errorMessage = err?.error?.message || err?.error || 'Failed to change username';
+        this.snackBar.open(`❌ ${errorMessage}`, 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
+  }
+
+  requestEmailChange() {
+    if (this.changeEmailForm.invalid) {
+      this.changeEmailForm.markAllAsTouched();
+      return;
+    }
+
+    const { newEmail } = this.changeEmailForm.value;
+
+    this.userService.requestEmailChange({ newEmail }).subscribe({
+      next: () => {
+        this.emailChangeRequested.set(true);
+        this.snackBar.open('✅ Confirmation email sent! Please check your inbox.', 'Close', {
+          duration: 5000,
+          panelClass: ['success-snackbar'],
+        });
+        this.changeEmailForm.reset();
+        
+        // Reset the flag after 60 seconds
+        setTimeout(() => {
+          this.emailChangeRequested.set(false);
+        }, 60000);
+      },
+      error: (err) => {
+        console.error('Failed to request email change:', err);
+        const errorMessage = err?.error?.message || err?.error || 'Failed to request email change';
+        this.snackBar.open(`❌ ${errorMessage}`, 'Close', {
           duration: 3000,
           panelClass: ['error-snackbar'],
         });
