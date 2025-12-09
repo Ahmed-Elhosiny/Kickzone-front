@@ -231,6 +231,11 @@
         <span>Already have an account?</span>
         <a [routerLink]="['/login']" class="login-link">Sign In</a>
       </div>
+
+      <div class="login-prompt">
+        <span>Didn't receive verification email?</span>
+        <a [routerLink]="['/resend-verification']" class="login-link">Resend</a>
+      </div>
     </form>
   </div>
 </div>
