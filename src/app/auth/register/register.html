@@ -53,6 +53,21 @@
             <mat-icon class="error-icon">error</mat-icon>
             Username must be at least 3 characters
           </div>
+          <div class="checking-message" *ngIf="f['userName'].pending">
+            <mat-icon class="checking-icon">hourglass_empty</mat-icon>
+            Checking availability...
+          </div>
+          <div
+            class="error-message"
+            *ngIf="f['userName'].touched && f['userName'].errors?.['usernameTaken']"
+          >
+            <mat-icon class="error-icon">error</mat-icon>
+            This username is already taken
+          </div>
+          <div class="success-message" *ngIf="f['userName'].valid && !f['userName'].pending && f['userName'].value">
+            <mat-icon class="success-icon">check_circle</mat-icon>
+            Username is available
+          </div>
         </div>
       </div>
 
@@ -76,6 +91,18 @@
         <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['email']">
           <mat-icon class="error-icon">error</mat-icon>
           Please enter a valid email
+        </div>
+        <div class="checking-message" *ngIf="f['email'].pending">
+          <mat-icon class="checking-icon">hourglass_empty</mat-icon>
+          Checking availability...
+        </div>
+        <div class="error-message" *ngIf="f['email'].touched && f['email'].errors?.['emailTaken']">
+          <mat-icon class="error-icon">error</mat-icon>
+          This email is already registered
+        </div>
+        <div class="success-message" *ngIf="f['email'].valid && !f['email'].pending && f['email'].value">
+          <mat-icon class="success-icon">check_circle</mat-icon>
+          Email is available
         </div>
       </div>
 
@@ -106,6 +133,21 @@
           >
             <mat-icon class="error-icon">error</mat-icon>
             Must be 11 digits starting with 010/011/012/015
+          </div>
+          <div class="checking-message" *ngIf="f['phoneNumber'].pending">
+            <mat-icon class="checking-icon">hourglass_empty</mat-icon>
+            Checking availability...
+          </div>
+          <div
+            class="error-message"
+            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['phoneTaken']"
+          >
+            <mat-icon class="error-icon">error</mat-icon>
+            This phone number is already registered
+          </div>
+          <div class="success-message" *ngIf="f['phoneNumber'].valid && !f['phoneNumber'].pending && f['phoneNumber'].value">
+            <mat-icon class="success-icon">check_circle</mat-icon>
+            Phone number is available
           </div>
         </div>
 
