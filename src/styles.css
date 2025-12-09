@@ -1,4 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Global Snackbar Styles */
+.success-snackbar {
+  background: #48bb78 !important;
+  color: white !important;
+}
+
+.error-snackbar {
+  background: #f56565 !important;
+  color: white !important;
+}
+
+.info-snackbar {
+  background: #4299e1 !important;
+  color: white !important;
+}
+
+.warning-snackbar {
+  background: #ed8936 !important;
+  color: white !important;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
