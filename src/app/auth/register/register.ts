@@ -12,7 +12,7 @@ import {
 import { AuthService } from '../auth';
 import { IRegister } from '../../Interfaces/iregister';
 import { Router, RouterLink } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,7 @@ import { map, catchError, debounceTime, distinctUntilChanged, switchMap } from '
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
+    MatSnackBarModule,
   ],
 })
 export class RegisterComponent {
