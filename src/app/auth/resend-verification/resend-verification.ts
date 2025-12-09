@@ -56,12 +56,13 @@ export class ResendVerificationComponent {
       next: () => {
         this.isLoading.set(false);
         this.snackBar.open(
-          '✅ Verification email sent! Please check your inbox.',
-          'Close',
+          'Verification email sent! Check your inbox',
+          '×',
           {
-            duration: 7000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
+            duration: 6000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
           }
         );
         this.resendForm.reset();
@@ -69,10 +70,11 @@ export class ResendVerificationComponent {
       error: (err) => {
         this.isLoading.set(false);
         const errorMessage = err.error?.message || err.error || 'Failed to send verification email';
-        this.snackBar.open(`❌ ${errorMessage}`, 'Close', {
+        this.snackBar.open(errorMessage, '×', {
           duration: 5000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
         });
       }
     });

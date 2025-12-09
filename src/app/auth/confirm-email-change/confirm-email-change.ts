@@ -62,20 +62,22 @@ export class ConfirmEmailChangeComponent implements OnInit {
       next: () => {
         this.isLoading = false;
         this.isSuccess = true;
-        this.snackBar.open('✅ Email changed successfully! Please login with your new email.', 'Close', {
-          duration: 7000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
+        this.snackBar.open('Email changed! Login with your new email', '×', {
+          duration: 6000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
         });
       },
       error: (err) => {
         this.isLoading = false;
         this.isSuccess = false;
         this.errorMessage = err.error?.message || err.error || 'Failed to confirm email change. The link may be invalid or expired.';
-        this.snackBar.open(`❌ ${this.errorMessage}`, 'Close', {
+        this.snackBar.open(this.errorMessage, '×', {
           duration: 7000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
         });
       }
     });

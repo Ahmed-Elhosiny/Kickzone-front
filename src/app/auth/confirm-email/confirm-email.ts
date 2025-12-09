@@ -133,10 +133,11 @@ export class ConfirmEmailComponent implements OnInit {
             localStorage.removeItem('pending_email_confirmation');
           }
           
-          this.snackBar.open('✅ Email confirmed successfully!', 'Close', {
+          this.snackBar.open('Email verified successfully!', '×', {
             duration: 5000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
           });
         }, 0);
       },
@@ -151,10 +152,11 @@ export class ConfirmEmailComponent implements OnInit {
           this.errorMessage = err.error?.message || err.error || 'Failed to confirm email. The link may be invalid or expired.';
           this.cdr.markForCheck();
           
-          this.snackBar.open(`❌ ${this.errorMessage}`, 'Close', {
+          this.snackBar.open(this.errorMessage, '×', {
             duration: 7000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
           });
         }, 0);
       }

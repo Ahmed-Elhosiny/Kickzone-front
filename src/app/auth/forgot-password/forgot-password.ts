@@ -51,7 +51,7 @@ export class ForgotPasswordComponent {
       next: () => {
         this.loading = false;
         this.emailSent = true;
-        this.snackBar.open('Password reset instructions sent to your email!', 'Close', {
+        this.snackBar.open('Reset link sent! Check your email inbox', '×', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -67,7 +67,7 @@ export class ForgotPasswordComponent {
           errorMessage = err.error.message;
         }
         
-        this.snackBar.open(errorMessage, 'Close', {
+        this.snackBar.open(errorMessage, '×', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',

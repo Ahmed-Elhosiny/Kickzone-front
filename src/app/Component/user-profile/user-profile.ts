@@ -157,7 +157,7 @@ export class UserProfileComponent implements OnInit {
           errorMessage = err.error.message;
         }
         
-        this.snackBar.open(errorMessage, 'Close', {
+        this.snackBar.open(errorMessage, '×', {
           duration: 8000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -210,8 +210,10 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.updateProfile(updatedData).subscribe({
       next: () => {
-        this.snackBar.open('Profile updated successfully!', 'Close', {
-          duration: 3000,
+        this.snackBar.open('Profile updated successfully!', '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         this.editMode.set(false);
@@ -219,8 +221,10 @@ export class UserProfileComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to update profile:', err);
-        this.snackBar.open('Failed to update profile', 'Close', {
-          duration: 3000,
+        this.snackBar.open('Failed to update profile', '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
       },
@@ -237,8 +241,10 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.changePassword({ currentPassword, newPassword }).subscribe({
       next: () => {
-        this.snackBar.open('Password changed successfully!', 'Close', {
-          duration: 3000,
+        this.snackBar.open('Password changed successfully!', '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         this.changePasswordForm.reset();
@@ -249,8 +255,10 @@ export class UserProfileComponent implements OnInit {
         if (err?.error?.message) {
           errorMessage = err.error.message;
         }
-        this.snackBar.open(errorMessage, 'Close', {
-          duration: 3000,
+        this.snackBar.open(errorMessage, '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
       },
@@ -267,8 +275,10 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.changeUsername({ newUserName }).subscribe({
       next: () => {
-        this.snackBar.open('✅ Username changed successfully!', 'Close', {
-          duration: 3000,
+        this.snackBar.open('Username changed successfully!', '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         this.changeUsernameForm.reset();
@@ -277,8 +287,10 @@ export class UserProfileComponent implements OnInit {
       error: (err) => {
         console.error('Failed to change username:', err);
         const errorMessage = err?.error?.message || err?.error || 'Failed to change username';
-        this.snackBar.open(`❌ ${errorMessage}`, 'Close', {
-          duration: 3000,
+        this.snackBar.open(errorMessage, '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
       },
@@ -296,8 +308,10 @@ export class UserProfileComponent implements OnInit {
     this.userService.requestEmailChange({ newEmail }).subscribe({
       next: () => {
         this.emailChangeRequested.set(true);
-        this.snackBar.open('✅ Confirmation email sent! Please check your inbox.', 'Close', {
+        this.snackBar.open('Confirmation email sent! Check your inbox', '×', {
           duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         this.changeEmailForm.reset();
@@ -310,8 +324,10 @@ export class UserProfileComponent implements OnInit {
       error: (err) => {
         console.error('Failed to request email change:', err);
         const errorMessage = err?.error?.message || err?.error || 'Failed to request email change';
-        this.snackBar.open(`❌ ${errorMessage}`, 'Close', {
-          duration: 3000,
+        this.snackBar.open(errorMessage, '×', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
       },
