@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserService } from '../../services/user/user.service';
 import { IConfirmEmailChange } from '../../Interfaces/iauth-extended';
 
@@ -17,7 +17,8 @@ import { IConfirmEmailChange } from '../../Interfaces/iauth-extended';
     MatCardModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSnackBarModule
   ],
   templateUrl: './confirm-email-change.html',
   styleUrl: './confirm-email-change.css'
