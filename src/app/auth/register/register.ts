@@ -89,10 +89,15 @@ export class RegisterComponent {
         switchMap(email => 
           this.authService.checkAvailability({ email }).pipe(
             map(response => {
-              // Backend returns true if available, false if taken
-              return response.isAvailable ? null : { emailTaken: true };
+              console.log('Email availability response:', response);
+              // Backend returns: { emailAvailable: true/false }
+              const isAvailable = response?.emailAvailable === true;
+              return isAvailable ? null : { emailTaken: true };
             }),
-            catchError(() => of(null)) // If error, don't block registration
+            catchError((err) => {
+              console.error('Email availability check error:', err);
+              return of(null); // If error, don't block registration
+            })
           )
         )
       );
@@ -112,9 +117,15 @@ export class RegisterComponent {
         switchMap(username => 
           this.authService.checkAvailability({ username }).pipe(
             map(response => {
-              return response.isAvailable ? null : { usernameTaken: true };
+              console.log('Username availability response:', response);
+              // Backend returns: { usernameAvailable: true/false }
+              const isAvailable = response?.usernameAvailable === true;
+              return isAvailable ? null : { usernameTaken: true };
             }),
-            catchError(() => of(null))
+            catchError((err) => {
+              console.error('Username availability check error:', err);
+              return of(null);
+            })
           )
         )
       );
@@ -134,9 +145,15 @@ export class RegisterComponent {
         switchMap(phone => 
           this.authService.checkAvailability({ phone }).pipe(
             map(response => {
-              return response.isAvailable ? null : { phoneTaken: true };
+              console.log('Phone availability response:', response);
+              // Backend returns: { phoneAvailable: true/false }
+              const isAvailable = response?.phoneAvailable === true;
+              return isAvailable ? null : { phoneTaken: true };
             }),
-            catchError(() => of(null))
+            catchError((err) => {
+              console.error('Phone availability check error:', err);
+              return of(null);
+            })
           )
         )
       );

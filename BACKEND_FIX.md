@@ -64,26 +64,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 ## 2. Availability Check Endpoint Response Format
 
-The `/api/Availability` endpoint should return a response in this format:
+The `/api/Availability` endpoint returns a response in this format:
 
 ```json
 {
-  "isAvailable": true
+  "emailAvailable": true,
+  "usernameAvailable": true,
+  "phoneAvailable": true
 }
 ```
 
-Or when NOT available:
+### Example Requests:
+- **GET** `/api/Availability?email=test@example.com` → Returns `{ "emailAvailable": false }` if email exists
+- **GET** `/api/Availability?username=johndoe` → Returns `{ "usernameAvailable": false }` if username exists
+- **GET** `/api/Availability?phone=01012345678` → Returns `{ "phoneAvailable": false }` if phone exists
+- **GET** `/api/Availability?email=test@example.com&username=johndoe&phone=01012345678` → Returns all three fields
 
-```json
-{
-  "isAvailable": false
-}
-```
-
-### Expected Behavior:
-- **GET** `/api/Availability?email=test@example.com` → Returns `{ "isAvailable": false }` if email exists
-- **GET** `/api/Availability?username=johndoe` → Returns `{ "isAvailable": false }` if username exists
-- **GET** `/api/Availability?phone=01012345678` → Returns `{ "isAvailable": false }` if phone exists
-
-The frontend async validators depend on this response format to show real-time availability feedback during registration.
+The frontend async validators use this response format to show real-time availability feedback during registration.
 3. Then access the profile page
