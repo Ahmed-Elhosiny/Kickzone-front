@@ -9,11 +9,12 @@ import { ConfirmEmailChangeComponent } from './auth/confirm-email-change/confirm
 import { ResendVerificationComponent } from './auth/resend-verification/resend-verification';
 import { Result } from './Component/result/result';
 import { AuthGuard } from './auth/auth-guard';
+import { GuestGuard } from './auth/guest-guard';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'confirm-email', component: ConfirmEmailComponent },
