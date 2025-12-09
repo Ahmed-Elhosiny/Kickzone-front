@@ -18,7 +18,8 @@
 
 .loading-state,
 .success-state,
-.error-state {
+.error-state,
+.email-input-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +28,8 @@
 
 .loading-state h2,
 .success-state h2,
-.error-state h2 {
+.error-state h2,
+.email-input-state h2 {
   margin: 0;
   font-size: 28px;
   font-weight: 600;
@@ -58,6 +60,10 @@
   background-color: #ffebee;
 }
 
+.icon-container.info {
+  background-color: #e3f2fd;
+}
+
 .icon-container mat-icon {
   font-size: 48px;
   width: 48px;
@@ -72,8 +78,13 @@
   color: #f44336;
 }
 
+.email-input-state .icon-container mat-icon {
+  color: #2196f3;
+}
+
 .success-state p,
-.error-state p {
+.error-state p,
+.email-input-state p {
   color: #666;
   font-size: 16px;
   margin: 0;
@@ -122,6 +133,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Form styles */
+.email-input-state form {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.email-input-state mat-form-field {
+  margin-bottom: 10px;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .confirm-email-container {
@@ -134,7 +159,8 @@
 
   .loading-state h2,
   .success-state h2,
-  .error-state h2 {
+  .error-state h2,
+  .email-input-state h2 {
     font-size: 24px;
   }
 
