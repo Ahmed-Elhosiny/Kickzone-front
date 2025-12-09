@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { AuthService } from '../../auth/auth';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,7 @@ import { IUserProfile } from '../../iuser';
     MatButtonModule,
     MatTabsModule,
     MatCardModule,
+    MatSnackBarModule,
   ],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
@@ -57,7 +58,7 @@ export class UserProfileComponent implements OnInit {
       currentPassword: ['', [Validators.required, Validators.minLength(6)]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-    });
+    }, { validators: this.passwordMatchValidator });
 
     this.changeUsernameForm = this.fb.group({
       newUserName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -66,6 +67,17 @@ export class UserProfileComponent implements OnInit {
     this.changeEmailForm = this.fb.group({
       newEmail: ['', [Validators.required, Validators.email]],
     });
+  }
+
+  passwordMatchValidator(control: any): { [key: string]: boolean } | null {
+    const newPassword = control.get('newPassword');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (!newPassword || !confirmPassword) {
+      return null;
+    }
+
+    return newPassword.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
   ngOnInit() {
@@ -221,15 +233,7 @@ export class UserProfileComponent implements OnInit {
       return;
     }
 
-    const { currentPassword, newPassword, confirmPassword } = this.changePasswordForm.value;
-
-    if (newPassword !== confirmPassword) {
-      this.snackBar.open('Passwords do not match', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar'],
-      });
-      return;
-    }
+    const { currentPassword, newPassword } = this.changePasswordForm.value;
 
     this.userService.changePassword({ currentPassword, newPassword }).subscribe({
       next: () => {
