@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../auth';
 import { IConfirmEmail } from '../../Interfaces/iauth-extended';
 
@@ -23,7 +23,8 @@ import { IConfirmEmail } from '../../Interfaces/iauth-extended';
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
   templateUrl: './confirm-email.html',
   styleUrl: './confirm-email.css'
