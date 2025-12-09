@@ -1,0 +1,157 @@
+.resend-verification-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.resend-verification-card {
+  max-width: 450px;
+  width: 100%;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header-icon {
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.card-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.resend-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.submit-button {
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.submit-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.submit-button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.form-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.back-button {
+  color: #667eea;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.back-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.info-box {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.info-box mat-icon {
+  color: #1976d2;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #1565c0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .resend-verification-container {
+    padding: 10px;
+  }
+
+  .resend-verification-card {
+    padding: 30px 20px;
+  }
+
+  .card-header h2 {
+    font-size: 24px;
+  }
+
+  .header-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .submit-button {
+    height: 48px;
+    font-size: 15px;
+  }
+}

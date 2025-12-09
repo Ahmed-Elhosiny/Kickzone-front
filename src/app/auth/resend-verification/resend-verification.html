@@ -1,0 +1,58 @@
+<div class="resend-verification-container">
+  <mat-card class="resend-verification-card">
+    <div class="card-header">
+      <mat-icon class="header-icon">mark_email_unread</mat-icon>
+      <h2>Resend Verification Email</h2>
+      <p class="subtitle">Enter your email address to receive a new verification link.</p>
+    </div>
+
+    <form [formGroup]="resendForm" (ngSubmit)="onSubmit()" class="resend-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email Address</mat-label>
+        <input 
+          matInput 
+          type="email" 
+          formControlName="email"
+          placeholder="your@email.com"
+          autocomplete="email">
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="resendForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="resendForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
+        [disabled]="isLoading() || resendForm.invalid"
+        class="submit-button">
+        <mat-icon *ngIf="!isLoading()">send</mat-icon>
+        <mat-icon *ngIf="isLoading()" class="spinning">sync</mat-icon>
+        {{ isLoading() ? 'Sending...' : 'Send Verification Email' }}
+      </button>
+
+      <div class="form-footer">
+        <button 
+          mat-button 
+          type="button"
+          (click)="navigateToLogin()"
+          class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Login
+        </button>
+      </div>
+    </form>
+
+    <div class="info-box">
+      <mat-icon>info</mat-icon>
+      <p>
+        If you don't receive the email within a few minutes, please check your spam folder.
+        Make sure the email address is correct.
+      </p>
+    </div>
+  </mat-card>
+</div>
