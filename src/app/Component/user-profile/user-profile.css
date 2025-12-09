@@ -276,6 +276,46 @@
   opacity: 0.6;
 }
 
+.account-form {
+  padding: 2rem;
+}
+
+.current-value {
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0;
+  color: #2d3748;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.info-box {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #e6fffa;
+  border-left: 4px solid #38b2ac;
+  border-radius: 8px;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.info-box mat-icon {
+  color: #319795;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #234e52;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 .profile-actions {
   display: flex;
   justify-content: center;
