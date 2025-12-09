@@ -1,10 +1,44 @@
 <div class="confirm-email-container">
   <mat-card class="confirm-email-card">
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="loading-state">
+    <div *ngIf="isLoading && !isSuccess" class="loading-state">
       <mat-spinner diameter="60"></mat-spinner>
       <h2>Confirming Your Email...</h2>
       <p>Please wait while we verify your email address.</p>
+    </div>
+
+    <!-- Email Input State -->
+    <div *ngIf="needsEmail && !isLoading" class="email-input-state">
+      <div class="icon-container info">
+        <mat-icon>email</mat-icon>
+      </div>
+      <h2>Email Confirmation</h2>
+      <p>Please enter your email address to complete the verification process.</p>
+      
+      <form [formGroup]="emailForm" (ngSubmit)="submitEmailAndConfirm()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="your@email.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="emailForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="emailForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>check_circle</mat-icon>
+            Confirm Email
+          </button>
+          <button mat-stroked-button type="button" (click)="navigateToHome()">
+            <mat-icon>home</mat-icon>
+            Back to Home
+          </button>
+        </div>
+      </form>
     </div>
 
     <!-- Success State -->
@@ -29,7 +63,7 @@
     </div>
 
     <!-- Error State -->
-    <div *ngIf="!isLoading && !isSuccess" class="error-state">
+    <div *ngIf="!isLoading && !isSuccess && !needsEmail && errorMessage" class="error-state">
       <div class="icon-container error">
         <mat-icon>error</mat-icon>
       </div>
@@ -38,7 +72,11 @@
       <p class="subtitle">The confirmation link may be invalid or expired.</p>
       
       <div class="action-buttons">
-        <button mat-raised-button color="warn" (click)="navigateToLogin()">
+        <button mat-raised-button color="primary" (click)="navigateToResendVerification()">
+          <mat-icon>email</mat-icon>
+          Resend Verification Email
+        </button>
+        <button mat-stroked-button (click)="navigateToLogin()">
           <mat-icon>login</mat-icon>
           Go to Login
         </button>
