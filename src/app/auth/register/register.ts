@@ -176,15 +176,21 @@ export class RegisterComponent {
       next: (res) => {
         this.loading = false;
         console.log('Registration successful:', res);
-        this.snackBar.open('Registration successful! Please login.', 'Close', {
-          duration: 3000,
+        
+        // Store email for email confirmation process
+        if (typeof window !== 'undefined' && localStorage) {
+          localStorage.setItem('pending_email_confirmation', user.email);
+        }
+        
+        this.snackBar.open('Registration successful! Please check your email to confirm your account.', 'Close', {
+          duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         setTimeout(() => {
           this.router.navigate(['/login']);
-        }, 1500);
+        }, 2000);
       },
       error: (err) => {
         this.loading = false;
