@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../auth';
 import { ISendConfirmationRequest } from '../../Interfaces/iauth-extended';
 
@@ -21,7 +21,8 @@ import { ISendConfirmationRequest } from '../../Interfaces/iauth-extended';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './resend-verification.html',
   styleUrl: './resend-verification.css'
