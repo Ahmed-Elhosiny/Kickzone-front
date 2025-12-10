@@ -10,6 +10,8 @@ import { ResendVerificationComponent } from './auth/resend-verification/resend-v
 import { Result } from './Component/result/result';
 import { AuthGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
+import { FieldDetails } from './Component/field-details/field-details';
+
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,10 +23,12 @@ export const routes: Routes = [
   { path: 'confirm-email-change', component: ConfirmEmailChangeComponent },
   { path: 'resend-verification', component: ResendVerificationComponent },
   { path: 'result', component: Result },
-  { 
-    path: 'profile', 
-    loadComponent: () => import('./Component/user-profile/user-profile').then(m => m.UserProfileComponent),
-    canActivate: [AuthGuard]
+  { path: 'field/:id', component: FieldDetails },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./Component/user-profile/user-profile').then((m) => m.UserProfileComponent),
+    canActivate: [AuthGuard],
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

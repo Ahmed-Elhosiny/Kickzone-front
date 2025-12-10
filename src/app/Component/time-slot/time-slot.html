@@ -1,0 +1,98 @@
+<div class="card shadow-sm time-slot-card">
+  <div class="card-header bg-primary text-white text-center">
+    <h2 class="h5 mb-0">Book Online at {{ fieldSignal().name }}</h2>
+  </div>
+
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+      <button
+        (click)="changeDay(-1)"
+        aria-label="Previous Day"
+        class="btn btn-primary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale"
+      >
+        <i class="bi bi-chevron-left"></i>
+        Previous
+      </button>
+
+      <span class="fw-bold text-center h4 mb-0">
+        {{ selectedDate() | date : 'EEE, MMM d' }}
+      </span>
+      <button
+        (click)="changeDay(1)"
+        aria-label="Next Day"
+        class="btn btn-primary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale"
+      >
+        Next
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-center gap-2 mb-4">
+      <button
+        (click)="setPeriod('Morning')"
+        class="btn"
+        [class.btn-primary]="selectedPeriod() === 'Morning'"
+        [class.btn-outline-primary]="selectedPeriod() !== 'Morning'"
+      >
+        Morning
+      </button>
+      <button
+        (click)="setPeriod('Afternoon')"
+        class="btn"
+        [class.btn-primary]="selectedPeriod() === 'Afternoon'"
+        [class.btn-outline-primary]="selectedPeriod() !== 'Afternoon'"
+      >
+        Afternoon
+      </button>
+    </div>
+
+    <hr class="my-3" />
+
+    @if (isLoading()) {
+    <div class="alert alert-info text-center p-3">
+      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Loading available slots for {{ selectedDate() | date : 'fullDate' }}...
+    </div>
+    } @if (!isLoading()) {
+    <div class="schedule-container p-3">
+     
+      <div class="slots-list d-flex flex-wrap gap-3 justify-content-center">
+        @if (filteredSlots().length === 0) {
+        <div class="alert alert-warning w-100 text-center">
+          No {{ selectedPeriod() }} Hours available for this day.
+        </div>
+        } @else { @for (slot of filteredSlots(); track slot.id) {
+        <button
+          [disabled]="!slot.isAvailable"
+          (click)="bookTimeSlot(slot)"
+          class="time-slot-box text-center p-2 rounded border"
+          [style.background]="slot.isAvailable ? 'green' : 'gray'"
+          [style.color]="'white'"
+        >
+          <div class="fw-bold time" [class.text-dark]="!slot.isAvailable">
+            {{ getStartTime(slot) }}
+          </div>
+
+          <div class="status my-1 small">
+            @if (!slot.isAvailable) {
+            <strong class="text-danger">BOOKED</strong>
+            } @else {
+            <div class="fw-bold">
+              {{ fieldSignal().pricePerHour | currency : 'EGP' : 'symbol' : '1.0-2' }}
+            </div>
+            }
+          </div>
+
+          <div
+            class="duration small"
+            [ngClass]="{ 'text-white': slot.isAvailable, 'text-muted': !slot.isAvailable }"
+          >
+            60 min
+          </div>
+        </button>
+        } }
+      </div>
+    </div>
+    }
+  </div>
+</div>
