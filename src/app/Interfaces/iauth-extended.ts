@@ -4,7 +4,7 @@ export interface ISendConfirmationRequest {
 }
 
 export interface IConfirmEmail {
-  email: string;
+  UserId: number;
   token: string;
 }
 

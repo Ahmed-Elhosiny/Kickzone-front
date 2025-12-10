@@ -39,49 +39,29 @@ export class ConfirmEmailComponent implements OnInit {
 
   isLoading = true;
   isSuccess = false;
-  needsEmail = false;
+  needsUserId = false;
   errorMessage = '';
-  email = '';
+  userId: number | null = null;
   token = '';
-  emailForm: FormGroup;
+  userIdForm: FormGroup;
 
   constructor() {
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+    this.userIdForm = this.fb.group({
+      userId: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
     });
   }
 
   ngOnInit(): void {
-    // Get email/userId and token from query parameters using snapshot to avoid re-triggering
+    // Get userId and token from query parameters
     const params = this.route.snapshot.queryParams;
     
     console.log('Query params:', params);
     
-    // Backend sends userId, but we need email for the API
-    // Check if email is provided, otherwise check for userId
-    this.email = params['email'] || '';
-    const userId = params['userId'] || '';
+    const userIdParam = params['userId'] || params['UserId'] || '';
+    this.userId = userIdParam ? parseInt(userIdParam, 10) : null;
     this.token = params['token'] || '';
 
-    console.log('Extracted - Email:', this.email, 'UserId:', userId, 'Token:', this.token ? 'present' : 'missing');
-
-    // If we have userId but no email, we need to get it from localStorage or ask user
-    // This happens when the backend sends userId in the confirmation link
-    if (!this.email && userId) {
-      // Try to get email from localStorage (saved during registration)
-      const registrationEmail = this.getStoredRegistrationEmail();
-      console.log('Registration email from localStorage:', registrationEmail);
-      
-      if (registrationEmail) {
-        this.email = registrationEmail;
-      } else {
-        // Ask user to provide their email
-        console.log('No email found, showing email input form');
-        this.isLoading = false;
-        this.needsEmail = true;
-        return;
-      }
-    }
+    console.log('Extracted - UserId:', this.userId, 'Token:', this.token ? 'present' : 'missing');
 
     if (!this.token) {
       console.log('No token found');
@@ -90,10 +70,10 @@ export class ConfirmEmailComponent implements OnInit {
       return;
     }
 
-    if (!this.email) {
-      console.log('No email found after all checks');
+    if (!this.userId || isNaN(this.userId)) {
+      console.log('No valid userId found');
       this.isLoading = false;
-      this.needsEmail = true;
+      this.needsUserId = true;
       return;
     }
 
@@ -101,16 +81,15 @@ export class ConfirmEmailComponent implements OnInit {
     this.confirmEmail();
   }
 
-  private getStoredRegistrationEmail(): string | null {
-    if (typeof window !== 'undefined' && localStorage) {
-      return localStorage.getItem('pending_email_confirmation');
-    }
-    return null;
-  }
-
   confirmEmail(): void {
+    if (!this.userId) {
+      this.errorMessage = 'User ID is required for email confirmation.';
+      this.isLoading = false;
+      return;
+    }
+
     const data: IConfirmEmail = {
-      email: this.email,
+      UserId: this.userId,
       token: this.token
     };
 
@@ -124,14 +103,9 @@ export class ConfirmEmailComponent implements OnInit {
         setTimeout(() => {
           this.isLoading = false;
           this.isSuccess = true;
-          this.needsEmail = false;
+          this.needsUserId = false;
           this.errorMessage = '';
           this.cdr.markForCheck();
-          
-          // Clear stored email after successful confirmation
-          if (typeof window !== 'undefined' && localStorage) {
-            localStorage.removeItem('pending_email_confirmation');
-          }
           
           this.snackBar.open('Email verified successfully!', '×', {
             duration: 5000,
@@ -148,7 +122,7 @@ export class ConfirmEmailComponent implements OnInit {
         setTimeout(() => {
           this.isLoading = false;
           this.isSuccess = false;
-          this.needsEmail = false;
+          this.needsUserId = false;
           this.errorMessage = err.error?.message || err.error || 'Failed to confirm email. The link may be invalid or expired.';
           this.cdr.markForCheck();
           
@@ -175,15 +149,15 @@ export class ConfirmEmailComponent implements OnInit {
     this.router.navigate(['/resend-verification']);
   }
 
-  submitEmailAndConfirm(): void {
-    if (this.emailForm.invalid) {
-      this.emailForm.markAllAsTouched();
+  submitUserIdAndConfirm(): void {
+    if (this.userIdForm.invalid) {
+      this.userIdForm.markAllAsTouched();
       return;
     }
 
     // Set states immediately before making API call
-    this.email = this.emailForm.value.email;
-    this.needsEmail = false;
+    this.userId = parseInt(this.userIdForm.value.userId, 10);
+    this.needsUserId = false;
     this.isLoading = true;
     this.isSuccess = false;
     this.errorMessage = '';

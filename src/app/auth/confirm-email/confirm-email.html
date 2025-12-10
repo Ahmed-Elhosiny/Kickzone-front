@@ -9,28 +9,28 @@
     </div>
     }
 
-    <!-- Email Input State -->
-    @if (needsEmail && !isLoading) {
+    <!-- User ID Input State -->
+    @if (needsUserId && !isLoading) {
     <div class="email-input-state">
       <div class="icon-container info">
-        <mat-icon>email</mat-icon>
+        <mat-icon>badge</mat-icon>
       </div>
       <h2>Email Confirmation</h2>
-      <p>Please enter your email address to complete the verification process.</p>
+      <p>Please enter your User ID to complete the verification process.</p>
       
-      <form [formGroup]="emailForm" (ngSubmit)="submitEmailAndConfirm()">
+      <form [formGroup]="userIdForm" (ngSubmit)="submitUserIdAndConfirm()">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email Address</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="your@email.com">
-          <mat-icon matPrefix>email</mat-icon>
-          @if (emailForm.get('email')?.hasError('required')) {
+          <mat-label>User ID</mat-label>
+          <input matInput type="text" formControlName="userId" placeholder="47">
+          <mat-icon matPrefix>badge</mat-icon>
+          @if (userIdForm.get('userId')?.hasError('required')) {
           <mat-error>
-            Email is required
+            User ID is required
           </mat-error>
           }
-          @if (emailForm.get('email')?.hasError('email')) {
+          @if (userIdForm.get('userId')?.hasError('pattern')) {
           <mat-error>
-            Please enter a valid email
+            Please enter a valid numeric User ID
           </mat-error>
           }
         </mat-form-field>
@@ -73,7 +73,7 @@
     }
 
     <!-- Error State -->
-    @if (!isLoading && !isSuccess && !needsEmail && errorMessage) {
+    @if (!isLoading && !isSuccess && !needsUserId && errorMessage) {
     <div class="error-state">
       <div class="icon-container error">
         <mat-icon>error</mat-icon>
