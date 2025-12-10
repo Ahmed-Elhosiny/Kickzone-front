@@ -46,13 +46,13 @@ export class AdminPanelComponent implements OnInit {
 
   deleteCity(city: ICity) {
     if (city.fieldsCount === 0) {
-      // هنا تضيف منطق الحذف لو حبيت
-    }
+    this.cityService.deleteCity(city.id).subscribe(() => this.loadCities());
+  }
   }
 
   deleteCategory(category: ICategory) {
     if (category.fieldsCount === 0) {
-      // منطق الحذف هنا
+    this.categoryService.deleteCategory(category.id).subscribe(() => this.loadCategories());
     }
   }
 

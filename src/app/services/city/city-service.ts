@@ -29,4 +29,7 @@ export class CityService {
       })
     );
   }
+  deleteCity(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
 }

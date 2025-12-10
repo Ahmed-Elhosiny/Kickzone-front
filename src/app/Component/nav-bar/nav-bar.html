@@ -48,8 +48,8 @@
             Fields
           </a>
         </li>
+        @if (authService.getUserRole() === 'Admin') {
         <li class="nav-item mx-lg-3">
-         <!-- @if (authService.getUserRole() === 'Admin') { -->
         <a
           [routerLink]="['/admin']"
           class="btn-auth btn-admin"
@@ -60,6 +60,7 @@
         </a>
       <!-- } -->
         </li>
+      }
       </ul>
 
       <!-- Auth Buttons (Right) -->
