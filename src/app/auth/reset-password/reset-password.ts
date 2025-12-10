@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -13,6 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reset-password',
@@ -37,6 +38,7 @@ export class ResetPasswordComponent implements OnInit {
   email: string = '';
   token: string = '';
   private snackBar = inject(MatSnackBar);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -89,6 +91,7 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.loading = true;
+    this.cdr.detectChanges();
     const { newPassword } = this.resetPasswordForm.value;
 
     this.authService
@@ -97,19 +100,22 @@ export class ResetPasswordComponent implements OnInit {
         token: this.token,
         newPassword,
       })
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: () => {
-          this.loading = false;
           this.resetSuccess = true;
-          this.snackBar.open('Password updated! You can now login', '×', {
-            duration: 5000,
+          this.cdr.detectChanges();
+          this.snackBar.open('✓ Password updated! You can now login', '×', {
+            duration: 4000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
             panelClass: ['success-snackbar'],
           });
         },
         error: (err) => {
-          this.loading = false;
           console.error('Reset password error:', err);
 
           let errorMessage = 'Failed to reset password. Please try again.';

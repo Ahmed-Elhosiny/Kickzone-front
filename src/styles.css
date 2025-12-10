@@ -12,22 +12,22 @@ body {
   box-sizing: border-box;
 }
 
-/* Global Snackbar Styles - Modern UI/UX */
+/* Global Snackbar Styles - Simple & Friendly */
 .success-snackbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: #10b981 !important;
   color: white !important;
-  font-weight: 500 !important;
-  font-size: 15px !important;
-  padding: 16px 24px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
-  backdrop-filter: blur(10px) !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+  letter-spacing: 0.3px !important;
 }
 
 .success-snackbar .mat-mdc-snack-bar-label {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 .success-snackbar::before {
@@ -35,29 +35,29 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.25);
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .error-snackbar {
-  background: linear-gradient(135deg, #f56565 0%, #c53030 100%) !important;
+  background: #ef4444 !important;
   color: white !important;
-  font-weight: 500 !important;
-  font-size: 15px !important;
-  padding: 16px 24px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(245, 101, 101, 0.4) !important;
-  backdrop-filter: blur(10px) !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+  letter-spacing: 0.3px !important;
 }
 
 .error-snackbar .mat-mdc-snack-bar-label {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 .error-snackbar::before {
@@ -65,29 +65,29 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.25);
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  font-weight: bold;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .info-snackbar {
-  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%) !important;
+  background: #3b82f6 !important;
   color: white !important;
-  font-weight: 500 !important;
-  font-size: 15px !important;
-  padding: 16px 24px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(66, 153, 225, 0.4) !important;
-  backdrop-filter: blur(10px) !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+  letter-spacing: 0.3px !important;
 }
 
 .info-snackbar .mat-mdc-snack-bar-label {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 .info-snackbar::before {
@@ -95,29 +95,29 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.25);
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .warning-snackbar {
-  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%) !important;
+  background: #f59e0b !important;
   color: white !important;
-  font-weight: 500 !important;
-  font-size: 15px !important;
-  padding: 16px 24px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(237, 137, 54, 0.4) !important;
-  backdrop-filter: blur(10px) !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2) !important;
+  letter-spacing: 0.3px !important;
 }
 
 .warning-snackbar .mat-mdc-snack-bar-label {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
 .warning-snackbar::before {
@@ -125,23 +125,23 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.25);
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 /* Snackbar animation and positioning */
 .mat-mdc-snack-bar-container {
-  animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-  margin-bottom: 16px !important; /* Add spacing between stacked snackbars */
+  animation: slideInRight 0.3s ease-out !important;
+  margin-bottom: 16px !important;
 }
 
 @keyframes slideInRight {
   from {
-    transform: translateX(400px);
+    transform: translateX(100%);
     opacity: 0;
   }
   to {
@@ -153,14 +153,16 @@ body {
 /* Snackbar close button */
 .mat-mdc-snack-bar-action {
   color: white !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   opacity: 0.9 !important;
+  font-size: 18px !important;
+  min-width: 24px !important;
 }
 
 .mat-mdc-snack-bar-action:hover {
   opacity: 1 !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 4px !important;
 }
 
 /* Smooth transitions for all elements */

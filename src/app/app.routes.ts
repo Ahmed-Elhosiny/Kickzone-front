@@ -10,7 +10,6 @@ import { ResendVerificationComponent } from './auth/resend-verification/resend-v
 import { Result } from './Component/result/result';
 import { AuthGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
-import { AdminGuard } from './auth/admin-guard';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -27,10 +26,5 @@ export const routes: Routes = [
     loadComponent: () => import('./Component/user-profile/user-profile').then(m => m.UserProfileComponent),
     canActivate: [AuthGuard]
   },
-  {
-  path: 'admin',
-  canActivate: [AdminGuard],
-  loadChildren: () => import('./Component/admin/admin').then(m => m.Admin)
-},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];
