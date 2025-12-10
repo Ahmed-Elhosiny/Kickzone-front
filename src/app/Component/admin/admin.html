@@ -1,1 +1,43 @@
-<p>admin works!</p>
+<!-- Cities Section -->
+<h2>Cities</h2>
+<ul>
+  <li *ngFor="let city of cities()">
+    {{ city.name }}
+    <button
+      [disabled]="city.fieldsCount > 0"
+      (click)="deleteCity(city)">
+      Delete
+    </button>
+    <span *ngIf="city.fieldsCount > 0" class="text-danger">
+      You can't delete city if it contains fields
+    </span>
+  </li>
+</ul>
+
+
+<!-- Categories Section -->
+<h2>Categories</h2>
+<ul>
+  <li *ngFor="let category of categories()">
+    {{ category.name }}
+    <button
+      [disabled]="category.fieldsCount > 0"
+      (click)="deleteCategory(category)">
+      Delete
+    </button>
+    <span *ngIf="category.fieldsCount > 0" class="text-danger">
+      You can't delete category if it contains fields
+    </span>
+  </li>
+</ul>
+
+<!-- Fields Section -->
+<h2>Fields</h2>
+<ul>
+  <li *ngFor="let field of fields()">
+    {{ field.name }} - Status: {{ field.isApproved ? 'Approved' : 'Pending' }}
+    <button (click)="approveField(field)" [disabled]="field.isApproved">Approve</button>
+    <button (click)="rejectField(field)" [disabled]="!field.isApproved">Reject</button>
+    <button (click)="deleteField(field)">Delete</button>
+  </li>
+</ul>

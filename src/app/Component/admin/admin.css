@@ -1,0 +1,87 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  color: #333;
+}
+
+h2 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  border-bottom: 2px solid #2c3e50;
+  padding-bottom: 5px;
+}
+
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+span.text-danger {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+
+button {
+  padding: 6px 12px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+
+button[disabled] {
+  background-color: #bdc3c7;
+  color: #fff;
+}
+
+button:not([disabled]):nth-child(2) {
+  background-color: #e74c3c;
+  color: white;
+}
+
+button:not([disabled]):nth-child(3) {
+  background-color: #2ecc71;
+  color: white;
+}
+
+button:not([disabled]):nth-child(4) {
+  background-color: #f39c12;
+  color: white;
+}
+
+
+@media (max-width: 600px) {
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  button {
+    margin: 5px 0 0 0;
+  }
+}
