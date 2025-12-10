@@ -1,0 +1,31 @@
+<div class="dashboard-container">
+  <!-- Sidebar Navigation -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <h2>Field Owner Dashboard</h2>
+      <p class="user-name">{{ currentUser?.name || 'Owner' }}</p>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a 
+        [routerLink]="['/field-owner/my-fields']" 
+        routerLinkActive="active"
+        class="nav-item">
+        <i class="icon-fields"></i>
+        <span>My Fields</span>
+      </a>
+      <a 
+        [routerLink]="['/field-owner/add-field']" 
+        routerLinkActive="active"
+        class="nav-item">
+        <i class="icon-add"></i>
+        <span>Add New Field</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="dashboard-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
