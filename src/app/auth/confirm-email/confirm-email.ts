@@ -107,8 +107,8 @@ export class ConfirmEmailComponent implements OnInit {
           this.errorMessage = '';
           this.cdr.markForCheck();
           
-          this.snackBar.open('Email verified successfully!', '×', {
-            duration: 5000,
+          this.snackBar.open('✓ Email verified successfully!', '×', {
+            duration: 4000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
             panelClass: ['success-snackbar']
@@ -127,7 +127,7 @@ export class ConfirmEmailComponent implements OnInit {
           this.cdr.markForCheck();
           
           this.snackBar.open(this.errorMessage, '×', {
-            duration: 7000,
+            duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
             panelClass: ['error-snackbar']
