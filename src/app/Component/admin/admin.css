@@ -1,43 +1,58 @@
-/* Section Title */
+/* Section Titles */
 .section-title {
-  margin: 20px 0;
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
   text-align: center;
+  margin: 25px 0 15px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
 }
 
-/* Grid Layout */
+/* Add Button */
+.btn.add {
+  display: block;
+  margin: 10px auto 20px;
+  background: #2196f3;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+.btn.add:hover {
+  background: #1976d2;
+}
+
+/* Card Grid */
 .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
-  margin: 20px auto;
-  max-width: 1200px;
   padding: 0 15px;
+  margin-bottom: 40px;
 }
 
-/* Card Styling */
+/* Individual Card */
 .card {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  transition: 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  width: 280px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 /* Field Card */
 .field-card {
   text-align: center;
-  width: 100%;
 }
 
 /* Field Image */
@@ -49,6 +64,13 @@
   margin-bottom: 10px;
 }
 
+/* Info Text */
+.info {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0;
+}
+
 /* Badge */
 .badge {
   display: inline-block;
@@ -58,7 +80,7 @@
   color: #333;
   font-size: 12px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .badge.approved {
@@ -69,82 +91,90 @@
 /* Buttons Row */
 .btn-row {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
+  margin-top: 12px;
   gap: 8px;
-  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
-/* Buttons */
+/* General Button */
 .btn {
-  padding: 6px 14px;
+  padding: 8px 14px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
-  transition: 0.2s;
-  min-width: 80px;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
+/* Approve Button */
 .btn.approve {
   background: #4caf50;
   color: #fff;
 }
+.btn.approve:hover:not(:disabled) {
+  background: #388e3c;
+}
 
+/* Reject Button */
 .btn.reject {
   background: #e53935;
   color: #fff;
 }
+.btn.reject:hover:not(:disabled) {
+  background: #b71c1c;
+}
 
+/* Delete Button */
 .btn.delete {
   background: #9c27b0;
   color: #fff;
+  width: 100%;
+  margin-top: 8px;
+}
+.btn.delete:hover:not(:disabled) {
+  background: #7b1fa2;
 }
 
+/* Disabled Button */
 .btn.disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Warning Text */
 .warning {
   color: #e53935;
   font-size: 13px;
   margin-top: 6px;
+  text-align: center;
 }
 
+/* PDF Button */
 .btn.pdf {
   background: #2196f3;
   color: white;
   width: 100%;
   margin: 10px 0;
 }
-.btn.add {
-  background-color: #2196f3;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 14px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: 0.2s;
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-grid {
+    gap: 15px;
+  }
+  .card {
+    width: 90%;
+  }
 }
 
-.btn.add:hover {
-  background-color: #1976d2;
-}
-
-
-/* Responsive*/
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .btn-row {
     flex-direction: column;
+    gap: 6px;
   }
-
-  .field-img {
-    height: 140px;
-  }
-
-  .card-grid {
-    grid-template-columns: 1fr;
+  .btn {
+    width: 100%;
   }
 }
