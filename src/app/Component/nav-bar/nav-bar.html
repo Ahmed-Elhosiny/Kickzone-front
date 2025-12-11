@@ -48,7 +48,7 @@
             Fields
           </a>
         </li>
-        <!-- @if (authService.getUserRole() === 'Admin') { -->
+        @if (authService.getUserRole() === 'Admin') {
         <li class="nav-item mx-lg-3">
         <a
           [routerLink]="['/admin']"
@@ -58,9 +58,9 @@
         >
           Admin Panel
         </a>
-      <!-- } -->
+
         </li>
-      <!-- } -->
+      }
       </ul>
 
       <!-- Auth Buttons (Right) -->
