@@ -31,10 +31,11 @@ export const routes: Routes = [
       import('./Component/user-profile/user-profile').then((m) => m.UserProfileComponent),
     canActivate: [AuthGuard],
   },
-  {
-    path: 'admin',
-    loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
-    canActivate: [AdminGuard],
-  },
+  // {
+  //   path: 'admin',
+  //   loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
+  //   canActivate: [AdminGuard],
+  // },
+  {path: 'admin', component: AdminPanelComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

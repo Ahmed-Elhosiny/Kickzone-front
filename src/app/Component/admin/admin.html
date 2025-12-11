@@ -1,43 +1,82 @@
-<!-- Cities Section -->
-<h2>Cities</h2>
-<ul>
-  <li *ngFor="let city of cities()">
-    {{ city.name }}
+<!-- Cities -->
+<h2 class="section-title">Cities</h2>
+<button class="btn add" (click)="addCity()">Add New City</button>
+<div class="card-grid">
+  <div class="card" *ngFor="let city of cities()">
+    <h3>{{ city.name }}</h3>
     <button
+      class="btn delete"
+      [class.disabled]="city.fieldsCount > 0"
       [disabled]="city.fieldsCount > 0"
       (click)="deleteCity(city)">
       Delete
     </button>
-    <span *ngIf="city.fieldsCount > 0" class="text-danger">
-      You can't delete city if it contains fields
-    </span>
-  </li>
-</ul>
+    <p *ngIf="city.fieldsCount > 0" class="warning">
+       Cannot delete a city that contains fields
+    </p>
+  </div>
+</div>
 
-
-<!-- Categories Section -->
-<h2>Categories</h2>
-<ul>
-  <li *ngFor="let category of categories()">
-    {{ category.name }}
+<!-- Categories -->
+<h2 class="section-title">Categories</h2>
+<button class="btn add" (click)="addCategory()">Add New Category</button>
+<div class="card-grid">
+  <div class="card" *ngFor="let category of categories()">
+    <h3>{{ category.name }}</h3>
     <button
+      class="btn delete"
+      [class.disabled]="category.fieldsCount > 0"
       [disabled]="category.fieldsCount > 0"
       (click)="deleteCategory(category)">
       Delete
     </button>
-    <span *ngIf="category.fieldsCount > 0" class="text-danger">
-      You can't delete category if it contains fields
-    </span>
-  </li>
-</ul>
+    <p *ngIf="category.fieldsCount > 0" class="warning">
+       Cannot delete a category that contains fields
+    </p>
+  </div>
+</div>
 
-<!-- Fields Section -->
-<h2>Fields</h2>
-<ul>
-  <li *ngFor="let field of fields()">
-    {{ field.name }} - Status: {{ field.isApproved ? 'Approved' : 'Pending' }}
-    <button (click)="approveField(field)" [disabled]="field.isApproved">Approve</button>
-    <button (click)="rejectField(field)" [disabled]="!field.isApproved">Reject</button>
-    <button (click)="deleteField(field)">Delete</button>
-  </li>
-</ul>
+<!-- Fields -->
+<h2 class="section-title">Fields</h2>
+<div class="card-grid">
+  <div class="card field-card" *ngFor="let field of fields()">
+    <img *ngIf="field.fieldImages.length"
+         [src]="field.fieldImages[0].imageUrl"
+         class="field-img"
+         alt="Field Image">
+
+    <h3>{{ field.name }}</h3>
+    <p class="info">City: {{ field.cityName }}</p>
+    <p class="info">Category: {{ field.categoryName }}</p>
+
+    <span class="badge" [class.approved]="field.isApproved">
+      {{ field.isApproved ? 'Approved' : 'Pending' }}
+    </span>
+
+    <button
+      *ngIf="field.approvalDocumentUrl"
+      class="btn pdf"
+      (click)="openPdf(field.approvalDocumentUrl)">
+       View Document
+    </button>
+
+    <div class="btn-row">
+      <button class="btn approve"
+              (click)="approveField(field)"
+              [disabled]="field.isApproved">
+        Approve
+      </button>
+
+      <button class="btn reject"
+              (click)="rejectField(field)"
+              [disabled]="!field.isApproved">
+        Reject
+      </button>
+
+      <button class="btn delete"
+              (click)="deleteField(field)">
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
