@@ -17,7 +17,6 @@ export class TimeSlot implements OnInit {
   fieldSignal = input.required<IField>();
   private timeSlotService = inject(TimeSlotService);
 
-
   selectedDate = signal<Date>(new Date());
 
   selectedPeriod = signal<Period>('Morning');
@@ -30,7 +29,6 @@ export class TimeSlot implements OnInit {
       const date = this.selectedDate();
 
       if (fieldId && date) {
-
         const dateString = this.formatDateForApi(date);
         this.fetchTimeSlotsForDay(fieldId, dateString);
       }
@@ -90,11 +88,10 @@ export class TimeSlot implements OnInit {
       .filter((slot) => {
         const slotDate = new Date(slot.startAtDateTime);
 
-       
         const sameDay =
-          slotDate.getUTCFullYear() === selected.getFullYear() &&
-          slotDate.getUTCMonth() === selected.getMonth() &&
-          slotDate.getUTCDate() === selected.getDate();
+          slotDate.getFullYear() === selected.getFullYear() &&
+          slotDate.getMonth() === selected.getMonth() &&
+          slotDate.getDate() === selected.getDate();
 
         if (!sameDay) return false;
 

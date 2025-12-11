@@ -64,11 +64,12 @@
     </div>
   </div>
 
-  <section  class="time-slot-section">
+  <section class="time-slot-section">
     @if(field(); as currentField) {
     <app-time-slot [fieldSignal]="currentField"></app-time-slot>
-  }
+    }
   </section>
+
   <div class="row justify-content-start mb-4">
     <div class="col-md-8">
       <div class="card shadow-sm border-0">

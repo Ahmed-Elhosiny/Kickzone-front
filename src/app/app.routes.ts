@@ -12,6 +12,7 @@ import { AuthGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
 import { AdminPanelComponent } from './Component/admin/admin';
 import { AdminGuard } from './auth/admin-guard';
+import { FieldDetails } from './Component/field-details/field-details';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -23,15 +24,17 @@ export const routes: Routes = [
   { path: 'confirm-email-change', component: ConfirmEmailChangeComponent },
   { path: 'resend-verification', component: ResendVerificationComponent },
   { path: 'result', component: Result },
+  { path: 'field/:id', component: FieldDetails },
   {
     path: 'profile',
-    loadComponent: () => import('./Component/user-profile/user-profile').then(m => m.UserProfileComponent),
-    canActivate: [AuthGuard]
+    loadComponent: () =>
+      import('./Component/user-profile/user-profile').then((m) => m.UserProfileComponent),
+    canActivate: [AuthGuard],
   },
   {
     path: 'admin',
-    loadComponent: () => import('./Component/admin/admin').then(m => m.AdminPanelComponent),
-    canActivate: [AdminGuard]
+    loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
+    canActivate: [AdminGuard],
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];
