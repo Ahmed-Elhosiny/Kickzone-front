@@ -32,4 +32,12 @@ export class CategoryService {
   deleteCategory(id: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/${id}`);
 }
+addCategory(category: { name: string }): Observable<ICategory> {
+    return this.http.post<ICategory>(this.apiUrl, category).pipe(
+      catchError((error) => {
+        console.error('Failed to add category:', error);
+        return of({ id: 0, name: category.name, fieldsCount: 0 } as ICategory);
+      })
+    );
+  }
 }

@@ -1,6 +1,7 @@
 <!-- Cities -->
 <h2 class="section-title">Cities</h2>
-<button class="btn add" (click)="addCity()">Add New City</button>
+<button class="btn add" (click)="addCity()"
+  [disabled]="false">Add New City</button>
 <div class="card-grid">
   <div class="card" *ngFor="let city of cities()">
     <h3>{{ city.name }}</h3>
@@ -19,7 +20,7 @@
 
 <!-- Categories -->
 <h2 class="section-title">Categories</h2>
-<button class="btn add" (click)="addCategory()">Add New Category</button>
+<button class="btn add" (click)="addCategory()" [disabled]="false">Add New Category</button>
 <div class="card-grid">
   <div class="card" *ngFor="let category of categories()">
     <h3>{{ category.name }}</h3>
