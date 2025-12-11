@@ -100,7 +100,7 @@ export class AdminPanelComponent implements OnInit {
   }
 
   openPdf(url: string) {
-    window.open(url, '_blank');
+    window.open("application/pdf", '_blank');
   }
   addCity() {
   const name = prompt('Enter new city name:');
