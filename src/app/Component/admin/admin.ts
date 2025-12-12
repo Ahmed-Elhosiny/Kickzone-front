@@ -63,7 +63,7 @@ export class AdminPanelComponent implements OnInit {
     }
     this.cityService.deleteCity(city.id).subscribe({
       next: () => this.loadCities(),
-      error: err => this.snackBar.open('Error deleting city', '×', { duration: 4000 })
+      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
     });
   }
 
@@ -74,14 +74,14 @@ export class AdminPanelComponent implements OnInit {
     }
     this.categoryService.deleteCategory(category.id).subscribe({
       next: () => this.loadCategories(),
-      error: err => this.snackBar.open('Error deleting category', '×', { duration: 4000 })
+      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
     });
   }
 
   deleteField(field: IField) {
     this.fieldService.deleteField(field.id).subscribe({
       next: () => this.loadFields(),
-      error: err => this.snackBar.open('Error deleting field', '×', { duration: 4000 })
+      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
     });
   }
 
