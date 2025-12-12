@@ -7,6 +7,8 @@ import { FieldService } from '../../services/Field/field-service';
 import { ICity } from '../../Model/ICity/icity';
 import { ICategory } from '../../Model/ICategory/icategory';
 import { IField } from '../../Model/IField/ifield';
+import { MatDialog } from '@angular/material/dialog';
+import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
 
 @Component({
   selector: 'app-admin-panel',
@@ -26,7 +28,8 @@ export class AdminPanelComponent implements OnInit {
   constructor(
     private cityService: CityService,
     private categoryService: CategoryService,
-    private fieldService: FieldService
+    private fieldService: FieldService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -102,35 +105,49 @@ export class AdminPanelComponent implements OnInit {
   openPdf(url: string) {
     window.open("application/pdf", '_blank');
   }
-  addCity() {
-  const name = prompt('Enter new city name:');
-  if (!name) return;
+ addCity() {
+  const dialogRef = this.dialog.open(AddItemDialogComponent, {
+    width: '400px',
+    data: { title: 'Add New City' }
+  });
 
-  this.cityService.addCity({ name }).subscribe({
-    next: () => {
-      this.snackBar.open('City added successfully', '×', { duration: 3000 });
-      this.loadCities();
-    },
-    error: () => {
-      this.snackBar.open('Failed to add city', '×', { duration: 3000 });
-    }
+  dialogRef.afterClosed().subscribe(name => {
+    if (!name) return;
+
+    this.cityService.addCity({ name }).subscribe({
+      next: () => {
+        this.snackBar.open('City added successfully', '×', { duration: 3000 });
+        this.loadCities();
+      },
+      error: () => {
+        this.snackBar.open('Failed to add city', '×', { duration: 3000 });
+      }
+    });
   });
 }
+
 
 addCategory() {
-  const name = prompt('Enter new category name:');
-  if (!name) return;
+  const dialogRef = this.dialog.open(AddItemDialogComponent, {
+    width: '400px',
+    data: { title: 'Add New Category' }
+  });
 
-  this.categoryService.addCategory({ name }).subscribe({
-    next: () => {
-      this.snackBar.open('Category added successfully', '×', { duration: 3000 });
-      this.loadCategories();
-    },
-    error: () => {
-      this.snackBar.open('Failed to add category', '×', { duration: 3000 });
-    }
+  dialogRef.afterClosed().subscribe(name => {
+    if (!name) return;
+
+    this.categoryService.addCategory({ name }).subscribe({
+      next: () => {
+        this.snackBar.open('Category added successfully', '×', { duration: 3000 });
+        this.loadCategories();
+      },
+      error: () => {
+        this.snackBar.open('Failed to add category', '×', { duration: 3000 });
+      }
+    });
   });
 }
+
 
 
 }
