@@ -70,23 +70,36 @@
           </div>
         </div>
 
+        <!-- Document Upload Notice (if no document) -->
+        <div *ngIf="!field.hasApprovalDocument" class="document-notice">
+          <span class="notice-icon">⚠️</span>
+          <span>Upload approval document to proceed with review</span>
+        </div>
+
         <div class="field-actions">
           <button 
             class="btn btn-secondary btn-sm"
-            (click)="editField(field.id)">
+            (click)="editField(field.id)"
+            [disabled]="!field.isApproved">
             ✏️ Edit
           </button>
           
-          <div class="upload-document">
-            <label [for]="'doc-' + field.id" class="btn btn-info btn-sm">
-              📄 Upload Doc
+          <!-- Show upload button only if no document uploaded yet -->
+          <div *ngIf="!field.hasApprovalDocument" class="upload-document">
+            <label [for]="'doc-' + field.id" class="btn btn-primary btn-sm">
+              📄 Upload Document
             </label>
             <input 
               [id]="'doc-' + field.id"
               type="file" 
-              accept=".pdf,.doc,.docx"
+              accept=".pdf"
               (change)="uploadDocument(field.id, $event)"
               style="display: none;">
+          </div>
+
+          <!-- Show document status if uploaded -->
+          <div *ngIf="field.hasApprovalDocument" class="document-status">
+            <span class="doc-icon">✓</span> Document Uploaded
           </div>
 
           <button 

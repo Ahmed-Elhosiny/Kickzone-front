@@ -153,6 +153,11 @@
   color: #333;
 }
 
+.status-pending-document {
+  background-color: #ff9800;
+  color: white;
+}
+
 .status-rejected {
   background-color: #dc3545;
   color: white;
@@ -167,6 +172,43 @@
   color: #333;
   margin-bottom: 1rem;
   font-weight: 600;
+}
+
+.document-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #856404;
+}
+
+.notice-icon {
+  font-size: 1.25rem;
+}
+
+.document-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #d4edda;
+  border: 1px solid #28a745;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #155724;
+  font-weight: 500;
+  flex: 1;
+  justify-content: center;
+}
+
+.doc-icon {
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .field-info {

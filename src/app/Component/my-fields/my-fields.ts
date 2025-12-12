@@ -85,12 +85,20 @@ export class MyFieldsComponent implements OnInit {
   }
 
   getStatusClass(field: IField): string {
+    // If no document uploaded yet, show pending document status
+    if (!field.hasApprovalDocument) return 'status-pending-document';
+    // If document uploaded but not reviewed yet
     if (field.isApproved === null) return 'status-pending';
+    // Otherwise show approved or rejected
     return field.isApproved ? 'status-approved' : 'status-rejected';
   }
 
   getStatusText(field: IField): string {
-    if (field.isApproved === null) return 'Pending Approval';
+    // If no document uploaded yet
+    if (!field.hasApprovalDocument) return 'Document Required';
+    // If document uploaded but not reviewed yet
+    if (field.isApproved === null) return 'Pending Review';
+    // Otherwise show approved or rejected
     return field.isApproved ? 'Approved' : 'Rejected';
   }
 
@@ -104,9 +112,20 @@ export class MyFieldsComponent implements OnInit {
   uploadDocument(fieldId: number, event: any): void {
     const file = event.target.files[0];
     if (file) {
+      // Validate file type (PDF only)
+      if (file.type !== 'application/pdf') {
+        this.errorMessage = 'Please upload a PDF document';
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 3000);
+        return;
+      }
+
       this.fieldService.uploadFieldDocument(fieldId, file).subscribe({
         next: () => {
-          this.successMessage = 'Document uploaded successfully';
+          this.successMessage = 'Document uploaded successfully. Awaiting admin review.';
+          // Reload fields to update status
+          this.loadOwnerFields();
           setTimeout(() => {
             this.successMessage = '';
           }, 3000);

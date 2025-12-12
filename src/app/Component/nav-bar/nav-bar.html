@@ -70,6 +70,14 @@
         } @else {
           <div class="user-menu">
             <a
+              [routerLink]="['/field-owner/my-fields']"
+              class="btn-auth btn-dashboard"
+              routerLinkActive="active"
+              aria-label="Field Owner Dashboard"
+            >
+              Dashboard
+            </a>
+            <a
               [routerLink]="['/profile']"
               class="btn-auth btn-profile"
               aria-label="View your profile"

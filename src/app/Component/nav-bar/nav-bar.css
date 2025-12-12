@@ -89,16 +89,29 @@
   box-shadow: 0 4px 12px rgba(83, 217, 119, 0.4);
 }
 
-.btn-profile {
+.btn-dashboard {
   color: #fff;
   background: linear-gradient(135deg, #667eea, #764ba2);
   border-color: #667eea;
 }
 
-.btn-profile:hover {
+.btn-dashboard:hover,
+.btn-dashboard.active {
   background: linear-gradient(135deg, #764ba2, #667eea);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-profile {
+  color: #fff;
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  border-color: #17a2b8;
+}
+
+.btn-profile:hover {
+  background: linear-gradient(135deg, #138496, #17a2b8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
 }
 
 .btn-logout {

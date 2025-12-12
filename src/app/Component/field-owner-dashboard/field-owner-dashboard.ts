@@ -18,10 +18,19 @@ export class FieldOwnerDashboardComponent implements OnInit {
   activeTab: string = 'my-fields';
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
+    const userId = this.authService.getUserId();
     
-    if (!this.currentUser) {
+    if (!userId) {
       this.router.navigate(['/login']);
+      return;
+    }
+    
+    // Set a basic user object with the ID
+    this.currentUser = { id: userId };
+    
+    // Check if we're at the parent route without a child route
+    if (this.router.url === '/field-owner' || this.router.url === '/field-owner/') {
+      this.router.navigate(['/field-owner/my-fields'], { replaceUrl: true });
     }
   }
 
