@@ -20,8 +20,6 @@ export class ReservationCartService {
     return this.cartContent()?.items?.map((item) => item.timeSlotId) ?? [];
   });
 
-  constructor() {}
-
   loadCartItems(): void {
     this.getCart().subscribe();
   }
