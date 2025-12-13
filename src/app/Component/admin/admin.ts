@@ -1,13 +1,16 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+
 import { CityService } from '../../services/city/city-service';
 import { CategoryService } from '../../services/category/category-service';
 import { FieldService } from '../../services/Field/field-service';
+
 import { ICity } from '../../Model/ICity/icity';
 import { ICategory } from '../../Model/ICategory/icategory';
 import { IField } from '../../Model/IField/ifield';
-import { MatDialog } from '@angular/material/dialog';
+
 import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
 
 @Component({
@@ -18,138 +21,171 @@ import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
   styleUrls: ['./admin.css'],
 })
 export class AdminPanelComponent implements OnInit {
+  // ===== Injected Services =====
+  private readonly cityService = inject(CityService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly fieldService = inject(FieldService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
-  cities = signal<ICity[]>([]);
-  categories = signal<ICategory[]>([]);
-  fields = signal<IField[]>([]);
-
-  private snackBar = inject(MatSnackBar);
-
-  constructor(
-    private cityService: CityService,
-    private categoryService: CategoryService,
-    private fieldService: FieldService,
-    private dialog: MatDialog
-  ) {}
+  // ===== Signals =====
+  readonly cities = signal<ICity[]>([]);
+  readonly categories = signal<ICategory[]>([]);
+  readonly fields = signal<IField[]>([]);
 
   ngOnInit(): void {
+    this.loadAll();
+  }
+
+  // ===== Loaders =====
+  private loadAll(): void {
     this.loadCities();
     this.loadCategories();
     this.loadFields();
   }
 
-  loadCities() {
+  loadCities(): void {
     this.cityService.GetAllCities().subscribe({
-      next: data => this.cities.set(data),
-      error: err => this.snackBar.open('Failed to load cities', '×', { duration: 4000 })
+      next: (data) => this.cities.set(data),
+      error: () => this.showError('Failed to load cities'),
     });
   }
 
-  loadCategories() {
+  loadCategories(): void {
     this.categoryService.GetAllCategories().subscribe({
-      next: data => this.categories.set(data),
-      error: err => this.snackBar.open('Failed to load categories', '×', { duration: 4000 })
+      next: (data) => this.categories.set(data),
+      error: () => this.showError('Failed to load categories'),
     });
   }
 
-  loadFields() {
+  loadFields(): void {
     this.fieldService.getAllFields().subscribe({
-      next: data => this.fields.set(data),
-      error: err => this.snackBar.open('Failed to load fields', '×', { duration: 4000 })
+      next: (data) => this.fields.set(data),
+      error: () => this.showError('Failed to load fields'),
     });
   }
 
-  deleteCity(city: ICity) {
+  // ===== City Actions =====
+  deleteCity(city: ICity): void {
     if (city.fieldsCount > 0) {
-      this.snackBar.open(`Cannot delete city "${city.name}" because it has fields`, '×', { duration: 4000 });
+      this.showError(
+        `Cannot delete city "${city.name}" because it has fields`
+      );
       return;
     }
+
     this.cityService.deleteCity(city.id).subscribe({
-      next: () => this.loadCities(),
-      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
+      next: () => {
+        this.loadCities();
+        this.showSuccess('City deleted successfully');
+      },
+      error: (err) =>
+        this.showError(err?.error?.message ?? 'Failed to delete city'),
     });
   }
 
-  deleteCategory(category: ICategory) {
+  addCity(): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      width: '400px',
+      data: { title: 'Add New City' },
+    });
+
+    dialogRef.afterClosed().subscribe((name?: string) => {
+      if (!name) return;
+
+      this.cityService.addCity({ name }).subscribe({
+        next: () => {
+          this.showSuccess('City added successfully');
+          this.loadCities();
+        },
+        error: () => this.showError('Failed to add city'),
+      });
+    });
+  }
+
+  // ===== Category Actions =====
+  deleteCategory(category: ICategory): void {
     if (category.fieldsCount > 0) {
-      this.snackBar.open(`Cannot delete category "${category.name}" because it has fields`, '×', { duration: 4000 });
+      this.showError(
+        `Cannot delete category "${category.name}" because it has fields`
+      );
       return;
     }
+
     this.categoryService.deleteCategory(category.id).subscribe({
-      next: () => this.loadCategories(),
-      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
-    });
-  }
-
-  deleteField(field: IField) {
-    this.fieldService.deleteField(field.id).subscribe({
-      next: () => this.loadFields(),
-      error: err => this.snackBar.open(err.error.message, '×', { duration: 4000 })
-    });
-  }
-
-  approveField(field: IField) {
-    this.fieldService.approveField(field.id).subscribe({
-      next: () => this.loadFields(),
-      error: err => this.snackBar.open('Error approving field', '×', { duration: 4000 })
-    });
-  }
-
-  rejectField(field: IField) {
-    this.fieldService.rejectField(field.id).subscribe({
-      next: () => this.loadFields(),
-      error: err => this.snackBar.open('Error rejecting field', '×', { duration: 4000 })
-    });
-  }
-
-  downloadPdf(field: IField) {
-    // Download PDF from backend
-    const downloadUrl = `https://localhost:7263/api/Fields/${field.id}/pdf`;
-    window.open(downloadUrl, '_blank');
-  }
- addCity() {
-  const dialogRef = this.dialog.open(AddItemDialogComponent, {
-    width: '400px',
-    data: { title: 'Add New City' }
-  });
-
-  dialogRef.afterClosed().subscribe(name => {
-    if (!name) return;
-
-    this.cityService.addCity({ name }).subscribe({
       next: () => {
-        this.snackBar.open('City added successfully', '×', { duration: 3000 });
-        this.loadCities();
-      },
-      error: () => {
-        this.snackBar.open('Failed to add city', '×', { duration: 3000 });
-      }
-    });
-  });
-}
-
-
-addCategory() {
-  const dialogRef = this.dialog.open(AddItemDialogComponent, {
-    width: '400px',
-    data: { title: 'Add New Category' }
-  });
-
-  dialogRef.afterClosed().subscribe(name => {
-    if (!name) return;
-
-    this.categoryService.addCategory({ name }).subscribe({
-      next: () => {
-        this.snackBar.open('Category added successfully', '×', { duration: 3000 });
         this.loadCategories();
+        this.showSuccess('Category deleted successfully');
       },
-      error: () => {
-        this.snackBar.open('Failed to add category', '×', { duration: 3000 });
-      }
+      error: (err) =>
+        this.showError(err?.error?.message ?? 'Failed to delete category'),
     });
-  });
-}
+  }
 
+  addCategory(): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      width: '400px',
+      data: { title: 'Add New Category' },
+    });
 
+    dialogRef.afterClosed().subscribe((name?: string) => {
+      if (!name) return;
 
+      this.categoryService.addCategory({ name }).subscribe({
+        next: () => {
+          this.showSuccess('Category added successfully');
+          this.loadCategories();
+        },
+        error: () => this.showError('Failed to add category'),
+      });
+    });
+  }
+
+  // ===== Field Actions =====
+  deleteField(field: IField): void {
+    this.fieldService.deleteField(field.id).subscribe({
+      next: () => {
+        this.loadFields();
+        this.showSuccess('Field deleted successfully');
+      },
+      error: (err) =>
+        this.showError(err?.error?.message ?? 'Failed to delete field'),
+    });
+  }
+
+  approveField(field: IField): void {
+    this.fieldService.approveField(field.id).subscribe({
+      next: () => {
+        this.loadFields();
+        this.showSuccess('Field approved');
+      },
+      error: () => this.showError('Error approving field'),
+    });
+  }
+
+  rejectField(field: IField): void {
+    this.fieldService.rejectField(field.id).subscribe({
+      next: () => {
+        this.loadFields();
+        this.showSuccess('Field rejected');
+      },
+      error: () => this.showError('Error rejecting field'),
+    });
+  }
+
+  downloadPdf(field: IField): void {
+    window.open(
+      `${this.fieldService['apiUrl']}/${field.id}/pdf`,
+      '_blank'
+    );
+  }
+
+  // ===== UI Helpers =====
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, '×', { duration: 3000 });
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, '×', { duration: 4000 });
+  }
 }
