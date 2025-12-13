@@ -1,64 +1,114 @@
 <div class="my-fields-container">
   <div class="page-header">
-    <div>
+    <div class="header-content">
       <h1>My Fields</h1>
       <p>Manage your field listings</p>
+      @if (hasFields()) {
+        <div class="stats">
+          <span class="stat-item approved">
+            <mat-icon>check_circle</mat-icon>
+            {{ approvedFieldsCount() }} Approved
+          </span>
+          @if (pendingFieldsCount() > 0) {
+            <span class="stat-item pending">
+              <mat-icon>schedule</mat-icon>
+              {{ pendingFieldsCount() }} Pending
+            </span>
+          }
+        </div>
+      }
     </div>
 
-    <a routerLink="/field-owner/add-field" class="btn btn-primary">
-      ➕ Add New Field
+    <a routerLink="/field-owner/add-field" mat-raised-button color="primary" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add New Field
     </a>
   </div>
 
-  @if (successMessage()) {
-    <div class="alert alert-success">{{ successMessage() }}</div>
-  }
-
-  @if (errorMessage()) {
-    <div class="alert alert-error">{{ errorMessage() }}</div>
-  }
-
   @if (isLoading()) {
     <div class="loading-container">
-      <div class="spinner"></div>
+      <mat-spinner diameter="50"></mat-spinner>
       <p>Loading your fields...</p>
     </div>
   }
 
-  @if (!isLoading() && !hasFields()) {
-    <div class="empty-state">
-      <h2>No fields yet</h2>
-      <a routerLink="/field-owner/add-field" class="btn btn-primary">
-        Add Your First Field
-      </a>
-    </div>
+  @if (!isLoading() && error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <div>
+            <h3>Failed to Load Fields</h3>
+            <p>{{ error() }}</p>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="loadOwnerFields()">
+          <mat-icon>refresh</mat-icon>
+          Try Again
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!isLoading() && !hasFields() && !error()) {
+    <mat-card class="empty-state">
+      <mat-card-content>
+        <mat-icon class="empty-icon">sports_soccer</mat-icon>
+        <h2>No fields yet</h2>
+        <p>Start by adding your first field listing</p>
+        <a routerLink="/field-owner/add-field" mat-raised-button color="primary">
+          <mat-icon>add</mat-icon>
+          Add Your First Field
+        </a>
+      </mat-card-content>
+    </mat-card>
   }
 
   @if (!isLoading() && hasFields()) {
     <div class="fields-grid">
       @for (field of fields(); track field.id) {
-        <div class="field-card">
+        <mat-card class="field-card">
           <div class="field-image">
-            <img [src]="getMainImage(field)" />
-            <span class="status-badge" [ngClass]="getStatusClass(field)">
+            <img [src]="getMainImage(field)" [alt]="field.name" />
+            <span class="status-badge" [class]="getStatusClass(field)">
+              <mat-icon>{{ getStatusIcon(field) }}</mat-icon>
               {{ getStatusText(field) }}
             </span>
           </div>
 
-          <div class="field-content">
-            <h3>{{ field.name }}</h3>
+          <mat-card-content class="field-content">
+            <h3 class="field-name">{{ field.name }}</h3>
 
-            <p><strong>City:</strong> {{ field.cityName }}</p>
-            <p><strong>Price:</strong> {{ field.pricePerHour }} EGP/hour</p>
-            <p><strong>Hours:</strong> {{ field.openAt }} - {{ field.closeAt }}</p>
+            <div class="field-info">
+              <div class="info-row">
+                <mat-icon>location_city</mat-icon>
+                <span>{{ field.cityName }}</span>
+              </div>
+              <div class="info-row">
+                <mat-icon>attach_money</mat-icon>
+                <span>{{ field.pricePerHour }} EGP/hour</span>
+              </div>
+              <div class="info-row">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ field.openAt }}:00 - {{ field.closeAt }}:00</span>
+              </div>
+            </div>
 
             @if (!field.hasApprovalDocument || field.isApproved === false) {
               <label
-                class="btn btn-primary btn-sm"
-                [class.loading]="uploadingDocId() === field.id"
+                mat-stroked-button
+                color="primary"
+                class="upload-button"
+                [class.uploading]="uploadingDocId() === field.id"
                 [for]="'doc-' + field.id"
               >
-                {{ uploadingDocId() === field.id ? 'Uploading…' : '📄 Upload Document' }}
+                @if (uploadingDocId() === field.id) {
+                  <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
+                  Uploading…
+                } @else {
+                  <mat-icon>upload_file</mat-icon>
+                  Upload Document
+                }
               </label>
 
               <input
@@ -71,38 +121,35 @@
               />
             }
 
-            <div class="actions">
+            <div class="field-actions">
               <button
-                class="btn btn-secondary btn-sm"
+                mat-stroked-button
+                color="primary"
                 (click)="editField(field.id)"
                 [disabled]="field.isApproved !== true"
+                [matTooltip]="field.isApproved !== true ? 'Field must be approved to edit' : 'Edit field'"
               >
-                ✏️ Edit
+                <mat-icon>edit</mat-icon>
+                Edit
               </button>
 
               <button
-                class="btn btn-danger btn-sm"
-                (click)="confirmDelete(field.id)"
+                mat-stroked-button
+                color="warn"
+                (click)="confirmDelete(field)"
+                [disabled]="deletingFieldId() === field.id"
               >
-                🗑️ Delete
+                @if (deletingFieldId() === field.id) {
+                  <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
+                } @else {
+                  <mat-icon>delete</mat-icon>
+                }
+                Delete
               </button>
             </div>
-          </div>
-        </div>
+          </mat-card-content>
+        </mat-card>
       }
-    </div>
-  }
-
-  @if (deleteConfirmId() !== null) {
-    <div class="modal-overlay" (click)="cancelDelete()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <h2>Confirm Deletion</h2>
-        <p>This action cannot be undone.</p>
-        <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
-        <button class="btn btn-danger" (click)="deleteField(deleteConfirmId()!)">
-          Delete
-        </button>
-      </div>
     </div>
   }
 </div>

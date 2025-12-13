@@ -7,6 +7,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { finalize, timeout } from 'rxjs/operators';
 
 import { FieldService } from '../../services/Field/field-service';
@@ -16,25 +23,43 @@ import { IField } from '../../Model/IField/ifield';
 @Component({
   selector: 'app-my-fields',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule, 
+    RouterModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+  ],
   templateUrl: './my-fields.html',
   styleUrls: ['./my-fields.css'],
 })
 export class MyFieldsComponent implements OnInit {
+  // ===== Injected Services =====
   private readonly fieldService = inject(FieldService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
   // ===== Signals =====
   readonly fields = signal<IField[]>([]);
   readonly isLoading = signal(true);
-  readonly errorMessage = signal('');
-  readonly successMessage = signal('');
-  readonly deleteConfirmId = signal<number | null>(null);
+  readonly error = signal<string | null>(null);
   readonly uploadingDocId = signal<number | null>(null);
+  readonly deletingFieldId = signal<number | null>(null);
 
   // ===== Computed =====
   readonly hasFields = computed(() => this.fields().length > 0);
+  readonly approvedFieldsCount = computed(() => 
+    this.fields().filter(f => f.isApproved === true).length
+  );
+  readonly pendingFieldsCount = computed(() => 
+    this.fields().filter(f => f.isApproved === null && f.hasApprovalDocument).length
+  );
 
   ngOnInit(): void {
     this.loadOwnerFields();
@@ -43,12 +68,18 @@ export class MyFieldsComponent implements OnInit {
   // ===== Data =====
   loadOwnerFields(): void {
     this.isLoading.set(true);
-    this.errorMessage.set('');
+    this.error.set(null);
 
     const userId = this.authService.getUserId();
     if (!userId) {
-      this.errorMessage.set('User not authenticated');
       this.isLoading.set(false);
+      this.error.set('User not authenticated');
+      this.snackBar.open('Please login to view your fields', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
       this.router.navigate(['/login']);
       return;
     }
@@ -58,9 +89,16 @@ export class MyFieldsComponent implements OnInit {
         this.fields.set(data);
         this.isLoading.set(false);
       },
-      error: () => {
-        this.errorMessage.set('Failed to load your fields');
+      error: (err) => {
         this.isLoading.set(false);
+        const errorMessage = err?.error?.message || 'Failed to load your fields';
+        this.error.set(errorMessage);
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       },
     });
   }
@@ -70,12 +108,16 @@ export class MyFieldsComponent implements OnInit {
     this.router.navigate(['/field-owner/edit-field', fieldId]);
   }
 
-  confirmDelete(fieldId: number): void {
-    this.deleteConfirmId.set(fieldId);
-  }
-
-  cancelDelete(): void {
-    this.deleteConfirmId.set(null);
+  confirmDelete(field: IField): void {
+    const fieldName = field.name;
+    this.deletingFieldId.set(field.id);
+    
+    // Simple confirmation dialog
+    if (confirm(`Are you sure you want to delete "${fieldName}"? This action cannot be undone.`)) {
+      this.deleteField(field.id);
+    } else {
+      this.deletingFieldId.set(null);
+    }
   }
 
   deleteField(fieldId: number): void {
@@ -84,12 +126,23 @@ export class MyFieldsComponent implements OnInit {
         this.fields.update((list) =>
           list.filter((f) => f.id !== fieldId)
         );
-        this.deleteConfirmId.set(null);
-        this.showSuccess('Field deleted successfully');
+        this.deletingFieldId.set(null);
+        this.snackBar.open('Field deleted successfully', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar'],
+        });
       },
-      error: () => {
-        this.deleteConfirmId.set(null);
-        this.showError('Failed to delete field');
+      error: (err) => {
+        this.deletingFieldId.set(null);
+        const errorMessage = err?.error?.message || 'Failed to delete field';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       },
     });
   }
@@ -113,6 +166,13 @@ export class MyFieldsComponent implements OnInit {
     return 'status-approved';
   }
 
+  getStatusIcon(field: IField): string {
+    if (!field.hasApprovalDocument) return 'description';
+    if (field.isApproved === null) return 'schedule';
+    if (field.isApproved === false) return 'cancel';
+    return 'check_circle';
+  }
+
   // ===== Upload =====
   uploadDocument(fieldId: number, event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -125,7 +185,12 @@ export class MyFieldsComponent implements OnInit {
       file.name.toLowerCase().endsWith('.pdf');
 
     if (!isPdf) {
-      this.showError('Please upload a PDF document');
+      this.snackBar.open('Please upload a PDF document', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
       input.value = '';
       return;
     }
@@ -143,23 +208,23 @@ export class MyFieldsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.showSuccess('Document uploaded. Awaiting admin review.');
+          this.snackBar.open('Document uploaded successfully. Awaiting admin review.', 'Close', {
+            duration: 4000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar'],
+          });
           this.loadOwnerFields();
         },
-        error: () => {
-          this.showError('Failed to upload document');
+        error: (err) => {
+          const errorMessage = err?.error?.message || 'Failed to upload document. Please try again.';
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+          });
         },
       });
-  }
-
-  // ===== UI Messages =====
-  private showSuccess(message: string): void {
-    this.successMessage.set(message);
-    setTimeout(() => this.successMessage.set(''), 3000);
-  }
-
-  private showError(message: string): void {
-    this.errorMessage.set(message);
-    setTimeout(() => this.errorMessage.set(''), 3000);
   }
 }
