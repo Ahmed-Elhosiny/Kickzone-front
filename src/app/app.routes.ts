@@ -10,6 +10,9 @@ import { ResendVerificationComponent } from './auth/resend-verification/resend-v
 import { Result } from './Component/result/result';
 import { AuthGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
+import { AdminPanelComponent } from './Component/admin/admin';
+import { AdminGuard } from './auth/admin-guard';
+import { FieldDetails } from './Component/field-details/field-details';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,34 +24,44 @@ export const routes: Routes = [
   { path: 'confirm-email-change', component: ConfirmEmailChangeComponent },
   { path: 'resend-verification', component: ResendVerificationComponent },
   { path: 'result', component: Result },
-  { 
-    path: 'profile', 
-    loadComponent: () => import('./Component/user-profile/user-profile').then(m => m.UserProfileComponent),
-    canActivate: [AuthGuard]
+  { path: 'field/:id', component: FieldDetails },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./Component/user-profile/user-profile').then((m) => m.UserProfileComponent),
+    canActivate: [AuthGuard],
   },
   {
+<<<<<<< HEAD
     path: 'field-owner',
     loadComponent: () => import('./Component/field-owner-dashboard/field-owner-dashboard').then(m => m.FieldOwnerDashboardComponent),
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'my-fields',
-        loadComponent: () => import('./Component/my-fields/my-fields').then(m => m.MyFieldsComponent)
-      },
-      {
-        path: 'add-field',
-        loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
-      },
-      {
-        path: 'edit-field/:id',
-        loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
-      },
-      {
-        path: '',
-        redirectTo: 'my-fields',
-        pathMatch: 'full'
-      }
-    ]
-  },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-];
+    {
+      path: 'field-owner',
+      loadComponent: () => import('./Component/field-owner-dashboard/field-owner-dashboard').then(m => m.FieldOwnerDashboardComponent),
+      canActivate: [AuthGuard],
+      children: [
+        {
+          path: 'my-fields',
+          loadComponent: () => import('./Component/my-fields/my-fields').then(m => m.MyFieldsComponent)
+        },
+        {
+          path: 'add-field',
+          loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
+        },
+        {
+          path: 'edit-field/:id',
+          loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
+        },
+        {
+          path: '',
+          redirectTo: 'my-fields',
+          pathMatch: 'full'
+        }
+      ]
+    },
+    {
+      path: 'admin',
+      loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
+      canActivate: [AdminGuard],
+    },

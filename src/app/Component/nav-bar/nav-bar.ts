@@ -29,4 +29,8 @@ export class NavBarComponent {
       }
     });
   }
+  get isAdmin(): boolean {
+  return this.authService.getUserRole() === 'Admin';
+}
+
 }

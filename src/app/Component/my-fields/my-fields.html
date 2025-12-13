@@ -70,10 +70,12 @@
           </div>
         </div>
 
-        <!-- Document Upload Notice (if no document) -->
-        <div *ngIf="!field.hasApprovalDocument" class="document-notice">
+        <!-- Document Upload Notice (no document or rejected) -->
+        <div *ngIf="!field.hasApprovalDocument || field.isApproved === false" class="document-notice">
           <span class="notice-icon">⚠️</span>
-          <span>Upload approval document to proceed with review</span>
+          <span>
+            {{ !field.hasApprovalDocument ? 'Upload approval document to proceed with review' : 'Previous document was rejected. Upload a new PDF to request review again.' }}
+          </span>
         </div>
 
         <div class="field-actions">
@@ -85,21 +87,30 @@
           </button>
           
           <!-- Show upload button only if no document uploaded yet -->
-          <div *ngIf="!field.hasApprovalDocument" class="upload-document">
-            <label [for]="'doc-' + field.id" class="btn btn-primary btn-sm">
-              📄 Upload Document
+          <div *ngIf="!field.hasApprovalDocument || field.isApproved === false" class="upload-document">
+            <label [for]="'doc-' + field.id" class="btn btn-primary btn-sm" [class.loading]="uploadingDocId === field.id">
+              {{ uploadingDocId === field.id ? 'Uploading…' : '📄 Upload Document' }}
             </label>
             <input 
               [id]="'doc-' + field.id"
               type="file" 
               accept=".pdf"
               (change)="uploadDocument(field.id, $event)"
+              [disabled]="uploadingDocId === field.id"
               style="display: none;">
           </div>
 
           <!-- Show document status if uploaded -->
-          <div *ngIf="field.hasApprovalDocument" class="document-status">
-            <span class="doc-icon">✓</span> Document Uploaded
+          <div 
+            *ngIf="field.hasApprovalDocument" 
+            class="document-status"
+            [ngClass]="{
+              approved: field.isApproved === true,
+              pending: field.isApproved === null || field.isApproved === false
+            }">
+            <span class="doc-icon" *ngIf="field.isApproved === true">✅</span>
+            <span class="doc-icon" *ngIf="field.isApproved === null || field.isApproved === false">⏳</span>
+            {{ field.isApproved === true ? 'Document Approved' : 'Document Uploaded - Awaiting Review' }}
           </div>
 
           <button 

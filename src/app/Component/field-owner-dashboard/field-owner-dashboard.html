@@ -2,8 +2,17 @@
   <!-- Sidebar Navigation -->
   <aside class="dashboard-sidebar">
     <div class="sidebar-header">
-      <h2>Field Owner Dashboard</h2>
-      <p class="user-name">{{ currentUser?.name || 'Owner' }}</p>
+      <div class="avatar">{{ getInitials() }}</div>
+      <div>
+        <p class="eyebrow">Welcome back</p>
+        <h2>{{ getDisplayName() }}</h2>
+        <p class="user-meta" *ngIf="currentUser?.email">{{ currentUser?.email }}</p>
+      </div>
+    </div>
+
+    <div class="sidebar-badges">
+      <span class="badge success">Owner</span>
+      <span class="badge subtle" *ngIf="!isLoadingUser">{{ currentUser?.location || 'Managing pitches' }}</span>
     </div>
     
     <nav class="sidebar-nav">
@@ -11,14 +20,14 @@
         [routerLink]="['/field-owner/my-fields']" 
         routerLinkActive="active"
         class="nav-item">
-        <i class="icon-fields"></i>
+        <span class="nav-icon">🏟️</span>
         <span>My Fields</span>
       </a>
       <a 
         [routerLink]="['/field-owner/add-field']" 
         routerLinkActive="active"
         class="nav-item">
-        <i class="icon-add"></i>
+        <span class="nav-icon">✨</span>
         <span>Add New Field</span>
       </a>
     </nav>
@@ -26,6 +35,84 @@
 
   <!-- Main Content Area -->
   <main class="dashboard-main">
-    <router-outlet></router-outlet>
+    <section class="dashboard-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Control Center</p>
+        <h1>Field Owner Dashboard</h1>
+        <p class="lede">Track approvals, update listings, and publish new pitches without leaving this page.</p>
+        <div class="hero-actions">
+          <a [routerLink]="['/field-owner/add-field']" class="btn primary">➕ Add a Field</a>
+          <a [routerLink]="['/field-owner/my-fields']" class="btn ghost">📂 Manage My Fields</a>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="panel-row">
+          <span class="pill live" *ngIf="!isLoadingStats && !statsError">Live overview</span>
+          <span class="pill warning" *ngIf="statsError">{{ statsError }}</span>
+          <span class="pill muted" *ngIf="isLoadingStats">Loading overview…</span>
+        </div>
+        <div class="panel-grid">
+          <div class="metric">
+            <p>Total fields</p>
+            <h3>{{ stats.total }}</h3>
+          </div>
+          <div class="metric">
+            <p>Approved</p>
+            <h3>{{ stats.approved }}</h3>
+          </div>
+          <div class="metric">
+            <p>Pending review</p>
+            <h3>{{ stats.pending }}</h3>
+          </div>
+          <div class="metric">
+            <p>Document needed</p>
+            <h3>{{ stats.documentRequired }}</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid" *ngIf="!isLoadingStats">
+      <div class="stat-card highlight">
+        <div class="stat-card__header">
+          <span class="icon">📈</span>
+          <span class="label">Approved fields</span>
+        </div>
+        <p class="value">{{ stats.approved }}</p>
+        <p class="hint">Visible to players and ready for bookings.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__header">
+          <span class="icon">⏳</span>
+          <span class="label">Pending review</span>
+        </div>
+        <p class="value">{{ stats.pending }}</p>
+        <p class="hint">We will notify you once an admin finishes the review.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card__header">
+          <span class="icon">📄</span>
+          <span class="label">Documents needed</span>
+        </div>
+        <p class="value">{{ stats.documentRequired }}</p>
+        <p class="hint">Upload approval PDFs so your pitches can be verified.</p>
+      </div>
+    </section>
+
+    <div class="content-card">
+      <div class="content-card__header">
+        <div class="title">
+          <span class="pulse"></span>
+          Live management
+        </div>
+        <div class="context">
+          <span class="pill muted" *ngIf="!isLoadingStats">{{ stats.total }} total • {{ stats.approved }} approved</span>
+        </div>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
   </main>
 </div>

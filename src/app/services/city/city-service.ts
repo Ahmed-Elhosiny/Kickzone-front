@@ -29,4 +29,15 @@ export class CityService {
       })
     );
   }
+  deleteCity(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
+addCity(city: { name: string }): Observable<ICity> {
+    return this.http.post<ICity>(this.apiUrl, city).pipe(
+      catchError((error) => {
+        console.error('Failed to add city:', error);
+        return of({ id: 0, name: city.name, fieldsCount: 0 } as ICity);
+      })
+    );
+  }
 }

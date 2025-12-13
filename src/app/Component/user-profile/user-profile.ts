@@ -84,7 +84,7 @@ export class UserProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const isAuth = this.authService.isAuthenticated();
     const allKeys = Object.keys(localStorage);
-    
+
     console.log('===========================================');
     console.log('🔍 PROFILE COMPONENT - AUTHENTICATION CHECK');
     console.log('===========================================');
@@ -93,7 +93,7 @@ export class UserProfileComponent implements OnInit {
     console.log('All localStorage keys:', allKeys);
     console.log('Token key exists:', allKeys.includes('access_token'));
     console.log('Refresh token exists:', allKeys.includes('refresh_token'));
-    
+
     if (token) {
       console.log('Token preview:', token.substring(0, 50) + '...');
     } else {
@@ -101,17 +101,17 @@ export class UserProfileComponent implements OnInit {
       console.error('➡️  You must LOGIN first before accessing profile');
     }
     console.log('===========================================');
-    
+
     if (!token || !isAuth) {
       console.warn('⚠️  Redirecting to login page...');
-      this.snackBar.open('🔒 Please login first to view your profile', 'Close', { 
+      this.snackBar.open('🔒 Please login first to view your profile', 'Close', {
         duration: 5000,
         panelClass: ['error-snackbar']
       });
       this.router.navigate(['/login']);
       return;
     }
-    
+
     console.log('✅ Authentication OK - Loading profile...');
     this.loadUserProfile();
   }
@@ -137,12 +137,12 @@ export class UserProfileComponent implements OnInit {
         console.error('Error URL:', err?.url);
         console.error('Redirected:', err?.redirected);
         console.error('Error details:', err?.error);
-        
+
         this.loading.set(false);
-        
+
         let errorMessage = 'Failed to load profile';
         let shouldLogout = false;
-        
+
         // Check if backend redirected to /Account/Login (misconfigured authentication)
         if (err?.url?.includes('/Account/Login') || err?.redirected) {
           errorMessage = '⚠️ Backend authentication misconfigured. Please check BACKEND_FIX.md in project root.';
@@ -156,14 +156,16 @@ export class UserProfileComponent implements OnInit {
         } else if (err?.error?.message) {
           errorMessage = err.error.message;
         }
-        
+
+
         this.snackBar.open(errorMessage, '×', {
+
           duration: 8000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
         });
-        
+
         if (shouldLogout) {
           setTimeout(() => {
             this.authService.logout();
@@ -315,7 +317,7 @@ export class UserProfileComponent implements OnInit {
           panelClass: ['success-snackbar'],
         });
         this.changeEmailForm.reset();
-        
+
         // Reset the flag after 60 seconds
         setTimeout(() => {
           this.emailChangeRequested.set(false);

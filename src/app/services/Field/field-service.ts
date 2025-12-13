@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -123,10 +123,15 @@ export class FieldService {
   }
 
   // Upload field document
-  uploadFieldDocument(fieldId: number, document: File): Observable<any> {
+  uploadFieldDocument(fieldId: number, document: File): Observable<HttpResponse<string>> {
     const formData = new FormData();
-    formData.append('document', document, document.name);
-    
-    return this.http.post(`${this.apiUrl}/${fieldId}/Document`, formData);
+    // Backend expects the form key to be named "file" (IFormFile file)
+    formData.append('file', document, document.name);
+
+    // Expecting 201 Created with optional empty body, so accept text to avoid JSON parse errors.
+    return this.http.post(`${this.apiUrl}/${fieldId}/Document`, formData, {
+      observe: 'response',
+      responseType: 'text'
+    });
   }
 }

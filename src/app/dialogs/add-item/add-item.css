@@ -1,0 +1,76 @@
+/* Dialog Container */
+:host ::ng-deep .mat-mdc-dialog-container {
+  border-radius: 14px !important;
+  padding: 0 !important;
+}
+
+/* Title */
+h2[mat-dialog-title] {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 20px 24px;
+  margin: 0;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+/* Content Area */
+mat-dialog-content {
+  padding: 20px 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Form Field */
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 5px;
+}
+
+/* Input Text */
+input[matInput] {
+  font-size: 15px;
+}
+
+/* Actions Section */
+mat-dialog-actions {
+  padding: 12px 24px !important;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Cancel Button */
+button[mat-stroked-button] {
+  border-radius: 6px !important;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+/* Main Button (Add) */
+button[mat-flat-button] {
+  border-radius: 6px !important;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  h2[mat-dialog-title] {
+    font-size: 18px;
+    padding: 16px;
+  }
+
+  mat-dialog-content {
+    padding: 16px !important;
+  }
+
+  mat-dialog-actions {
+    padding: 10px 16px !important;
+  }
+}

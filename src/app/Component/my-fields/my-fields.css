@@ -206,6 +206,18 @@
   justify-content: center;
 }
 
+.document-status.pending {
+  background: #fff3cd;
+  border-color: #ffe69c;
+  color: #8c6d1f;
+}
+
+.document-status.approved {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
 .doc-icon {
   font-size: 1rem;
   font-weight: bold;
@@ -304,6 +316,23 @@
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   flex: 1;
+}
+
+.btn.loading {
+  opacity: 0.75;
+  cursor: progress;
+  position: relative;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  animation: spin 1s linear infinite;
+  pointer-events: none;
 }
 
 .upload-document {

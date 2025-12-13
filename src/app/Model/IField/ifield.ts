@@ -14,6 +14,7 @@ export interface IField {
   balance: number;
   isApproved: boolean | null;
   hasApprovalDocument: boolean;
+  approvalDocumentUrl?: string;
   categoryName: string;
   cityName: string;
   ownerName: string;

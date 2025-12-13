@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FieldService } from '../../services/Field/field-service';
 import { AuthService } from '../../auth/auth';
 import { IField } from '../../Model/IField/ifield';
+import { finalize, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-fields',
@@ -22,6 +23,7 @@ export class MyFieldsComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   deleteConfirmId: number | null = null;
+  uploadingDocId: number | null = null;
 
   ngOnInit(): void {
     this.loadOwnerFields();
@@ -87,19 +89,19 @@ export class MyFieldsComponent implements OnInit {
   getStatusClass(field: IField): string {
     // If no document uploaded yet, show pending document status
     if (!field.hasApprovalDocument) return 'status-pending-document';
-    // If document uploaded but not reviewed yet
-    if (field.isApproved === null) return 'status-pending';
-    // Otherwise show approved or rejected
-    return field.isApproved ? 'status-approved' : 'status-rejected';
+    // If document uploaded but not reviewed yet OR resubmitted after rejection
+    if (field.isApproved === null || field.isApproved === false) return 'status-pending';
+    // Otherwise show approved
+    return 'status-approved';
   }
 
   getStatusText(field: IField): string {
     // If no document uploaded yet
     if (!field.hasApprovalDocument) return 'Document Required';
-    // If document uploaded but not reviewed yet
-    if (field.isApproved === null) return 'Pending Review';
-    // Otherwise show approved or rejected
-    return field.isApproved ? 'Approved' : 'Rejected';
+    // If document uploaded but not reviewed yet or resubmitted
+    if (field.isApproved === null || field.isApproved === false) return 'Pending Review';
+    // Otherwise show approved
+    return 'Approved';
   }
 
   getMainImage(field: IField): string {
@@ -110,34 +112,61 @@ export class MyFieldsComponent implements OnInit {
   }
 
   uploadDocument(fieldId: number, event: any): void {
-    const file = event.target.files[0];
+    const inputEl = event.target as HTMLInputElement;
+    const file = inputEl?.files?.[0];
     if (file) {
       // Validate file type (PDF only)
-      if (file.type !== 'application/pdf') {
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      if (!isPdf) {
         this.errorMessage = 'Please upload a PDF document';
         setTimeout(() => {
           this.errorMessage = '';
         }, 3000);
+        if (inputEl) inputEl.value = '';
         return;
       }
 
-      this.fieldService.uploadFieldDocument(fieldId, file).subscribe({
-        next: () => {
-          this.successMessage = 'Document uploaded successfully. Awaiting admin review.';
-          // Reload fields to update status
-          this.loadOwnerFields();
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
-        },
-        error: (err) => {
-          console.error('Error uploading document:', err);
-          this.errorMessage = 'Failed to upload document';
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 3000);
-        }
-      });
+      this.uploadingDocId = fieldId;
+
+      this.fieldService
+        .uploadFieldDocument(fieldId, file)
+        .pipe(
+          timeout(20000),
+          finalize(() => {
+            this.uploadingDocId = null;
+            // reset input value so same file can be re-selected if needed
+            if (inputEl) inputEl.value = '';
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            if (res.status === 201 || res.status === 200) {
+              this.successMessage = 'Document uploaded successfully. Awaiting admin review.';
+              // Optimistically update the local list so status shows "Pending Review" right away
+              this.fields = this.fields.map(f =>
+                f.id === fieldId
+                  ? { ...f, hasApprovalDocument: true, isApproved: null }
+                  : f
+              );
+              this.loadOwnerFields();
+            } else {
+              this.errorMessage = `Unexpected response (${res.status}). Please try again.`;
+            }
+
+            setTimeout(() => {
+              this.successMessage = '';
+              this.errorMessage = '';
+            }, 3000);
+          },
+          error: (err) => {
+            console.error('Error uploading document:', err);
+            const message = err?.error?.message || err?.message || 'Failed to upload document';
+            this.errorMessage = message.includes('Timeout') ? 'Upload timed out. Please try again.' : message;
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 3000);
+          }
+        });
     }
   }
 }
