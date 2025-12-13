@@ -102,13 +102,14 @@ export class AdminPanelComponent implements OnInit {
     });
   }
 
-  openPdf(url: string) {
-    // Open the stored PDF in a new tab
+  openPdf(fieldId: number) {
+    // Open backend endpoint that streams the PDF directly
+    const url = `/api/Fields/${fieldId}/pdf`;
     window.open(url, '_blank');
   }
 
   downloadPdf(field: IField) {
-    // Hit backend download endpoint for the field PDF
+    // Explicit download endpoint — same as view for now
     const downloadUrl = `/api/Fields/${field.id}/pdf`;
     window.open(downloadUrl, '_blank');
   }
