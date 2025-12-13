@@ -134,10 +134,13 @@ export class TimeSlot implements OnInit {
         this.isBooking.set(false);
         if (newCart) {
           const snackBarRef = this.snackBar.open(
-            `✅ تمت إضافة الفترة ${this.getStartTime(slot)} إلى عربة الحجوزات!`,
+            `تمت إضافة الفترة ${this.getStartTime(slot)} إلى عربة الحجوزات!`,
             'عرض العربة',
             {
               duration: 8000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['success-snackbar'],
             }
           );
 
@@ -153,9 +156,14 @@ export class TimeSlot implements OnInit {
         } else {
 
           this.snackBar.open(
-            '⚠️ لا يمكن إضافة الفترة. قد تكون محجوزة للتو أو لديك تعارض.',
+            'لا يمكن إضافة الفترة. قد تكون محجوزة للتو أو لديك تعارض.',
             'إغلاق',
-            { duration: 7000 }
+            { 
+              duration: 7000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['warning-snackbar'],
+            }
           );
          
           this.fetchTimeSlotsForDay(
@@ -167,8 +175,11 @@ export class TimeSlot implements OnInit {
       error: (err) => {
         this.isBooking.set(false);
         console.error('Failed to add item to cart', err);
-        this.snackBar.open('❌ فشل في إضافة الفترة. يرجى التأكد من تسجيل الدخول.', 'إغلاق', {
+        this.snackBar.open('فشل في إضافة الفترة. يرجى التأكد من تسجيل الدخول.', 'إغلاق', {
           duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
         });
       },
     });
