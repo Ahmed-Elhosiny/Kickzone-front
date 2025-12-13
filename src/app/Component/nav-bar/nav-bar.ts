@@ -33,4 +33,8 @@ export class NavBarComponent {
   return this.authService.getUserRole() === 'Admin';
 }
 
+
+  cart(): void {
+    this.router.navigate(['/reservation-cart']);
+  }
 }

@@ -14,7 +14,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const token = auth.getToken();
 
   // Skip token for auth endpoints
-  const isAuthEndpoint = req.url.includes('/Auth/login') || 
+  const isAuthEndpoint = req.url.includes('/Auth/login') ||
                          req.url.includes('/Auth/register') ||
                          req.url.includes('/Auth/refresh');
 
