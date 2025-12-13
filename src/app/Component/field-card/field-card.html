@@ -1,33 +1,91 @@
-<div class="col-md-6 mb-4">
-  <div class="card shadow-sm h-100" [routerLink]="['/field', field()?.id]">
-    <div class="card-img-top text-center">
-      @if (field()?.fieldImages; as images) { @if (images.length > 0) {
-      <img
-        [src]="images[0].imageUrl"
-        alt="Field Image"
-        class="img-fluid rounded-top"
-        style="height: 220px; object-fit: cover; width: 100%"
-      />
-      } @else {
-      <img
-        [src]="defaultImage"
-        alt="Default Field Image"
-        class="img-fluid rounded-top"
-        style="height: 220px; object-fit: cover; width: 100%"
-      />
-      } }
-    </div>
-
-    <div class="card-body">
-      <h5 class="card-title">{{ field()?.name }}</h5>
-      <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill"></i> {{ field()?.location }}</p>
-
-      <p class="mb-1"><strong>Size:</strong> {{ field()?.size }}</p>
-      <p class="mb-1"><strong>Price Per Hour:</strong> {{ field()?.pricePerHour }}</p>
-    </div>
-
-    <div class="card-footer bg-white border-0 text-end">
-      <button class="btn btn-primary px-4">Book Now</button>
+<mat-card class="field-card" [routerLink]="['/field', field()?.id]">
+  <!-- Image Section -->
+  <div class="field-image-container">
+    <img 
+      mat-card-image 
+      [src]="fieldImage()" 
+      [alt]="field()?.name || 'Field Image'"
+      class="field-image"
+    />
+    
+    <!-- Approval Badge -->
+    @if (isApproved()) {
+      <div class="approval-badge" matTooltip="Verified Field">
+        <mat-icon class="verified-icon">verified</mat-icon>
+      </div>
+    }
+    
+    <!-- Category Badge -->
+    @if (field()?.categoryName) {
+      <div class="category-badge">
+        <mat-chip class="category-chip">{{ field()?.categoryName }}</mat-chip>
+      </div>
+    }
+    
+    <!-- Image Overlay -->
+    <div class="image-overlay">
+      <button mat-raised-button color="primary" class="book-now-btn">
+        <mat-icon>event</mat-icon>
+        <span>Book Now</span>
+      </button>
     </div>
   </div>
-</div>
+
+  <!-- Content Section -->
+  <mat-card-content class="field-content">
+    <!-- Field Name -->
+    <h3 class="field-name">{{ field()?.name }}</h3>
+    
+    <!-- Location -->
+    <div class="field-info-item">
+      <mat-icon class="info-icon">location_on</mat-icon>
+      <span class="info-text">{{ field()?.location }}</span>
+    </div>
+    
+    <!-- City -->
+    @if (field()?.cityName) {
+      <div class="field-info-item">
+        <mat-icon class="info-icon">location_city</mat-icon>
+        <span class="info-text">{{ field()?.cityName }}</span>
+      </div>
+    }
+    
+    <!-- Size -->
+    <div class="field-info-item">
+      <mat-icon class="info-icon">sports_soccer</mat-icon>
+      <span class="info-text">{{ sizeLabel() }}</span>
+    </div>
+    
+    <!-- Operating Hours -->
+    <div class="field-info-item">
+      <mat-icon class="info-icon">schedule</mat-icon>
+      <span class="info-text">{{ operatingHours() }}</span>
+    </div>
+    
+    <!-- Owner -->
+    @if (field()?.ownerName) {
+      <div class="field-info-item">
+        <mat-icon class="info-icon">person</mat-icon>
+        <span class="info-text">{{ field()?.ownerName }}</span>
+      </div>
+    }
+  </mat-card-content>
+
+  <!-- Footer Section -->
+  <mat-card-actions class="field-actions">
+    <div class="price-section">
+      <span class="price-label">Per Hour</span>
+      <span class="price-value">{{ priceFormatted() }}</span>
+    </div>
+    
+    <button 
+      mat-icon-button 
+      color="primary" 
+      matTooltip="View Details"
+      class="view-details-btn"
+      (click)="$event.stopPropagation()"
+    >
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
