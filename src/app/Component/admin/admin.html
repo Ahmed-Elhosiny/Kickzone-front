@@ -3,7 +3,8 @@
 <button class="btn add" (click)="addCity()"
   [disabled]="false">Add New City</button>
 <div class="card-grid">
-  <div class="card" *ngFor="let city of cities()">
+  @for (city of cities(); track city.id) {
+  <div class="card">
     <h3>{{ city.name }}</h3>
     <button
       class="btn delete"
@@ -18,13 +19,15 @@
       </p>
      }
   </div>
+  }
 </div>
 
 <!-- Categories -->
 <h2 class="section-title">Categories</h2>
 <button class="btn add" (click)="addCategory()" [disabled]="false">Add New Category</button>
 <div class="card-grid">
-  <div class="card" *ngFor="let category of categories()">
+  @for (category of categories(); track category.id) {
+  <div class="card">
     <h3>{{ category.name }}</h3>
     <button
       class="btn delete"
@@ -39,12 +42,14 @@
       </p>
      }
   </div>
+  }
 </div>
 
 <!-- Fields -->
 <h2 class="section-title">Fields</h2>
 <div class="card-grid">
-  <div class="card field-card" *ngFor="let field of fields()">
+  @for (field of fields(); track field.id) {
+  <div class="card field-card">
         @if (field.fieldImages.length) {
        <img
           [src]="field.fieldImages[0].imageUrl"
@@ -87,4 +92,5 @@
       </button>
     </div>
   </div>
+  }
 </div>
