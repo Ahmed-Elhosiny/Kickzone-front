@@ -169,4 +169,17 @@ export class AuthService {
       return null;
     }
   }
+
+  // Get user name from token
+  getUserName(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.name || payload.unique_name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || null;
+    } catch {
+      return null;
+    }
+  }
 }

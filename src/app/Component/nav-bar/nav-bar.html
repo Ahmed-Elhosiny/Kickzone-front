@@ -1,111 +1,256 @@
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
-  <div class="container">
+<mat-toolbar class="navbar" color="primary">
+  <div class="navbar-container">
+    <!-- Logo -->
     <a
-      class="navbar-brand fw-bold fs-2 text-warning logo"
+      class="navbar-logo"
       [routerLink]="['/home']"
       aria-label="KickZone Home"
     >
-      KickZone
+      <mat-icon class="logo-icon">sports_soccer</mat-icon>
+      <span class="logo-text">KickZone</span>
     </a>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#mainNav"
-      aria-controls="mainNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Desktop Navigation -->
+    <nav class="navbar-nav desktop-nav">
+      <a
+        mat-button
+        class="nav-link"
+        [routerLink]="['/home']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        aria-label="Home page"
+      >
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </a>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav mx-lg-auto mb-2 mb-lg-0">
-        <li class="nav-item mx-lg-3">
-          <a
-            class="nav-link fw-bold fs-5"
-            [routerLink]="['/home']"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            aria-label="Home page"
-          >
-            Home
-          </a>
-        </li>
+      <a
+        mat-button
+        class="nav-link"
+        [routerLink]="['/result']"
+        routerLinkActive="active"
+        aria-label="Browse fields"
+      >
+        <mat-icon>search</mat-icon>
+        <span>Fields</span>
+      </a>
 
-        <li class="nav-item mx-lg-3">
-          <a
-            class="nav-link fw-bold fs-5"
-            [routerLink]="['/result']"
-            routerLinkActive="active"
-            aria-label="Search results"
-          >
-            Fields
-          </a>
-        </li>
-        @if (authService.getUserRole() === 'Admin') {
-        <li class="nav-item mx-lg-3">
-          <a
-            [routerLink]="['/admin']"
-            class="nav-link fw-bold fs-5"
-            aria-label="Admin Panel"
-            routerLinkActive="active"
-          >
-            Admin Panel
-          </a>
-        </li>
-        }
-      </ul>
-
-      <div class="auth-section d-flex align-items-center gap-3">
-        <button
-          class="btn reservatinList p-0 me-3 position-relative"
-          (click)="cart()"
-          aria-label="Reservation List"
-          title="Reservation List"
+      @if (isAdmin()) {
+        <a
+          mat-button
+          class="nav-link"
+          [routerLink]="['/admin']"
+          routerLinkActive="active"
+          aria-label="Admin Panel"
         >
-          <i class="bi bi-journal-check fs-4 text-warning"></i>
-        </button>
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Admin</span>
+        </a>
+      }
+    </nav>
 
-        @if (!isAuthenticated) {
-        <a [routerLink]="['/login']" class="btn-auth btn-login" aria-label="Login to your account">
+    <!-- Spacer -->
+    <span class="navbar-spacer"></span>
+
+    <!-- Desktop Actions -->
+    <div class="navbar-actions desktop-actions">
+      <!-- Cart Button -->
+      <button
+        mat-icon-button
+        class="cart-button"
+        (click)="navigateToCart()"
+        aria-label="Reservation Cart"
+        matTooltip="View Reservations"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
+
+      @if (!isAuthenticated()) {
+        <!-- Guest Actions -->
+        <a
+          mat-stroked-button
+          class="btn-login"
+          [routerLink]="['/login']"
+          aria-label="Login to your account"
+        >
+          <mat-icon>login</mat-icon>
           Login
         </a>
         <a
+          mat-raised-button
+          color="accent"
+          class="btn-register"
           [routerLink]="['/register']"
-          class="btn-auth btn-register"
           aria-label="Create new account"
         >
+          <mat-icon>person_add</mat-icon>
           Sign Up
         </a>
+      } @else {
+        <!-- Authenticated User Menu -->
+        <button
+          mat-button
+          [matMenuTriggerFor]="userMenu"
+          class="user-menu-trigger"
+          aria-label="User menu"
+        >
+          <mat-icon>account_circle</mat-icon>
+          <span class="user-name">{{ userName() }}</span>
+          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #userMenu="matMenu" class="user-dropdown">
+          <div class="user-info">
+            <mat-icon>account_circle</mat-icon>
+            <div>
+              <p class="user-name-display">{{ userName() }}</p>
+              <p class="user-role">{{ userRole() }}</p>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item [routerLink]="['/field-owner/my-fields']">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </button>
+          
+          <button mat-menu-item [routerLink]="['/profile']">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button 
+            mat-menu-item 
+            (click)="logout()"
+            [disabled]="isLoggingOut()"
+            class="logout-item"
+          >
+            <mat-icon>logout</mat-icon>
+            <span>{{ isLoggingOut() ? 'Logging out...' : 'Logout' }}</span>
+          </button>
+        </mat-menu>
+      }
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      mat-icon-button
+      class="mobile-menu-button"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle navigation menu"
+    >
+      <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- Mobile Navigation -->
+  @if (mobileMenuOpen()) {
+    <div class="mobile-nav" (click)="closeMobileMenu()">
+      <nav class="mobile-nav-links">
+        <a
+          mat-button
+          class="nav-link"
+          [routerLink]="['/home']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+
+        <a
+          mat-button
+          class="nav-link"
+          [routerLink]="['/result']"
+          routerLinkActive="active"
+        >
+          <mat-icon>search</mat-icon>
+          <span>Fields</span>
+        </a>
+
+        <a
+          mat-button
+          class="nav-link"
+          (click)="navigateToCart()"
+        >
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Reservations</span>
+        </a>
+
+        @if (isAdmin()) {
+          <a
+            mat-button
+            class="nav-link"
+            [routerLink]="['/admin']"
+            routerLinkActive="active"
+          >
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Admin Panel</span>
+          </a>
+        }
+
+        <mat-divider></mat-divider>
+
+        @if (!isAuthenticated()) {
+          <a
+            mat-stroked-button
+            class="mobile-action-btn btn-login"
+            [routerLink]="['/login']"
+          >
+            <mat-icon>login</mat-icon>
+            Login
+          </a>
+          <a
+            mat-raised-button
+            color="accent"
+            class="mobile-action-btn btn-register"
+            [routerLink]="['/register']"
+          >
+            <mat-icon>person_add</mat-icon>
+            Sign Up
+          </a>
         } @else {
-          <div class="user-menu">
+          <div class="mobile-user-section">
+            <div class="mobile-user-info">
+              <mat-icon>account_circle</mat-icon>
+              <div>
+                <p class="mobile-user-name">{{ userName() }}</p>
+                <p class="mobile-user-role">{{ userRole() }}</p>
+              </div>
+            </div>
+            
             <a
+              mat-button
+              class="nav-link"
               [routerLink]="['/field-owner/my-fields']"
-              class="btn-auth btn-dashboard"
-              routerLinkActive="active"
-              aria-label="Field Owner Dashboard"
             >
-              Dashboard
+              <mat-icon>dashboard</mat-icon>
+              <span>Dashboard</span>
             </a>
+            
             <a
+              mat-button
+              class="nav-link"
               [routerLink]="['/profile']"
-              class="btn-auth btn-profile"
-              aria-label="View your profile"
             >
-              Profile
+              <mat-icon>person</mat-icon>
+              <span>Profile</span>
             </a>
+            
             <button
-              class="btn-auth btn-logout"
+              mat-stroked-button
+              class="mobile-action-btn btn-logout"
               (click)="logout()"
-              aria-label="Logout from your account"
+              [disabled]="isLoggingOut()"
             >
-              Logout
+              <mat-icon>logout</mat-icon>
+              <span>{{ isLoggingOut() ? 'Logging out...' : 'Logout' }}</span>
             </button>
           </div>
         }
-      </div>
+      </nav>
     </div>
-  </div>
-</nav>
+  }
+</mat-toolbar>
