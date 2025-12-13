@@ -104,13 +104,13 @@ export class AdminPanelComponent implements OnInit {
 
   openPdf(fieldId: number) {
     // Open backend endpoint that streams the PDF directly
-    const url = `/api/Fields/${fieldId}/pdf`;
+    const url = `https://localhost:7263/api/Fields/${fieldId}/pdf`;
     window.open(url, '_blank');
   }
 
   downloadPdf(field: IField) {
     // Explicit download endpoint — same as view for now
-    const downloadUrl = `/api/Fields/${field.id}/pdf`;
+    const downloadUrl = `https://localhost:7263/api/Fields/${field.id}/pdf`;
     window.open(downloadUrl, '_blank');
   }
  addCity() {
