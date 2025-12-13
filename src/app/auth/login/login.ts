@@ -67,7 +67,7 @@ export class LoginComponent {
         console.log('Is authenticated:', this.auth.isAuthenticated());
         console.log('=========================');
         
-        this.snackBar.open('✓ Login successful! Welcome back', '×', {
+        this.snackBar.open('Login successful! Welcome back', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -92,7 +92,7 @@ export class LoginComponent {
         }
         
         this.serverError = errorMessage;
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
