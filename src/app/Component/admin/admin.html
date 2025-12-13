@@ -60,10 +60,10 @@
       {{ field.isApproved ? 'Approved' : 'Pending' }}
     </span>
 
-    @if (field.documentUrl) {
+    @if (field.hasApprovalDocument) {
       <button
         class="btn pdf"
-        (click)="openPdf(field.documentUrl)">
+        (click)="openPdf(field.id)">
          View Document
       </button>
 
