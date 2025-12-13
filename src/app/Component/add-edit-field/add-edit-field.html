@@ -5,12 +5,16 @@
   </div>
 
   <!-- Success/Error Messages -->
-  <div *ngIf="successMessage" class="alert alert-success">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-error">
-    {{ errorMessage }}
-  </div>
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
 
   <form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" class="field-form">
     
@@ -26,10 +30,16 @@
           formControlName="name"
           placeholder="Enter field name"
           [class.error]="f['name'].invalid && f['name'].touched">
-        <div *ngIf="f['name'].invalid && f['name'].touched" class="error-message">
-          <span *ngIf="f['name'].errors?.['required']">Field name is required</span>
-          <span *ngIf="f['name'].errors?.['minlength']">Field name must be at least 3 characters</span>
-        </div>
+        @if (f['name'].invalid && f['name'].touched) {
+          <div class="error-message">
+            @if (f['name'].errors?.['required']) {
+              <span>Field name is required</span>
+            }
+            @if (f['name'].errors?.['minlength']) {
+              <span>Field name must be at least 3 characters</span>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-row">
@@ -44,9 +54,11 @@
               {{ category.name }}
             </option>
           </select>
-          <div *ngIf="f['categoryId'].invalid && f['categoryId'].touched" class="error-message">
-            Category is required
-          </div>
+          @if (f['categoryId'].invalid && f['categoryId'].touched) {
+            <div class="error-message">
+              Category is required
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -60,9 +72,11 @@
               {{ city.name }}
             </option>
           </select>
-          <div *ngIf="f['cityId'].invalid && f['cityId'].touched" class="error-message">
-            City is required
-          </div>
+          @if (f['cityId'].invalid && f['cityId'].touched) {
+            <div class="error-message">
+              City is required
+            </div>
+          }
         </div>
       </div>
     </section>
@@ -79,10 +93,16 @@
           rows="3"
           placeholder="Enter field address"
           [class.error]="f['location'].invalid && f['location'].touched"></textarea>
-        <div *ngIf="f['location'].invalid && f['location'].touched" class="error-message">
-          <span *ngIf="f['location'].errors?.['required']">Address is required</span>
-          <span *ngIf="f['location'].errors?.['minlength']">Address must be at least 5 characters</span>
-        </div>
+        @if (f['location'].invalid && f['location'].touched) {
+          <div class="error-message">
+            @if (f['location'].errors?.['required']) {
+              <span>Address is required</span>
+            }
+            @if (f['location'].errors?.['minlength']) {
+              <span>Address must be at least 5 characters</span>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-group">
@@ -111,9 +131,11 @@
               {{ size.label }}
             </option>
           </select>
-          <div *ngIf="f['size'].invalid && f['size'].touched" class="error-message">
-            Field size is required
-          </div>
+          @if (f['size'].invalid && f['size'].touched) {
+            <div class="error-message">
+              Field size is required
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -125,10 +147,16 @@
             min="0"
             placeholder="0.00"
             [class.error]="f['pricePerHour'].invalid && f['pricePerHour'].touched">
-          <div *ngIf="f['pricePerHour'].invalid && f['pricePerHour'].touched" class="error-message">
-            <span *ngIf="f['pricePerHour'].errors?.['required']">Price is required</span>
-            <span *ngIf="f['pricePerHour'].errors?.['min']">Price must be 0 or greater</span>
-          </div>
+          @if (f['pricePerHour'].invalid && f['pricePerHour'].touched) {
+            <div class="error-message">
+              @if (f['pricePerHour'].errors?.['required']) {
+                <span>Price is required</span>
+              }
+              @if (f['pricePerHour'].errors?.['min']) {
+                <span>Price must be 0 or greater</span>
+              }
+            </div>
+          }
         </div>
       </div>
 
@@ -144,9 +172,11 @@
               {{ hour }}:00
             </option>
           </select>
-          <div *ngIf="f['openAt'].invalid && f['openAt'].touched" class="error-message">
-            Opening hour is required
-          </div>
+          @if (f['openAt'].invalid && f['openAt'].touched) {
+            <div class="error-message">
+              Opening hour is required
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -160,9 +190,11 @@
               {{ hour }}:00
             </option>
           </select>
-          <div *ngIf="f['closeAt'].invalid && f['closeAt'].touched" class="error-message">
-            Closing hour is required
-          </div>
+          @if (f['closeAt'].invalid && f['closeAt'].touched) {
+            <div class="error-message">
+              Closing hour is required
+            </div>
+          }
         </div>
       </div>
     </section>
@@ -172,31 +204,35 @@
       <h2>Images</h2>
       
       <!-- Existing Images (Edit Mode) -->
-      <div *ngIf="isEditMode && existingImages.length > 0" class="existing-images">
-        <h3>Current Images</h3>
-        <div class="image-grid">
-          <div *ngFor="let image of existingImages" class="image-item" 
-               [class.marked-delete]="isMarkedForDeletion(image.id)">
-            <img [src]="image.imageUrl" [alt]="'Field image'">
-            <div class="image-actions">
-              <button 
-                type="button" 
-                *ngIf="!isMarkedForDeletion(image.id)"
-                (click)="markImageForDeletion(image.id)"
-                class="btn-delete">
-                Remove
-              </button>
-              <button 
-                type="button" 
-                *ngIf="isMarkedForDeletion(image.id)"
-                (click)="unmarkImageForDeletion(image.id)"
-                class="btn-undo">
-                Undo
-              </button>
+      @if (isEditMode && existingImages.length > 0) {
+        <div class="existing-images">
+          <h3>Current Images</h3>
+          <div class="image-grid">
+            <div *ngFor="let image of existingImages" class="image-item" 
+                 [class.marked-delete]="isMarkedForDeletion(image.id)">
+              <img [src]="image.imageUrl" [alt]="'Field image'">
+              <div class="image-actions">
+                @if (!isMarkedForDeletion(image.id)) {
+                  <button 
+                    type="button" 
+                    (click)="markImageForDeletion(image.id)"
+                    class="btn-delete">
+                    Remove
+                  </button>
+                }
+                @if (isMarkedForDeletion(image.id)) {
+                  <button 
+                    type="button" 
+                    (click)="unmarkImageForDeletion(image.id)"
+                    class="btn-undo">
+                    Undo
+                  </button>
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
 
       <!-- New Images Upload -->
       <div class="form-group">
@@ -214,20 +250,22 @@
       </div>
 
       <!-- New Images Preview -->
-      <div *ngIf="imagePreviewUrls.length > 0" class="image-preview">
-        <h3>New Images</h3>
-        <div class="image-grid">
-          <div *ngFor="let url of imagePreviewUrls; let i = index" class="image-item">
-            <img [src]="url" alt="Preview">
-            <button 
-              type="button" 
-              (click)="removeNewImage(i)"
-              class="btn-remove">
-              ✕
-            </button>
+      @if (imagePreviewUrls.length > 0) {
+        <div class="image-preview">
+          <h3>New Images</h3>
+          <div class="image-grid">
+            <div *ngFor="let url of imagePreviewUrls; let i = index" class="image-item">
+              <img [src]="url" alt="Preview">
+              <button 
+                type="button" 
+                (click)="removeNewImage(i)"
+                class="btn-remove">
+                ✕
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </section>
 
     <!-- Form Actions -->
