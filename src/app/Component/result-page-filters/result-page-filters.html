@@ -1,38 +1,21 @@
-<mat-card class="filters-card">
-  <!-- Header with Active Filter Count -->
-  <div class="filters-header">
-    <div class="header-content">
-      <mat-icon class="header-icon">filter_list</mat-icon>
-      <h3 class="header-title">Filters</h3>
-      @if (activeFilterCount() > 0) {
-        <mat-chip class="active-count-chip">{{ activeFilterCount() }}</mat-chip>
-      }
-    </div>
-    
+<div class="filters-sidebar">
+  <!-- Header -->
+  <div class="sidebar-header">
+    <h3>Filters</h3>
     @if (hasActiveFilters()) {
-      <button 
-        mat-button 
-        color="warn" 
-        class="clear-all-btn"
-        (click)="clearAllFilters()"
-      >
-        <mat-icon>clear_all</mat-icon>
+      <button mat-button (click)="clearAllFilters()" class="clear-btn">
         Clear All
       </button>
     }
   </div>
 
-  <mat-divider></mat-divider>
-
-  <!-- Search Filter -->
-  <div class="filter-section">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Search Fields</mat-label>
-      <mat-icon matPrefix>search</mat-icon>
+  <!-- Search -->
+  <div class="filter-group">
+    <label class="filter-label">Search</label>
+    <mat-form-field appearance="outline" class="filter-input">
       <input 
         matInput 
-        type="text"
-        placeholder="Search by name or location..."
+        placeholder="Search fields..."
         [value]="searchText()"
         (input)="updateSearchFilter($any($event.target).value)"
       />
@@ -44,22 +27,10 @@
     </mat-form-field>
   </div>
 
-  <mat-divider></mat-divider>
-
-  <!-- Size Filter -->
-  <div class="filter-section">
-    <div class="filter-label">
-      <mat-icon>sports_soccer</mat-icon>
-      <span>Field Size</span>
-      @if (selectedSize()) {
-        <button mat-icon-button class="clear-filter-btn" (click)="clearSizeFilter()">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-    </div>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Select Size</mat-label>
+  <!-- Size -->
+  <div class="filter-group">
+    <label class="filter-label">Field Size</label>
+    <mat-form-field appearance="outline" class="filter-input">
       <mat-select 
         [value]="selectedSize()"
         (valueChange)="updateSizeFilter($event)"
@@ -73,63 +44,43 @@
     </mat-form-field>
   </div>
 
-  <mat-divider></mat-divider>
-
-  <!-- Price Range Filter -->
-  <div class="filter-section">
-    <div class="filter-label">
-      <mat-icon>payments</mat-icon>
-      <span>Price Range</span>
-      @if (minPriceValue() !== 0 || maxPriceValue() !== 1000) {
-        <button mat-icon-button class="clear-filter-btn" (click)="clearPriceFilter()">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
+  <!-- Price Range -->
+  <div class="filter-group">
+    <label class="filter-label">Price Range</label>
+    
+    <div class="price-display">
+      {{ minPriceValue() }} - {{ maxPriceValue() }} EGP
     </div>
 
-    <div class="price-range-display">
-      <span class="price-value">{{ priceRange() }}</span>
-    </div>
+    <div class="price-inputs">
+      <mat-form-field appearance="outline" class="price-field">
+        <mat-label>Min</mat-label>
+        <input 
+          matInput 
+          type="number"
+          min="0"
+          max="1000"
+          [value]="minPriceValue()"
+          (input)="updateMinPriceFilter($any($event.target).valueAsNumber)"
+        />
+      </mat-form-field>
 
-    <div class="price-sliders">
-      <!-- Min Price Slider -->
-      <div class="slider-container">
-        <label class="slider-label">Min Price: {{ minPriceValue() }} EGP</label>
-        <mat-slider 
-          min="0" 
-          max="1000" 
-          step="10"
-          showTickMarks
-          discrete
-        >
-          <input 
-            matSliderThumb
-            [value]="minPriceValue()"
-            (valueChange)="updateMinPriceFilter($event)"
-          />
-        </mat-slider>
-      </div>
+      <span class="price-separator">-</span>
 
-      <!-- Max Price Slider -->
-      <div class="slider-container">
-        <label class="slider-label">Max Price: {{ maxPriceValue() }} EGP</label>
-        <mat-slider 
-          min="0" 
-          max="1000" 
-          step="10"
-          showTickMarks
-          discrete
-        >
-          <input 
-            matSliderThumb
-            [value]="maxPriceValue()"
-            (valueChange)="updateMaxPriceFilter($event)"
-          />
-        </mat-slider>
-      </div>
+      <mat-form-field appearance="outline" class="price-field">
+        <mat-label>Max</mat-label>
+        <input 
+          matInput 
+          type="number"
+          min="0"
+          max="1000"
+          [value]="maxPriceValue()"
+          (input)="updateMaxPriceFilter($any($event.target).valueAsNumber)"
+        />
+      </mat-form-field>
     </div>
   </div>
-</mat-card>
+</div>
 
 
 
