@@ -1,16 +1,26 @@
 <h2 mat-dialog-title>{{ data.title }}</h2>
 
 <mat-dialog-content class="py-2">
-  <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Name</mat-label>
-    <input matInput [formControl]="name" />
-    @if (name.invalid) {
-      <mat-error>Name is required</mat-error>
-    }
-  </mat-form-field>
+  @if (isConfirmation) {
+    <p style="margin: 16px 0; font-size: 14px; color: #555;">
+      {{ data.message }}
+    </p>
+  } @else {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Name</mat-label>
+      <input matInput [formControl]="name" />
+      @if (name.invalid) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions [style.align]="['end']">
-  <button mat-stroked-button mat-dialog-close>Cancel</button>
-  <button mat-flat-button color="primary" (click)="submit()">Add</button>
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  @if (isConfirmation) {
+    <button mat-flat-button color="warn" (click)="submit()">Confirm</button>
+  } @else {
+    <button mat-flat-button color="primary" (click)="submit()">Add</button>
+  }
 </mat-dialog-actions>
