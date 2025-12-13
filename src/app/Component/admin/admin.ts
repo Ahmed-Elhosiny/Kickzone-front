@@ -102,14 +102,8 @@ export class AdminPanelComponent implements OnInit {
     });
   }
 
-  openPdf(fieldId: number) {
-    // Open backend endpoint that streams the PDF directly
-    const url = `https://localhost:7263/api/Fields/${fieldId}/pdf`;
-    window.open(url, '_blank');
-  }
-
   downloadPdf(field: IField) {
-    // Explicit download endpoint — same as view for now
+    // Download PDF from backend
     const downloadUrl = `https://localhost:7263/api/Fields/${field.id}/pdf`;
     window.open(downloadUrl, '_blank');
   }

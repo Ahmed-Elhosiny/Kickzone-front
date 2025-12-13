@@ -63,12 +63,6 @@
     @if (field.hasApprovalDocument) {
       <button
         class="btn pdf"
-        (click)="openPdf(field.id)">
-         View Document
-      </button>
-
-      <button
-        class="btn pdf"
         (click)="downloadPdf(field)">
          Download Document
       </button>
