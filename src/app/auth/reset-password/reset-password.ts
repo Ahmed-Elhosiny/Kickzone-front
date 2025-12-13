@@ -108,7 +108,7 @@ export class ResetPasswordComponent implements OnInit {
         next: () => {
           this.resetSuccess = true;
           this.cdr.detectChanges();
-          this.snackBar.open('✓ Password updated! You can now login', '×', {
+          this.snackBar.open('Password updated! You can now login', 'Close', {
             duration: 4000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
@@ -125,7 +125,7 @@ export class ResetPasswordComponent implements OnInit {
             errorMessage = err.error.title;
           }
 
-          this.snackBar.open(errorMessage, '×', {
+          this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
