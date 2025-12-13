@@ -32,36 +32,38 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-<<<<<<< HEAD
     path: 'field-owner',
-    loadComponent: () => import('./Component/field-owner-dashboard/field-owner-dashboard').then(m => m.FieldOwnerDashboardComponent),
+    loadComponent: () =>
+      import('./Component/field-owner-dashboard/field-owner-dashboard').then(
+        (m) => m.FieldOwnerDashboardComponent
+      ),
     canActivate: [AuthGuard],
-    {
-      path: 'field-owner',
-      loadComponent: () => import('./Component/field-owner-dashboard/field-owner-dashboard').then(m => m.FieldOwnerDashboardComponent),
-      canActivate: [AuthGuard],
-      children: [
-        {
-          path: 'my-fields',
-          loadComponent: () => import('./Component/my-fields/my-fields').then(m => m.MyFieldsComponent)
-        },
-        {
-          path: 'add-field',
-          loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
-        },
-        {
-          path: 'edit-field/:id',
-          loadComponent: () => import('./Component/add-edit-field/add-edit-field').then(m => m.AddEditFieldComponent)
-        },
-        {
-          path: '',
-          redirectTo: 'my-fields',
-          pathMatch: 'full'
-        }
-      ]
-    },
-    {
-      path: 'admin',
-      loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
-      canActivate: [AdminGuard],
-    },
+    children: [
+      {
+        path: 'my-fields',
+        loadComponent: () => import('./Component/my-fields/my-fields').then((m) => m.MyFieldsComponent),
+      },
+      {
+        path: 'add-field',
+        loadComponent: () =>
+          import('./Component/add-edit-field/add-edit-field').then((m) => m.AddEditFieldComponent),
+      },
+      {
+        path: 'edit-field/:id',
+        loadComponent: () =>
+          import('./Component/add-edit-field/add-edit-field').then((m) => m.AddEditFieldComponent),
+      },
+      {
+        path: '',
+        redirectTo: 'my-fields',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
+    canActivate: [AdminGuard],
+  },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+];
