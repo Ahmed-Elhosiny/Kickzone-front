@@ -25,14 +25,18 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './login.css',
 })
 export class LoginComponent {
-  loginForm: FormGroup;
   loading = false;
   serverError: string | null = null;
   showPassword = false;
   private platformId = inject(PLATFORM_ID);
   private snackBar = inject(MatSnackBar);
+  private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  loginForm: FormGroup;
+
+  constructor() {
     this.loginForm = this.fb.group({
       emailOrUserName: ['', [Validators.required]],
       password: ['', [Validators.required]],
