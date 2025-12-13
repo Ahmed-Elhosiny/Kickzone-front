@@ -59,7 +59,7 @@ export class ForgotPasswordComponent {
         next: () => {
           this.emailSent = true;
           this.cdr.detectChanges();
-          this.snackBar.open('✓ Reset link sent! Check your email', '×', {
+          this.snackBar.open('Reset link sent! Check your email', 'Close', {
             duration: 4000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
@@ -74,7 +74,7 @@ export class ForgotPasswordComponent {
             errorMessage = err.error.message;
           }
           
-          this.snackBar.open(errorMessage, '×', {
+          this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
