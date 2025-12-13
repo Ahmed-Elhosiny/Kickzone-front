@@ -2,20 +2,26 @@
   <!-- Sidebar Navigation -->
   <aside class="dashboard-sidebar">
     <div class="sidebar-header">
-      <div class="avatar">{{ getInitials() }}</div>
+      <div class="avatar">{{ initials() }}</div>
       <div>
         <p class="eyebrow">Welcome back</p>
-        <h2>{{ getDisplayName() }}</h2>
-        @if (currentUser?.email) {
-          <p class="user-meta">{{ currentUser?.email }}</p>
+        <h2>{{ displayName() }}</h2>
+        @if (currentUser()?.email) {
+          <p class="user-meta">{{ currentUser()?.email }}</p>
         }
       </div>
     </div>
 
     <div class="sidebar-badges">
-      <span class="badge success">Owner</span>
-      @if (!isLoadingUser) {
-        <span class="badge subtle">{{ currentUser?.location || 'Managing pitches' }}</span>
+      <span class="badge success">
+        <mat-icon>store</mat-icon>
+        Owner
+      </span>
+      @if (!isLoadingUser()) {
+        <span class="badge subtle">
+          <mat-icon>location_on</mat-icon>
+          {{ currentUser()?.location || 'Managing pitches' }}
+        </span>
       }
     </div>
     
@@ -24,14 +30,14 @@
         [routerLink]="['/field-owner/my-fields']" 
         routerLinkActive="active"
         class="nav-item">
-        <span class="nav-icon">🏟️</span>
+        <mat-icon class="nav-icon">sports_soccer</mat-icon>
         <span>My Fields</span>
       </a>
       <a 
         [routerLink]="['/field-owner/add-field']" 
         routerLinkActive="active"
         class="nav-item">
-        <span class="nav-icon">✨</span>
+        <mat-icon class="nav-icon">add</mat-icon>
         <span>Add New Field</span>
       </a>
     </nav>
@@ -45,70 +51,87 @@
         <h1>Field Owner Dashboard</h1>
         <p class="lede">Track approvals, update listings, and publish new pitches without leaving this page.</p>
         <div class="hero-actions">
-          <a [routerLink]="['/field-owner/add-field']" class="btn primary">➕ Add a Field</a>
-          <a [routerLink]="['/field-owner/my-fields']" class="btn ghost">📂 Manage My Fields</a>
+          <a [routerLink]="['/field-owner/add-field']" mat-raised-button color="primary" class="btn primary">
+            <mat-icon>add</mat-icon>
+            Add a Field
+          </a>
+          <a [routerLink]="['/field-owner/my-fields']" mat-stroked-button class="btn ghost">
+            <mat-icon>folder</mat-icon>
+            Manage My Fields
+          </a>
         </div>
       </div>
 
       <div class="hero-panel">
         <div class="panel-row">
-          @if (!isLoadingStats && !statsError) {
-            <span class="pill live">Live overview</span>
+          @if (!isLoadingStats() && !statsError()) {
+            <span class="pill live">
+              <mat-icon>check_circle</mat-icon>
+              Live overview
+            </span>
           }
-          @if (statsError) {
-            <span class="pill warning">{{ statsError }}</span>
+          @if (statsError()) {
+            <span class="pill warning">
+              <mat-icon>error</mat-icon>
+              {{ statsError() }}
+            </span>
           }
-          @if (isLoadingStats) {
-            <span class="pill muted">Loading overview…</span>
+          @if (isLoadingStats()) {
+            <span class="pill muted">
+              <mat-spinner diameter="14" class="pill-spinner"></mat-spinner>
+              Loading overview…
+            </span>
           }
         </div>
+        @if (!isLoadingStats()) {
         <div class="panel-grid">
           <div class="metric">
             <p>Total fields</p>
-            <h3>{{ stats.total }}</h3>
+            <h3>{{ stats().total }}</h3>
           </div>
           <div class="metric">
             <p>Approved</p>
-            <h3>{{ stats.approved }}</h3>
+            <h3>{{ stats().approved }}</h3>
           </div>
           <div class="metric">
             <p>Pending review</p>
-            <h3>{{ stats.pending }}</h3>
+            <h3>{{ stats().pending }}</h3>
           </div>
           <div class="metric">
             <p>Document needed</p>
-            <h3>{{ stats.documentRequired }}</h3>
+            <h3>{{ stats().documentRequired }}</h3>
           </div>
         </div>
+        }
       </div>
     </section>
 
-    @if (!isLoadingStats) {
+    @if (!isLoadingStats()) {
       <section class="stats-grid">
         <div class="stat-card highlight">
           <div class="stat-card__header">
-            <span class="icon">📈</span>
+            <mat-icon class="icon">trending_up</mat-icon>
             <span class="label">Approved fields</span>
           </div>
-          <p class="value">{{ stats.approved }}</p>
+          <p class="value">{{ stats().approved }}</p>
           <p class="hint">Visible to players and ready for bookings.</p>
         </div>
 
         <div class="stat-card">
           <div class="stat-card__header">
-            <span class="icon">⏳</span>
+            <mat-icon class="icon">schedule</mat-icon>
             <span class="label">Pending review</span>
           </div>
-          <p class="value">{{ stats.pending }}</p>
+          <p class="value">{{ stats().pending }}</p>
           <p class="hint">We will notify you once an admin finishes the review.</p>
         </div>
 
         <div class="stat-card">
           <div class="stat-card__header">
-            <span class="icon">📄</span>
+            <mat-icon class="icon">description</mat-icon>
             <span class="label">Documents needed</span>
           </div>
-          <p class="value">{{ stats.documentRequired }}</p>
+          <p class="value">{{ stats().documentRequired }}</p>
           <p class="hint">Upload approval PDFs so your pitches can be verified.</p>
         </div>
       </section>
@@ -121,8 +144,8 @@
           Live management
         </div>
         <div class="context">
-          @if (!isLoadingStats) {
-            <span class="pill muted">{{ stats.total }} total • {{ stats.approved }} approved</span>
+          @if (!isLoadingStats()) {
+            <span class="pill muted">{{ stats().total }} total • {{ stats().approved }} approved</span>
           }
         </div>
       </div>
