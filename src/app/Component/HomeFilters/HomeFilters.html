@@ -1,71 +1,143 @@
-<mat-card class="card">
-  <mat-card-header class="pb-4 cardHeader">
-    <mat-card-title class="text-2xl font-bold text-gray-800 cardTitle">
-      Find <span class="word">Your</span> Play
-    </mat-card-title>
-    <p class="text">Book sports pitches and courts in Egypt</p>
+<mat-card class="filters-card">
+  <!-- Header Section -->
+  <mat-card-header class="filters-header">
+    <div class="header-content">
+      <mat-icon class="header-icon">search</mat-icon>
+      <div class="header-text">
+        <h2 class="filters-title">
+          Find <span class="highlight-word">Your</span> Perfect Field
+        </h2>
+        <p class="filters-subtitle">Book sports pitches and courts across Egypt</p>
+      </div>
+    </div>
   </mat-card-header>
-  <mat-card-content>
-    <form class="flex flex-col gap-6" #f="ngForm" (ngSubmit)="f.form.valid && applyFilter()">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Choose your sport</mat-label>
 
-        <!-- Icon -->
-        <mat-icon matPrefix>sports</mat-icon>
+  <!-- Content Section -->
+  <mat-card-content class="filters-content">
+    @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p class="loading-text">Loading options...</p>
+      </div>
+    } @else {
+      <!-- Filter Form -->
+      <form class="filters-form" #f="ngForm" (ngSubmit)="f.form.valid && applyFilter()">
+        <!-- Category Select -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Choose your sport</mat-label>
+          <mat-icon matPrefix class="field-prefix-icon">sports_soccer</mat-icon>
+          
+          <mat-select
+            [value]="selectedCategoryName()"
+            (valueChange)="selectedCategoryName.set($event)"
+            name="category"
+            #categorySelect="ngModel"
+            [ngModel]="selectedCategoryName()"
+            placeholder="Select sport category"
+            required
+          >
+            @for(cat of categories(); track cat.id) {
+              <mat-option [value]="cat.name">
+                <div class="option-content">
+                  <mat-icon class="option-icon">sports</mat-icon>
+                  <span>{{ cat.name }}</span>
+                </div>
+              </mat-option>
+            }
+          </mat-select>
 
-        <!-- (Category Select) -->
-        <mat-select
-          class="select"
-          [(ngModel)]="selectedCategoryName"
-          name="category"
-          #categorySelect="ngModel"
-          placeholder="Choose your sport"
-          required
-        >
-          @for(cat of categories(); track cat.id) {
-          <mat-option [value]="cat.name">
-            <div class="flex items-center gap-2">
-              <span class="text-base">{{ cat.name }}</span>
-            </div>
-          </mat-option>
+          @if (categorySelect.invalid && (categorySelect.touched || f.submitted)) {
+            <mat-error>
+              <mat-icon class="error-icon">error</mat-icon>
+              <span>Please choose your sport</span>
+            </mat-error>
           }
-        </mat-select>
+          
+          <mat-hint>{{ categoryCount() }} sports available</mat-hint>
+        </mat-form-field>
 
-        @if (categorySelect.invalid && (categorySelect.touched || f.submitted)) {
-        <mat-error> Choose your sport. </mat-error>
-        }
-      </mat-form-field>
+        <!-- City Select -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Select City</mat-label>
+          <mat-icon matPrefix class="field-prefix-icon">location_city</mat-icon>
 
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>City</mat-label>
+          <mat-select
+            [value]="selectedCityName()"
+            (valueChange)="selectedCityName.set($event)"
+            name="city"
+            [ngModel]="selectedCityName()"
+            placeholder="Select your city"
+            required
+            #citySelect="ngModel"
+          >
+            @for(city of cities(); track city.id) {
+              <mat-option [value]="city.name">
+                <div class="option-content">
+                  <mat-icon class="option-icon">place</mat-icon>
+                  <span>{{ city.name }}</span>
+                </div>
+              </mat-option>
+            }
+          </mat-select>
 
-        <!--Icon-->
-        <mat-icon matPrefix>near_me</mat-icon>
-
-        <!-- (City Select) -->
-        <mat-select
-          [(ngModel)]="selectedCityName"
-          name="city"
-          placeholder="City"
-          required
-          #citySelect="ngModel"
-        >
-          @for(city of cities(); track city.id) {
-          <mat-option [value]="city.name">
-            <mat-icon class="text-base text-gray-600">near_me</mat-icon>
-            <span class="text-base">{{ city.name }}</span>
-          </mat-option>
+          @if (citySelect.invalid && (citySelect.touched || f.submitted)) {
+            <mat-error>
+              <mat-icon class="error-icon">error</mat-icon>
+              <span>Location is required</span>
+            </mat-error>
           }
-        </mat-select>
+          
+          <mat-hint>{{ cityCount() }} cities available</mat-hint>
+        </mat-form-field>
 
-        @if (citySelect.invalid && (citySelect.touched || f.submitted)) {
-        <mat-error> Location is required. </mat-error>
-        }
-      </mat-form-field>
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="search-btn"
+            [disabled]="!canSearch()"
+            matTooltip="Search for available fields"
+          >
+            <mat-icon>search</mat-icon>
+            <span>Find Venues</span>
+          </button>
 
-      <button mat-flat-button type="submit" class="w-full h-12 custom-btn">
-        <span> Find Venue</span>
-      </button>
-    </form>
+          @if (canSearch()) {
+            <button 
+              mat-stroked-button 
+              type="button" 
+              class="clear-btn"
+              (click)="clearFilters()"
+              matTooltip="Clear all filters"
+            >
+              <mat-icon>clear</mat-icon>
+              <span>Clear</span>
+            </button>
+          }
+        </div>
+      </form>
+
+      <!-- Quick Stats -->
+      <div class="quick-stats">
+        <div class="stat-item">
+          <mat-icon class="stat-icon">sports</mat-icon>
+          <div class="stat-content">
+            <span class="stat-value">{{ categoryCount() }}</span>
+            <span class="stat-label">Sports</span>
+          </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <mat-icon class="stat-icon">location_on</mat-icon>
+          <div class="stat-content">
+            <span class="stat-value">{{ cityCount() }}</span>
+            <span class="stat-label">Cities</span>
+          </div>
+        </div>
+      </div>
+    }
   </mat-card-content>
 </mat-card>
