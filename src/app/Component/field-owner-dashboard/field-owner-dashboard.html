@@ -6,13 +6,17 @@
       <div>
         <p class="eyebrow">Welcome back</p>
         <h2>{{ getDisplayName() }}</h2>
-        <p class="user-meta" *ngIf="currentUser?.email">{{ currentUser?.email }}</p>
+        @if (currentUser?.email) {
+          <p class="user-meta">{{ currentUser?.email }}</p>
+        }
       </div>
     </div>
 
     <div class="sidebar-badges">
       <span class="badge success">Owner</span>
-      <span class="badge subtle" *ngIf="!isLoadingUser">{{ currentUser?.location || 'Managing pitches' }}</span>
+      @if (!isLoadingUser) {
+        <span class="badge subtle">{{ currentUser?.location || 'Managing pitches' }}</span>
+      }
     </div>
     
     <nav class="sidebar-nav">
@@ -48,9 +52,15 @@
 
       <div class="hero-panel">
         <div class="panel-row">
-          <span class="pill live" *ngIf="!isLoadingStats && !statsError">Live overview</span>
-          <span class="pill warning" *ngIf="statsError">{{ statsError }}</span>
-          <span class="pill muted" *ngIf="isLoadingStats">Loading overview…</span>
+          @if (!isLoadingStats && !statsError) {
+            <span class="pill live">Live overview</span>
+          }
+          @if (statsError) {
+            <span class="pill warning">{{ statsError }}</span>
+          }
+          @if (isLoadingStats) {
+            <span class="pill muted">Loading overview…</span>
+          }
         </div>
         <div class="panel-grid">
           <div class="metric">
@@ -73,34 +83,36 @@
       </div>
     </section>
 
-    <section class="stats-grid" *ngIf="!isLoadingStats">
-      <div class="stat-card highlight">
-        <div class="stat-card__header">
-          <span class="icon">📈</span>
-          <span class="label">Approved fields</span>
+    @if (!isLoadingStats) {
+      <section class="stats-grid">
+        <div class="stat-card highlight">
+          <div class="stat-card__header">
+            <span class="icon">📈</span>
+            <span class="label">Approved fields</span>
+          </div>
+          <p class="value">{{ stats.approved }}</p>
+          <p class="hint">Visible to players and ready for bookings.</p>
         </div>
-        <p class="value">{{ stats.approved }}</p>
-        <p class="hint">Visible to players and ready for bookings.</p>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-card__header">
-          <span class="icon">⏳</span>
-          <span class="label">Pending review</span>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="icon">⏳</span>
+            <span class="label">Pending review</span>
+          </div>
+          <p class="value">{{ stats.pending }}</p>
+          <p class="hint">We will notify you once an admin finishes the review.</p>
         </div>
-        <p class="value">{{ stats.pending }}</p>
-        <p class="hint">We will notify you once an admin finishes the review.</p>
-      </div>
 
-      <div class="stat-card">
-        <div class="stat-card__header">
-          <span class="icon">📄</span>
-          <span class="label">Documents needed</span>
+        <div class="stat-card">
+          <div class="stat-card__header">
+            <span class="icon">📄</span>
+            <span class="label">Documents needed</span>
+          </div>
+          <p class="value">{{ stats.documentRequired }}</p>
+          <p class="hint">Upload approval PDFs so your pitches can be verified.</p>
         </div>
-        <p class="value">{{ stats.documentRequired }}</p>
-        <p class="hint">Upload approval PDFs so your pitches can be verified.</p>
-      </div>
-    </section>
+      </section>
+    }
 
     <div class="content-card">
       <div class="content-card__header">
@@ -109,7 +121,9 @@
           Live management
         </div>
         <div class="context">
-          <span class="pill muted" *ngIf="!isLoadingStats">{{ stats.total }} total • {{ stats.approved }} approved</span>
+          @if (!isLoadingStats) {
+            <span class="pill muted">{{ stats.total }} total • {{ stats.approved }} approved</span>
+          }
         </div>
       </div>
       <router-outlet></router-outlet>
