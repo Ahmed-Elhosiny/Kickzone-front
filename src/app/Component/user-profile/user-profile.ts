@@ -138,8 +138,10 @@ export class UserProfileComponent implements OnInit {
 
     if (!token || !isAuth) {
       console.warn('⚠️  Redirecting to login page...');
-      this.snackBar.open('🔒 Please login first to view your profile', 'Close', {
+      this.snackBar.open('Please login first to view your profile', 'Close', {
         duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
         panelClass: ['error-snackbar']
       });
       this.router.navigate(['/login']);
@@ -188,7 +190,7 @@ export class UserProfileComponent implements OnInit {
         }
 
         this.error.set(errorMessage);
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 8000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -227,7 +229,7 @@ export class UserProfileComponent implements OnInit {
   saveProfile() {
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
-      this.snackBar.open('Please fix the errors before saving', '×', {
+      this.snackBar.open('Please fix the errors before saving', 'Close', {
         duration: 3000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -246,7 +248,7 @@ export class UserProfileComponent implements OnInit {
 
     if (Object.keys(updatedData).length === 0) {
       this.editMode.set(false);
-      this.snackBar.open('No changes detected', '×', {
+      this.snackBar.open('No changes detected', 'Close', {
         duration: 2000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -258,7 +260,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.updateProfile(updatedData).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.snackBar.open('✓ Profile updated successfully!', '×', {
+        this.snackBar.open('Profile updated successfully!', 'Close', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -271,7 +273,7 @@ export class UserProfileComponent implements OnInit {
         this.submitting.set(false);
         console.error('Failed to update profile:', err);
         const errorMessage = err?.error?.message || 'Failed to update profile. Please try again.';
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -290,7 +292,7 @@ export class UserProfileComponent implements OnInit {
     const { currentPassword, newPassword } = this.changePasswordForm.value;
 
     if (currentPassword === newPassword) {
-      this.snackBar.open('New password must be different from current password', '×', {
+      this.snackBar.open('New password must be different from current password', 'Close', {
         duration: 4000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -303,7 +305,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.changePassword({ currentPassword, newPassword }).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.snackBar.open('✓ Password changed successfully!', '×', {
+        this.snackBar.open('Password changed successfully!', 'Close', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -318,7 +320,7 @@ export class UserProfileComponent implements OnInit {
         this.submitting.set(false);
         console.error('Failed to change password:', err);
         let errorMessage = err?.error?.message || 'Failed to change password. Please check your current password.';
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -338,7 +340,7 @@ export class UserProfileComponent implements OnInit {
     const currentProfile = this.userProfile();
 
     if (newUserName === currentProfile?.userName) {
-      this.snackBar.open('New username must be different from current username', '×', {
+      this.snackBar.open('New username must be different from current username', 'Close', {
         duration: 4000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -351,7 +353,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.changeUsername({ newUserName }).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.snackBar.open('✓ Username changed successfully!', '×', {
+        this.snackBar.open('Username changed successfully!', 'Close', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -364,7 +366,7 @@ export class UserProfileComponent implements OnInit {
         this.submitting.set(false);
         console.error('Failed to change username:', err);
         const errorMessage = err?.error?.message || err?.error || 'Failed to change username. Username may already be taken.';
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -384,7 +386,7 @@ export class UserProfileComponent implements OnInit {
     const currentProfile = this.userProfile();
 
     if (newEmail === currentProfile?.email) {
-      this.snackBar.open('New email must be different from current email', '×', {
+      this.snackBar.open('New email must be different from current email', 'Close', {
         duration: 4000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -398,7 +400,7 @@ export class UserProfileComponent implements OnInit {
       next: () => {
         this.submitting.set(false);
         this.emailChangeRequested.set(true);
-        this.snackBar.open('✓ Confirmation email sent! Please check your inbox', '×', {
+        this.snackBar.open('Confirmation email sent! Please check your inbox', 'Close', {
           duration: 6000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -415,7 +417,7 @@ export class UserProfileComponent implements OnInit {
         this.submitting.set(false);
         console.error('Failed to request email change:', err);
         const errorMessage = err?.error?.message || err?.error || 'Failed to request email change. Email may already be in use.';
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
