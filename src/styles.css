@@ -12,157 +12,180 @@ body {
   box-sizing: border-box;
 }
 
-/* Global Snackbar Styles - Simple & Friendly */
-.success-snackbar {
-  background: #10b981 !important;
-  color: white !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  padding: 12px 20px !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
-  letter-spacing: 0.3px !important;
-}
+/* ============================================
+   Global Snackbar Styles - Clean & Modern
+   ============================================ */
 
-.success-snackbar .mat-mdc-snack-bar-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
-.success-snackbar::before {
-  content: '✓';
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.error-snackbar {
-  background: #ef4444 !important;
-  color: white !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  padding: 12px 20px !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
-  letter-spacing: 0.3px !important;
-}
-
-.error-snackbar .mat-mdc-snack-bar-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
-.error-snackbar::before {
-  content: '✕';
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.info-snackbar {
-  background: #3b82f6 !important;
-  color: white !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  padding: 12px 20px !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
-  letter-spacing: 0.3px !important;
-}
-
-.info-snackbar .mat-mdc-snack-bar-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
-.info-snackbar::before {
-  content: 'ℹ';
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.warning-snackbar {
-  background: #f59e0b !important;
-  color: white !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  padding: 12px 20px !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2) !important;
-  letter-spacing: 0.3px !important;
-}
-
-.warning-snackbar .mat-mdc-snack-bar-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
-.warning-snackbar::before {
-  content: '⚠';
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* Snackbar animation and positioning */
+/* Base Snackbar Container */
 .mat-mdc-snack-bar-container {
-  animation: slideInRight 0.3s ease-out !important;
-  margin-bottom: 16px !important;
+  min-width: 320px !important;
+  max-width: 568px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  padding: 0 !important;
+  margin: 16px !important;
+  animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-@keyframes slideInRight {
+@keyframes slideInUp {
   from {
-    transform: translateX(100%);
+    transform: translateY(100px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* Snackbar close button */
+/* Snackbar Label Container */
+.mat-mdc-snack-bar-label {
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Success Snackbar */
+.success-snackbar {
+  background: #ffffff !important;
+  border-left: 4px solid #10b981 !important;
+  color: #065f46 !important;
+}
+
+.success-snackbar .mat-mdc-snack-bar-label {
+  color: #065f46 !important;
+}
+
+.success-snackbar .mat-mdc-snack-bar-label::before {
+  content: 'check_circle';
+  font-family: 'Material Icons' !important;
+  font-size: 20px !important;
+  color: #10b981 !important;
+  flex-shrink: 0;
+}
+
+/* Error Snackbar */
+.error-snackbar {
+  background: #ffffff !important;
+  border-left: 4px solid #dc2626 !important;
+  color: #991b1b !important;
+}
+
+.error-snackbar .mat-mdc-snack-bar-label {
+  color: #991b1b !important;
+}
+
+.error-snackbar .mat-mdc-snack-bar-label::before {
+  content: 'error';
+  font-family: 'Material Icons' !important;
+  font-size: 20px !important;
+  color: #dc2626 !important;
+  flex-shrink: 0;
+}
+
+/* Info Snackbar */
+.info-snackbar {
+  background: #ffffff !important;
+  border-left: 4px solid #2563eb !important;
+  color: #1e40af !important;
+}
+
+.info-snackbar .mat-mdc-snack-bar-label {
+  color: #1e40af !important;
+}
+
+.info-snackbar .mat-mdc-snack-bar-label::before {
+  content: 'info';
+  font-family: 'Material Icons' !important;
+  font-size: 20px !important;
+  color: #2563eb !important;
+  flex-shrink: 0;
+}
+
+/* Warning Snackbar */
+.warning-snackbar {
+  background: #ffffff !important;
+  border-left: 4px solid #f59e0b !important;
+  color: #92400e !important;
+}
+
+.warning-snackbar .mat-mdc-snack-bar-label {
+  color: #92400e !important;
+}
+
+.warning-snackbar .mat-mdc-snack-bar-label::before {
+  content: 'warning';
+  font-family: 'Material Icons' !important;
+  font-size: 20px !important;
+  color: #f59e0b !important;
+  flex-shrink: 0;
+}
+
+/* Snackbar Close Button */
 .mat-mdc-snack-bar-action {
-  color: white !important;
-  font-weight: 500 !important;
-  opacity: 0.9 !important;
-  font-size: 18px !important;
-  min-width: 24px !important;
+  color: #6b7280 !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  margin-right: 8px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
 .mat-mdc-snack-bar-action:hover {
-  opacity: 1 !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-radius: 4px !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #374151 !important;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .success-snackbar,
+  .error-snackbar,
+  .info-snackbar,
+  .warning-snackbar {
+    background: #1f2937 !important;
+  }
+
+  .success-snackbar .mat-mdc-snack-bar-label {
+    color: #d1fae5 !important;
+  }
+
+  .error-snackbar .mat-mdc-snack-bar-label {
+    color: #fee2e2 !important;
+  }
+
+  .info-snackbar .mat-mdc-snack-bar-label {
+    color: #dbeafe !important;
+  }
+
+  .warning-snackbar .mat-mdc-snack-bar-label {
+    color: #fef3c7 !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .mat-mdc-snack-bar-container {
+    min-width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    margin: 8px 16px !important;
+  }
+
+  .mat-mdc-snack-bar-label {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+    gap: 10px !important;
+  }
 }
 
 /* Smooth transitions for all elements */
