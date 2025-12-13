@@ -1,22 +1,16 @@
 <div class="form-container">
   <div class="form-header">
-    <h1>{{ isEditMode ? 'Edit Field' : 'Add New Field' }}</h1>
-    <p>{{ isEditMode ? 'Update your field information' : 'Create a new field listing' }}</p>
+    <h1>{{ isEditMode() ? 'Edit Field' : 'Add New Field' }}</h1>
+    <p>{{ isEditMode() ? 'Update your field information' : 'Create a new field listing' }}</p>
   </div>
 
-  <!-- Success/Error Messages -->
-  @if (successMessage) {
-    <div class="alert alert-success">
-      {{ successMessage }}
+  @if (isLoadingField()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading field data...</p>
     </div>
-  }
-  @if (errorMessage) {
-    <div class="alert alert-error">
-      {{ errorMessage }}
-    </div>
-  }
-
-  <form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" class="field-form">
+  } @else {
+    <form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" class="field-form">
     
     <!-- Basic Information -->
     <section class="form-section">
@@ -50,7 +44,7 @@
             formControlName="categoryId"
             [class.error]="f['categoryId'].invalid && f['categoryId'].touched">
             <option value="">Select Category</option>
-            @for (category of categories; track category.id) {
+            @for (category of categories(); track category.id) {
             <option [value]="category.id">
               {{ category.name }}
             </option>
@@ -70,7 +64,7 @@
             formControlName="cityId"
             [class.error]="f['cityId'].invalid && f['cityId'].touched">
             <option value="">Select City</option>
-            @for (city of cities; track city.id) {
+            @for (city of cities(); track city.id) {
             <option [value]="city.id">
               {{ city.name }}
             </option>
@@ -214,11 +208,11 @@
       <h2>Images</h2>
       
       <!-- Existing Images (Edit Mode) -->
-      @if (isEditMode && existingImages.length > 0) {
+      @if (isEditMode() && existingImages().length > 0) {
         <div class="existing-images">
           <h3>Current Images</h3>
           <div class="image-grid">
-            @for (image of existingImages; track image.id) {
+            @for (image of existingImages(); track image.id) {
             <div class="image-item" 
                  [class.marked-delete]="isMarkedForDeletion(image.id)">
               <img [src]="image.imageUrl" [alt]="'Field image'">
@@ -228,6 +222,7 @@
                     type="button" 
                     (click)="markImageForDeletion(image.id)"
                     class="btn-delete">
+                    <mat-icon>delete</mat-icon>
                     Remove
                   </button>
                 }
@@ -236,6 +231,7 @@
                     type="button" 
                     (click)="unmarkImageForDeletion(image.id)"
                     class="btn-undo">
+                    <mat-icon>undo</mat-icon>
                     Undo
                   </button>
                 }
@@ -249,7 +245,7 @@
       <!-- New Images Upload -->
       <div class="form-group">
         <label for="images">
-          {{ isEditMode ? 'Add New Images' : 'Upload Images *' }}
+          {{ isEditMode() ? 'Add New Images' : 'Upload Images *' }}
         </label>
         <input 
           type="file" 
@@ -262,18 +258,18 @@
       </div>
 
       <!-- New Images Preview -->
-      @if (imagePreviewUrls.length > 0) {
+      @if (imagePreviewUrls().length > 0) {
         <div class="image-preview">
           <h3>New Images</h3>
           <div class="image-grid">
-            @for (url of imagePreviewUrls; track $index) {
+            @for (url of imagePreviewUrls(); track $index) {
             <div class="image-item">
               <img [src]="url" alt="Preview">
               <button 
                 type="button" 
                 (click)="removeNewImage($index)"
                 class="btn-remove">
-                ✕
+                <mat-icon>close</mat-icon>
               </button>
             </div>
             }
@@ -285,16 +281,27 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <a 
-        class="btn btn-secondary"
-        [routerLink]="['/field-owner/my-fields']">
+        mat-stroked-button
+        [routerLink]="['/field-owner/my-fields']"
+        class="btn btn-secondary">
+        <mat-icon>cancel</mat-icon>
         Cancel
       </a>
       <button 
         type="submit" 
-        class="btn btn-primary"
-        [disabled]="isSubmitting">
-        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Field' : 'Create Field') }}
+        mat-raised-button
+        color="primary"
+        [disabled]="isSubmitting() || isLoadingField()"
+        class="btn btn-primary">
+        @if (isSubmitting()) {
+          <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+          Saving...
+        } @else {
+          <mat-icon>{{ isEditMode() ? 'update' : 'add' }}</mat-icon>
+          {{ isEditMode() ? 'Update Field' : 'Create Field' }}
+        }
       </button>
     </div>
   </form>
+  }
 </div>

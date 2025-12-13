@@ -1,7 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FieldService } from '../../services/Field/field-service';
 import { CategoryService } from '../../services/category/category-service';
 import { CityService } from '../../services/city/city-service';
@@ -14,11 +19,20 @@ import { IField } from '../../Model/IField/ifield';
 @Component({
   selector: 'app-add-edit-field',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './add-edit-field.html',
   styleUrls: ['./add-edit-field.css']
 })
 export class AddEditFieldComponent implements OnInit {
+  // ===== Injected Services =====
   private fb = inject(FormBuilder);
   private fieldService = inject(FieldService);
   private categoryService = inject(CategoryService);
@@ -26,19 +40,20 @@ export class AddEditFieldComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private snackBar = inject(MatSnackBar);
 
+  // ===== Signals =====
   fieldForm!: FormGroup;
-  categories: ICategory[] = [];
-  cities: ICity[] = [];
-  selectedImages: File[] = [];
-  imagePreviewUrls: string[] = [];
-  existingImages: any[] = [];
-  deleteImageIds: number[] = [];
-  isEditMode = false;
-  fieldId: number | null = null;
-  isSubmitting = false;
-  errorMessage = '';
-  successMessage = '';
+  categories = toSignal(this.categoryService.GetAllCategories(), { initialValue: [] as ICategory[] });
+  cities = toSignal(this.cityService.GetAllCities(), { initialValue: [] as ICity[] });
+  selectedImages = signal<File[]>([]);
+  imagePreviewUrls = signal<string[]>([]);
+  existingImages = signal<any[]>([]);
+  deleteImageIds = signal<number[]>([]);
+  isEditMode = signal(false);
+  fieldId = signal<number | null>(null);
+  isSubmitting = signal(false);
+  isLoadingField = signal(false);
 
   fieldSizes = [
     { value: 'Side_2', label: '2 vs 2' },
@@ -52,15 +67,13 @@ export class AddEditFieldComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadCategories();
-    this.loadCities();
     
     // Check if we're in edit mode
     this.route.params.subscribe(params => {
       if (params['id']) {
-        this.isEditMode = true;
-        this.fieldId = +params['id'];
-        this.loadFieldData(this.fieldId);
+        this.isEditMode.set(true);
+        this.fieldId.set(+params['id']);
+        this.loadFieldData(this.fieldId()!);
       }
     });
   }
@@ -79,115 +92,124 @@ export class AddEditFieldComponent implements OnInit {
     });
   }
 
-  loadCategories(): void {
-    this.categoryService.GetAllCategories().subscribe({
-      next: (data) => {
-        this.categories = data;
-      },
-      error: (err) => {
-        console.error('Error loading categories:', err);
-      }
-    });
-  }
-
-  loadCities(): void {
-    this.cityService.GetAllCities().subscribe({
-      next: (data) => {
-        this.cities = data;
-      },
-      error: (err) => {
-        console.error('Error loading cities:', err);
-      }
-    });
-  }
-
   loadFieldData(id: number): void {
+    this.isLoadingField.set(true);
     this.fieldService.getFieldById(id).subscribe({
       next: (field: IField) => {
+        // Find category and city IDs by matching names
+        const category = this.categories().find(c => c.name === field.categoryName);
+        const city = this.cities().find(c => c.name === field.cityName);
+        
         this.fieldForm.patchValue({
           name: field.name,
-          categoryId: field.categoryName,
-          cityId: field.cityName,
+          categoryId: category?.id || '',
+          cityId: city?.id || '',
           location: field.location,
-          locationLink: field.locationLink,
+          locationLink: field.locationLink || '',
           pricePerHour: field.pricePerHour,
           size: field.size,
           openAt: field.openAt,
           closeAt: field.closeAt
         });
-        this.existingImages = field.fieldImages || [];
+        this.existingImages.set(field.fieldImages || []);
+        this.isLoadingField.set(false);
       },
       error: (err) => {
         console.error('Error loading field:', err);
-        this.errorMessage = 'Failed to load field data';
+        this.isLoadingField.set(false);
+        const errorMessage = err?.error?.message || 'Failed to load field data';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       }
     });
   }
 
-  onFileSelected(event: any): void {
-    const files = event.target.files;
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
     if (files && files.length > 0) {
+      const newFiles: File[] = [];
+      const newPreviews: string[] = [];
+      
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (file.type.startsWith('image/')) {
-          this.selectedImages.push(file);
+          newFiles.push(file);
           
           // Create preview
           const reader = new FileReader();
           reader.onload = (e: any) => {
-            this.imagePreviewUrls.push(e.target.result);
+            this.imagePreviewUrls.update(urls => [...urls, e.target.result]);
           };
           reader.readAsDataURL(file);
         }
       }
+      
+      this.selectedImages.update(images => [...images, ...newFiles]);
     }
   }
 
   removeNewImage(index: number): void {
-    this.selectedImages.splice(index, 1);
-    this.imagePreviewUrls.splice(index, 1);
+    this.selectedImages.update(images => images.filter((_, i) => i !== index));
+    this.imagePreviewUrls.update(urls => urls.filter((_, i) => i !== index));
   }
 
   markImageForDeletion(imageId: number): void {
-    if (!this.deleteImageIds.includes(imageId)) {
-      this.deleteImageIds.push(imageId);
-    }
+    this.deleteImageIds.update(ids => 
+      ids.includes(imageId) ? ids : [...ids, imageId]
+    );
   }
 
   unmarkImageForDeletion(imageId: number): void {
-    const index = this.deleteImageIds.indexOf(imageId);
-    if (index > -1) {
-      this.deleteImageIds.splice(index, 1);
-    }
+    this.deleteImageIds.update(ids => ids.filter(id => id !== imageId));
   }
 
   isMarkedForDeletion(imageId: number): boolean {
-    return this.deleteImageIds.includes(imageId);
+    return this.deleteImageIds().includes(imageId);
   }
 
   onSubmit(): void {
     if (this.fieldForm.invalid) {
       this.markFormGroupTouched(this.fieldForm);
+      this.snackBar.open('Please fill in all required fields correctly', 'Close', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['warning-snackbar'],
+      });
       return;
     }
 
-    if (!this.isEditMode && this.selectedImages.length === 0) {
-      this.errorMessage = 'Please select at least one image';
+    if (!this.isEditMode() && this.selectedImages().length === 0) {
+      this.snackBar.open('Please select at least one image', 'Close', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['warning-snackbar'],
+      });
       return;
     }
 
-    this.isSubmitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.isSubmitting.set(true);
 
     const userId = this.authService.getUserId();
     if (!userId) {
-      this.errorMessage = 'User not authenticated';
-      this.isSubmitting = false;
+      this.isSubmitting.set(false);
+      this.snackBar.open('User not authenticated. Please login again.', 'Close', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
+      this.router.navigate(['/login']);
       return;
     }
 
-    if (this.isEditMode && this.fieldId) {
+    if (this.isEditMode() && this.fieldId()) {
       this.updateField();
     } else {
       this.createField(userId);
@@ -206,27 +228,39 @@ export class AddEditFieldComponent implements OnInit {
       size: this.fieldForm.value.size,
       openAt: this.fieldForm.value.openAt,
       closeAt: this.fieldForm.value.closeAt,
-      images: this.selectedImages
+      images: this.selectedImages()
     };
 
     this.fieldService.createField(fieldData).subscribe({
       next: (response) => {
-        this.successMessage = 'Field created successfully! Pending approval.';
+        this.isSubmitting.set(false);
+        this.snackBar.open('Field created successfully! Pending approval.', 'Close', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar'],
+        });
         setTimeout(() => {
           this.router.navigate(['/field-owner/my-fields']);
         }, 2000);
       },
       error: (err) => {
         console.error('Error creating field:', err);
-        this.errorMessage = err.error?.message || 'Failed to create field';
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
+        const errorMessage = err?.error?.message || 'Failed to create field';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       }
     });
   }
 
   updateField(): void {
     const updateData: IUpdateField = {
-      id: this.fieldId!,
+      id: this.fieldId()!,
       name: this.fieldForm.value.name,
       location: this.fieldForm.value.location,
       locationLink: this.fieldForm.value.locationLink,
@@ -234,21 +268,33 @@ export class AddEditFieldComponent implements OnInit {
       size: this.fieldForm.value.size,
       openAt: this.fieldForm.value.openAt,
       closeAt: this.fieldForm.value.closeAt,
-      newImages: this.selectedImages.length > 0 ? this.selectedImages : undefined,
-      deleteImageIds: this.deleteImageIds.length > 0 ? this.deleteImageIds : undefined
+      newImages: this.selectedImages().length > 0 ? this.selectedImages() : undefined,
+      deleteImageIds: this.deleteImageIds().length > 0 ? this.deleteImageIds() : undefined
     };
 
     this.fieldService.updateField(updateData).subscribe({
       next: (response) => {
-        this.successMessage = 'Field updated successfully!';
+        this.isSubmitting.set(false);
+        this.snackBar.open('Field updated successfully!', 'Close', {
+          duration: 4000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar'],
+        });
         setTimeout(() => {
           this.router.navigate(['/field-owner/my-fields']);
         }, 2000);
       },
       error: (err) => {
         console.error('Error updating field:', err);
-        this.errorMessage = err.error?.message || 'Failed to update field';
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
+        const errorMessage = err?.error?.message || 'Failed to update field';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       }
     });
   }
