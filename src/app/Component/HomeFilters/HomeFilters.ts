@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
 import { CategoryService } from '../../services/category/category-service';
 import { CityService } from '../../services/city/city-service';
 import { Router } from '@angular/router';
@@ -9,13 +8,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ICategory } from '../../Model/ICategory/icategory';
+import { ICity } from '../../Model/ICity/icity';
 
 @Component({
   selector: 'app-filters',
   standalone: true,
   imports: [
     FormsModule,
-    AsyncPipe,
     MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -30,14 +30,24 @@ export class HomeFilters {
   private categoryService = inject(CategoryService);
   private cityService = inject(CityService);
 
-  categories$ = this.categoryService.GetAllCategories();
-  cities$ = this.cityService.GetAllCities();
+  categories = signal<ICategory[]>([]);
+  cities = signal<ICity[]>([]);
 
   // Selected values
   selectedCategoryName: string | null = null;
   selectedCityName: string | null = null;
 
-  constructor() {}
+  constructor() {
+    this.categoryService.GetAllCategories().subscribe({
+      next: (data) => this.categories.set(data),
+      error: (err) => console.error('Error loading categories:', err)
+    });
+
+    this.cityService.GetAllCities().subscribe({
+      next: (data) => this.cities.set(data),
+      error: (err) => console.error('Error loading cities:', err)
+    });
+  }
 
   applyFilter() {
     if (this.selectedCategoryName && this.selectedCityName) {
