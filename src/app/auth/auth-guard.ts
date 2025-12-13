@@ -19,6 +19,12 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     
+    // Token exists but expired - clear it
+    if (token && !isAuth) {
+      console.warn('   ⚠️  Token expired - clearing auth data');
+      this.auth.logout().subscribe();
+    }
+    
     console.warn('   ❌ Access DENIED - Not logged in');
     console.warn('   ➡️  Redirecting to /login...');
     this.router.navigate(['/login']);
