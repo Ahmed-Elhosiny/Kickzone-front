@@ -11,8 +11,8 @@ import { AuthService } from '../../auth/auth';
 })
 export class NavBarComponent {
   private platformId = inject(PLATFORM_ID);
-
-  constructor(public authService: AuthService, private router: Router) {}
+  public authService = inject(AuthService);
+  private router = inject(Router);
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
