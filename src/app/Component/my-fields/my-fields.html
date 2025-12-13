@@ -1,0 +1,141 @@
+<div class="my-fields-container">
+  <div class="page-header">
+    <div>
+      <h1>My Fields</h1>
+      <p>Manage your field listings</p>
+    </div>
+    <a [routerLink]="['/field-owner/add-field']" class="btn btn-primary">
+      <span class="icon-add">➕</span>
+      Add New Field
+    </a>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your fields...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && fields.length === 0" class="empty-state">
+    <div class="empty-icon">⚽</div>
+    <h2>No fields yet</h2>
+    <p>Start by adding your first field</p>
+    <a [routerLink]="['/field-owner/add-field']" class="btn btn-primary">
+      Add Your First Field
+    </a>
+  </div>
+
+  <!-- Fields Grid -->
+  <div *ngIf="!isLoading && fields.length > 0" class="fields-grid">
+    <div *ngFor="let field of fields" class="field-card">
+      <div class="field-image">
+        <img [src]="getMainImage(field)" [alt]="field.name">
+        <div class="status-badge" [ngClass]="getStatusClass(field)">
+          {{ getStatusText(field) }}
+        </div>
+      </div>
+
+      <div class="field-content">
+        <h3 class="field-name">{{ field.name }}</h3>
+        
+        <div class="field-info">
+          <div class="info-item">
+            <span class="label">Category:</span>
+            <span class="value">{{ field.categoryName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">City:</span>
+            <span class="value">{{ field.cityName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Size:</span>
+            <span class="value">{{ field.size.replace('Side_', '') }} vs {{ field.size.replace('Side_', '') }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Price:</span>
+            <span class="value">{{ field.pricePerHour }} EGP/hour</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Hours:</span>
+            <span class="value">{{ field.openAt }}:00 - {{ field.closeAt }}:00</span>
+          </div>
+        </div>
+
+        <!-- Document Upload Notice (no document or rejected) -->
+        <div *ngIf="!field.hasApprovalDocument || field.isApproved === false" class="document-notice">
+          <span class="notice-icon">⚠️</span>
+          <span>
+            {{ !field.hasApprovalDocument ? 'Upload approval document to proceed with review' : 'Previous document was rejected. Upload a new PDF to request review again.' }}
+          </span>
+        </div>
+
+        <div class="field-actions">
+          <button 
+            class="btn btn-secondary btn-sm"
+            (click)="editField(field.id)"
+            [disabled]="!field.isApproved">
+            ✏️ Edit
+          </button>
+          
+          <!-- Show upload button only if no document uploaded yet -->
+          <div *ngIf="!field.hasApprovalDocument || field.isApproved === false" class="upload-document">
+            <label [for]="'doc-' + field.id" class="btn btn-primary btn-sm" [class.loading]="uploadingDocId === field.id">
+              {{ uploadingDocId === field.id ? 'Uploading…' : '📄 Upload Document' }}
+            </label>
+            <input 
+              [id]="'doc-' + field.id"
+              type="file" 
+              accept=".pdf"
+              (change)="uploadDocument(field.id, $event)"
+              [disabled]="uploadingDocId === field.id"
+              style="display: none;">
+          </div>
+
+          <!-- Show document status if uploaded -->
+          <div 
+            *ngIf="field.hasApprovalDocument" 
+            class="document-status"
+            [ngClass]="{
+              approved: field.isApproved === true,
+              pending: field.isApproved === null || field.isApproved === false
+            }">
+            <span class="doc-icon" *ngIf="field.isApproved === true">✅</span>
+            <span class="doc-icon" *ngIf="field.isApproved === null || field.isApproved === false">⏳</span>
+            {{ field.isApproved === true ? 'Document Approved' : 'Document Uploaded - Awaiting Review' }}
+          </div>
+
+          <button 
+            class="btn btn-danger btn-sm"
+            (click)="confirmDelete(field.id)">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="deleteConfirmId !== null" class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Confirm Deletion</h2>
+      <p>Are you sure you want to delete this field? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="cancelDelete()">
+          Cancel
+        </button>
+        <button class="btn btn-danger" (click)="deleteField(deleteConfirmId)">
+          Delete Field
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

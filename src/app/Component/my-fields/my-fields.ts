@@ -1,0 +1,172 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { FieldService } from '../../services/Field/field-service';
+import { AuthService } from '../../auth/auth';
+import { IField } from '../../Model/IField/ifield';
+import { finalize, timeout } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-my-fields',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './my-fields.html',
+  styleUrls: ['./my-fields.css']
+})
+export class MyFieldsComponent implements OnInit {
+  private fieldService = inject(FieldService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  fields: IField[] = [];
+  isLoading = true;
+  errorMessage = '';
+  successMessage = '';
+  deleteConfirmId: number | null = null;
+  uploadingDocId: number | null = null;
+
+  ngOnInit(): void {
+    this.loadOwnerFields();
+  }
+
+  loadOwnerFields(): void {
+    const userId = this.authService.getUserId();
+    
+    if (!userId) {
+      this.errorMessage = 'User not authenticated';
+      this.isLoading = false;
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.fieldService.getFieldsByOwner(userId).subscribe({
+      next: (data) => {
+        this.fields = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading fields:', err);
+        this.errorMessage = 'Failed to load your fields';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  editField(fieldId: number): void {
+    this.router.navigate(['/field-owner/edit-field', fieldId]);
+  }
+
+  confirmDelete(fieldId: number): void {
+    this.deleteConfirmId = fieldId;
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmId = null;
+  }
+
+  deleteField(fieldId: number): void {
+    this.fieldService.deleteField(fieldId).subscribe({
+      next: () => {
+        this.successMessage = 'Field deleted successfully';
+        this.deleteConfirmId = null;
+        // Remove the deleted field from the list
+        this.fields = this.fields.filter(f => f.id !== fieldId);
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('Error deleting field:', err);
+        this.errorMessage = 'Failed to delete field';
+        this.deleteConfirmId = null;
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 3000);
+      }
+    });
+  }
+
+  getStatusClass(field: IField): string {
+    // If no document uploaded yet, show pending document status
+    if (!field.hasApprovalDocument) return 'status-pending-document';
+    // If document uploaded but not reviewed yet OR resubmitted after rejection
+    if (field.isApproved === null || field.isApproved === false) return 'status-pending';
+    // Otherwise show approved
+    return 'status-approved';
+  }
+
+  getStatusText(field: IField): string {
+    // If no document uploaded yet
+    if (!field.hasApprovalDocument) return 'Document Required';
+    // If document uploaded but not reviewed yet or resubmitted
+    if (field.isApproved === null || field.isApproved === false) return 'Pending Review';
+    // Otherwise show approved
+    return 'Approved';
+  }
+
+  getMainImage(field: IField): string {
+    if (field.fieldImages && field.fieldImages.length > 0 && field.fieldImages[0].imageUrl) {
+      return field.fieldImages[0].imageUrl;
+    }
+    return '/images/placeholder-field.jpg';
+  }
+
+  uploadDocument(fieldId: number, event: any): void {
+    const inputEl = event.target as HTMLInputElement;
+    const file = inputEl?.files?.[0];
+    if (file) {
+      // Validate file type (PDF only)
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      if (!isPdf) {
+        this.errorMessage = 'Please upload a PDF document';
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 3000);
+        if (inputEl) inputEl.value = '';
+        return;
+      }
+
+      this.uploadingDocId = fieldId;
+
+      this.fieldService
+        .uploadFieldDocument(fieldId, file)
+        .pipe(
+          timeout(20000),
+          finalize(() => {
+            this.uploadingDocId = null;
+            // reset input value so same file can be re-selected if needed
+            if (inputEl) inputEl.value = '';
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            if (res.status === 201 || res.status === 200) {
+              this.successMessage = 'Document uploaded successfully. Awaiting admin review.';
+              // Optimistically update the local list so status shows "Pending Review" right away
+              this.fields = this.fields.map(f =>
+                f.id === fieldId
+                  ? { ...f, hasApprovalDocument: true, isApproved: null }
+                  : f
+              );
+              this.loadOwnerFields();
+            } else {
+              this.errorMessage = `Unexpected response (${res.status}). Please try again.`;
+            }
+
+            setTimeout(() => {
+              this.successMessage = '';
+              this.errorMessage = '';
+            }, 3000);
+          },
+          error: (err) => {
+            console.error('Error uploading document:', err);
+            const message = err?.error?.message || err?.message || 'Failed to upload document';
+            this.errorMessage = message.includes('Timeout') ? 'Upload timed out. Please try again.' : message;
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 3000);
+          }
+        });
+    }
+  }
+}

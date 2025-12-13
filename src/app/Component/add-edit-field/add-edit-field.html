@@ -1,0 +1,248 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1>{{ isEditMode ? 'Edit Field' : 'Add New Field' }}</h1>
+    <p>{{ isEditMode ? 'Update your field information' : 'Create a new field listing' }}</p>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" class="field-form">
+    
+    <!-- Basic Information -->
+    <section class="form-section">
+      <h2>Basic Information</h2>
+      
+      <div class="form-group">
+        <label for="name">Field Name *</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name"
+          placeholder="Enter field name"
+          [class.error]="f['name'].invalid && f['name'].touched">
+        <div *ngIf="f['name'].invalid && f['name'].touched" class="error-message">
+          <span *ngIf="f['name'].errors?.['required']">Field name is required</span>
+          <span *ngIf="f['name'].errors?.['minlength']">Field name must be at least 3 characters</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="categoryId">Category *</label>
+          <select 
+            id="categoryId" 
+            formControlName="categoryId"
+            [class.error]="f['categoryId'].invalid && f['categoryId'].touched">
+            <option value="">Select Category</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+          <div *ngIf="f['categoryId'].invalid && f['categoryId'].touched" class="error-message">
+            Category is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cityId">City *</label>
+          <select 
+            id="cityId" 
+            formControlName="cityId"
+            [class.error]="f['cityId'].invalid && f['cityId'].touched">
+            <option value="">Select City</option>
+            <option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name }}
+            </option>
+          </select>
+          <div *ngIf="f['cityId'].invalid && f['cityId'].touched" class="error-message">
+            City is required
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Information -->
+    <section class="form-section">
+      <h2>Location</h2>
+      
+      <div class="form-group">
+        <label for="location">Address *</label>
+        <textarea 
+          id="location" 
+          formControlName="location"
+          rows="3"
+          placeholder="Enter field address"
+          [class.error]="f['location'].invalid && f['location'].touched"></textarea>
+        <div *ngIf="f['location'].invalid && f['location'].touched" class="error-message">
+          <span *ngIf="f['location'].errors?.['required']">Address is required</span>
+          <span *ngIf="f['location'].errors?.['minlength']">Address must be at least 5 characters</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="locationLink">Google Maps Link</label>
+        <input 
+          type="url" 
+          id="locationLink" 
+          formControlName="locationLink"
+          placeholder="https://maps.google.com/...">
+      </div>
+    </section>
+
+    <!-- Field Details -->
+    <section class="form-section">
+      <h2>Field Details</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="size">Field Size *</label>
+          <select 
+            id="size" 
+            formControlName="size"
+            [class.error]="f['size'].invalid && f['size'].touched">
+            <option value="">Select Size</option>
+            <option *ngFor="let size of fieldSizes" [value]="size.value">
+              {{ size.label }}
+            </option>
+          </select>
+          <div *ngIf="f['size'].invalid && f['size'].touched" class="error-message">
+            Field size is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pricePerHour">Price per Hour (EGP) *</label>
+          <input 
+            type="number" 
+            id="pricePerHour" 
+            formControlName="pricePerHour"
+            min="0"
+            placeholder="0.00"
+            [class.error]="f['pricePerHour'].invalid && f['pricePerHour'].touched">
+          <div *ngIf="f['pricePerHour'].invalid && f['pricePerHour'].touched" class="error-message">
+            <span *ngIf="f['pricePerHour'].errors?.['required']">Price is required</span>
+            <span *ngIf="f['pricePerHour'].errors?.['min']">Price must be 0 or greater</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="openAt">Opening Hour *</label>
+          <select 
+            id="openAt" 
+            formControlName="openAt"
+            [class.error]="f['openAt'].invalid && f['openAt'].touched">
+            <option value="">Select Hour</option>
+            <option *ngFor="let hour of hours" [value]="hour">
+              {{ hour }}:00
+            </option>
+          </select>
+          <div *ngIf="f['openAt'].invalid && f['openAt'].touched" class="error-message">
+            Opening hour is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="closeAt">Closing Hour *</label>
+          <select 
+            id="closeAt" 
+            formControlName="closeAt"
+            [class.error]="f['closeAt'].invalid && f['closeAt'].touched">
+            <option value="">Select Hour</option>
+            <option *ngFor="let hour of hours" [value]="hour">
+              {{ hour }}:00
+            </option>
+          </select>
+          <div *ngIf="f['closeAt'].invalid && f['closeAt'].touched" class="error-message">
+            Closing hour is required
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Images Section -->
+    <section class="form-section">
+      <h2>Images</h2>
+      
+      <!-- Existing Images (Edit Mode) -->
+      <div *ngIf="isEditMode && existingImages.length > 0" class="existing-images">
+        <h3>Current Images</h3>
+        <div class="image-grid">
+          <div *ngFor="let image of existingImages" class="image-item" 
+               [class.marked-delete]="isMarkedForDeletion(image.id)">
+            <img [src]="image.imageUrl" [alt]="'Field image'">
+            <div class="image-actions">
+              <button 
+                type="button" 
+                *ngIf="!isMarkedForDeletion(image.id)"
+                (click)="markImageForDeletion(image.id)"
+                class="btn-delete">
+                Remove
+              </button>
+              <button 
+                type="button" 
+                *ngIf="isMarkedForDeletion(image.id)"
+                (click)="unmarkImageForDeletion(image.id)"
+                class="btn-undo">
+                Undo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Images Upload -->
+      <div class="form-group">
+        <label for="images">
+          {{ isEditMode ? 'Add New Images' : 'Upload Images *' }}
+        </label>
+        <input 
+          type="file" 
+          id="images" 
+          multiple 
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          class="file-input">
+        <p class="help-text">You can select multiple images</p>
+      </div>
+
+      <!-- New Images Preview -->
+      <div *ngIf="imagePreviewUrls.length > 0" class="image-preview">
+        <h3>New Images</h3>
+        <div class="image-grid">
+          <div *ngFor="let url of imagePreviewUrls; let i = index" class="image-item">
+            <img [src]="url" alt="Preview">
+            <button 
+              type="button" 
+              (click)="removeNewImage(i)"
+              class="btn-remove">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <a 
+        class="btn btn-secondary"
+        [routerLink]="['/field-owner/my-fields']">
+        Cancel
+      </a>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Field' : 'Create Field') }}
+      </button>
+    </div>
+  </form>
+</div>

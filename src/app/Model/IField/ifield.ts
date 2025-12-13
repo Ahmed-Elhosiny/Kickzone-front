@@ -12,7 +12,7 @@ export interface IField {
   openAt: number;
   closeAt: number;
   balance: number;
-  isApproved: boolean;
+  isApproved: boolean | null;
   hasApprovalDocument: boolean;
   approvalDocumentUrl?: string;
   categoryName: string;
