@@ -35,13 +35,17 @@ import { map, catchError, debounceTime, distinctUntilChanged, switchMap } from '
   ],
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
   loading = false;
   showPassword = false;
   showConfirmPassword = false;
   private snackBar = inject(MatSnackBar);
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  registerForm: FormGroup;
+
+  constructor() {
     this.registerForm = this.fb.group(
       {
         email: ['', 
