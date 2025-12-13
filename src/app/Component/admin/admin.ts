@@ -181,10 +181,20 @@ export class AdminPanelComponent implements OnInit {
 
   // ===== UI Helpers =====
   private showSuccess(message: string): void {
-    this.snackBar.open(message, '×', { duration: 3000 });
+    this.snackBar.open(message, 'Close', { 
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['success-snackbar']
+    });
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, '×', { duration: 4000 });
+    this.snackBar.open(message, 'Close', { 
+      duration: 4000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['error-snackbar']
+    });
   }
 }
