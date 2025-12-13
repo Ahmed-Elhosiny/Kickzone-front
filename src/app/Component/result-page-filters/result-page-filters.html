@@ -1,116 +1,135 @@
-<div class="filters-container container mt-3">
-  <!-- Search Filter-->
-  <div class="row g-2 mb-3">
-    <div class="col-12">
-      <div class="filter-block">
-        <label class="form-label visually-hidden">Search</label>
-        <input
-          #searchInput
-          type="text"
-          class="form-control form-control-lg"
-          placeholder="Search..."
-          (input)="updateSearchFilter(searchInput.value)"
-        />
+<mat-card class="filters-card">
+  <!-- Header with Active Filter Count -->
+  <div class="filters-header">
+    <div class="header-content">
+      <mat-icon class="header-icon">filter_list</mat-icon>
+      <h3 class="header-title">Filters</h3>
+      @if (activeFilterCount() > 0) {
+        <mat-chip class="active-count-chip">{{ activeFilterCount() }}</mat-chip>
+      }
+    </div>
+    
+    @if (hasActiveFilters()) {
+      <button 
+        mat-button 
+        color="warn" 
+        class="clear-all-btn"
+        (click)="clearAllFilters()"
+      >
+        <mat-icon>clear_all</mat-icon>
+        Clear All
+      </button>
+    }
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Search Filter -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Search Fields</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        matInput 
+        type="text"
+        placeholder="Search by name or location..."
+        [value]="searchText()"
+        (input)="updateSearchFilter($any($event.target).value)"
+      />
+      @if (searchText()) {
+        <button matSuffix mat-icon-button (click)="updateSearchFilter('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Size Filter -->
+  <div class="filter-section">
+    <div class="filter-label">
+      <mat-icon>sports_soccer</mat-icon>
+      <span>Field Size</span>
+      @if (selectedSize()) {
+        <button mat-icon-button class="clear-filter-btn" (click)="clearSizeFilter()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Select Size</mat-label>
+      <mat-select 
+        [value]="selectedSize()"
+        (valueChange)="updateSizeFilter($event)"
+        placeholder="All Sizes"
+      >
+        <mat-option [value]="null">All Sizes</mat-option>
+        @for (size of sizes(); track size.value) {
+          <mat-option [value]="size.value">{{ size.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Price Range Filter -->
+  <div class="filter-section">
+    <div class="filter-label">
+      <mat-icon>payments</mat-icon>
+      <span>Price Range</span>
+      @if (minPriceValue() !== 0 || maxPriceValue() !== 1000) {
+        <button mat-icon-button class="clear-filter-btn" (click)="clearPriceFilter()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+
+    <div class="price-range-display">
+      <span class="price-value">{{ priceRange() }}</span>
+    </div>
+
+    <div class="price-sliders">
+      <!-- Min Price Slider -->
+      <div class="slider-container">
+        <label class="slider-label">Min Price: {{ minPriceValue() }} EGP</label>
+        <mat-slider 
+          min="0" 
+          max="1000" 
+          step="10"
+          showTickMarks
+          discrete
+        >
+          <input 
+            matSliderThumb
+            [value]="minPriceValue()"
+            (valueChange)="updateMinPriceFilter($event)"
+          />
+        </mat-slider>
+      </div>
+
+      <!-- Max Price Slider -->
+      <div class="slider-container">
+        <label class="slider-label">Max Price: {{ maxPriceValue() }} EGP</label>
+        <mat-slider 
+          min="0" 
+          max="1000" 
+          step="10"
+          showTickMarks
+          discrete
+        >
+          <input 
+            matSliderThumb
+            [value]="maxPriceValue()"
+            (valueChange)="updateMaxPriceFilter($event)"
+          />
+        </mat-slider>
       </div>
     </div>
   </div>
-
-  <div class="row g-2">
-    <!-- Size Filter -->
-    <div class="col-lg-4 col-md-4 col-12">
-      <div class="filter-block">
-        <label class="form-label visually-hidden">Size</label>
-        <div class="dropdown w-100">
-          <button
-            class="btn btn-outline-primary dropdown-toggle w-100"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Size
-          </button>
-
-          <div class="dropdown-menu p-3">
-            @for (s of size; track s) {
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="sizeOptions"
-                [id]="s"
-                [value]="s"
-                [checked]="selectedSize === s"
-                (change)="updateSizeFilter(s)"
-              />
-              <label class="form-check-label" [for]="s">{{ s }}</label>
-            </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Min Price Filter -->
-    <div class="col-lg-4 col-md-4 col-12">
-      <div class="filter-block">
-        <div class="dropdown w-100">
-          <button
-            class="btn btn-outline-success dropdown-toggle w-100"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Min Price
-          </button>
-          <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
-            <label class="form-label d-block text-center mb-2">
-              Min Price: {{ minPriceValue() === null ? '0' : minPriceValue() }}
-            </label>
-            <input
-              #MinPrice
-              type="range"
-              class="form-range"
-              min="0"
-              max="1000"
-              [value]="minPriceValue() === null ? 0 : minPriceValue()"
-              (input)="updateMinPriceFilter(MinPrice.valueAsNumber)"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Max Price Filter -->
-    <div class="col-lg-4 col-md-4 col-12">
-      <div class="filter-block">
-        <div class="dropdown w-100">
-          <button
-            class="btn btn-outline-danger dropdown-toggle w-100"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Max Price
-          </button>
-          <div class="dropdown-menu p-3 w-100" style="min-width: 200px">
-            <label class="form-label d-block text-center mb-2">
-              Max Price: {{ maxPriceValue() === null ? '1000' : maxPriceValue() }}
-            </label>
-            <input
-              #MaxPrice
-              type="range"
-              class="form-range"
-              min="0"
-              max="1000"
-              [value]="maxPriceValue() === null ? 1000 : maxPriceValue()"
-              (input)="updateMaxPriceFilter(MaxPrice.valueAsNumber)"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</mat-card>
 
 
 
