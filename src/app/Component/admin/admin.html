@@ -1,96 +1,335 @@
-<!-- Cities -->
-<h2 class="section-title">Cities</h2>
-<button class="btn add" (click)="addCity()"
-  [disabled]="false">Add New City</button>
-<div class="card-grid">
-  @for (city of cities(); track city.id) {
-  <div class="card">
-    <h3>{{ city.name }}</h3>
-    <button
-      class="btn delete"
-      [class.disabled]="city.fieldsCount > 0"
-      [disabled]="city.fieldsCount > 0"
-      (click)="deleteCity(city)">
-      Delete
-    </button>
-     @if (city.fieldsCount > 0) {
-      <p class="warning">
-        Cannot delete a city that contains fields
-      </p>
-     }
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <h1 class="page-title">
+      <mat-icon>admin_panel_settings</mat-icon>
+      Admin Dashboard
+    </h1>
   </div>
-  }
-</div>
 
-<!-- Categories -->
-<h2 class="section-title">Categories</h2>
-<button class="btn add" (click)="addCategory()" [disabled]="false">Add New Category</button>
-<div class="card-grid">
-  @for (category of categories(); track category.id) {
-  <div class="card">
-    <h3>{{ category.name }}</h3>
-    <button
-      class="btn delete"
-      [class.disabled]="category.fieldsCount > 0"
-      [disabled]="category.fieldsCount > 0"
-      (click)="deleteCategory(category)">
-      Delete
-    </button>
-     @if (category.fieldsCount > 0) {
-      <p class="warning">
-        Cannot delete a category that contains fields
-      </p>
-     }
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon cities">
+          <mat-icon>location_city</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats().totalCities }}</h3>
+          <p>Total Cities</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon categories">
+          <mat-icon>category</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats().totalCategories }}</h3>
+          <p>Total Categories</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon fields">
+          <mat-icon>sports_soccer</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats().totalFields }}</h3>
+          <p>Total Fields</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon approved">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats().approvedFields }}</h3>
+          <p>Approved Fields</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-icon pending">
+          <mat-icon>pending</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats().pendingFields }}</h3>
+          <p>Pending Approval</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
-  }
-</div>
 
-<!-- Fields -->
-<h2 class="section-title">Fields</h2>
-<div class="card-grid">
-  @for (field of fields(); track field.id) {
-  <div class="card field-card">
-        @if (field.fieldImages.length) {
-       <img
-          [src]="field.fieldImages[0].imageUrl"
-          class="field-img"
-          alt="Field Image">
-        }
-
-    <h3>{{ field.name }}</h3>
-    <p class="info">City: {{ field.cityName }}</p>
-    <p class="info">Category: {{ field.categoryName }}</p>
-
-    <span class="badge" [class.approved]="field.isApproved">
-      {{ field.isApproved ? 'Approved' : 'Pending' }}
-    </span>
-
-    @if (field.hasApprovalDocument) {
-      <button
-        class="btn pdf"
-        (click)="downloadPdf(field)">
-         Download Document
-      </button>
-    }
-
-    <div class="btn-row">
-      <button class="btn approve"
-              (click)="approveField(field)"
-              [disabled]="field.isApproved">
-        Approve
-      </button>
-
-      <button class="btn reject"
-              (click)="rejectField(field)"
-              [disabled]="!field.isApproved">
-        Reject
-      </button>
-
-      <button class="btn delete"
-              (click)="deleteField(field)">
-        Delete
+  <!-- Cities Section -->
+  <section class="admin-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>location_city</mat-icon>
+        Cities Management
+      </h2>
+      <button mat-raised-button color="primary" (click)="addCity()">
+        <mat-icon>add</mat-icon>
+        Add City
       </button>
     </div>
-  </div>
-  }
+
+    <!-- Search Bar -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Cities</mat-label>
+      <input matInput [(ngModel)]="citySearchTerm" #citySearch (ngModelChange)="citySearchTerm.set(citySearch.value)">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <!-- Loading State -->
+    @if (isLoadingCities()) {
+      <div class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading cities...</p>
+      </div>
+    } @else {
+      <!-- Cards Grid -->
+      <div class="card-grid">
+        @for (city of filteredCities(); track city.id) {
+          <mat-card class="item-card city-card">
+            <mat-card-header>
+              <mat-card-title>{{ city.name }}</mat-card-title>
+              <mat-chip class="fields-chip">
+                <mat-icon>sports_soccer</mat-icon>
+                {{ city.fieldsCount }} field{{ city.fieldsCount !== 1 ? 's' : '' }}
+              </mat-chip>
+            </mat-card-header>
+            <mat-card-content>
+              @if (city.fieldsCount > 0) {
+                <p class="info-text">
+                  <mat-icon class="info-icon">info</mat-icon>
+                  Contains {{ city.fieldsCount }} field{{ city.fieldsCount !== 1 ? 's' : '' }}
+                </p>
+              }
+            </mat-card-content>
+            <mat-card-actions>
+              <button 
+                mat-raised-button 
+                color="warn" 
+                [disabled]="city.fieldsCount > 0"
+                [matTooltip]="city.fieldsCount > 0 ? 'Cannot delete city with fields' : 'Delete city'"
+                (click)="deleteCity(city)">
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>location_city</mat-icon>
+            <p>No cities found</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Categories Section -->
+  <section class="admin-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>category</mat-icon>
+        Categories Management
+      </h2>
+      <button mat-raised-button color="primary" (click)="addCategory()">
+        <mat-icon>add</mat-icon>
+        Add Category
+      </button>
+    </div>
+
+    <!-- Search Bar -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Categories</mat-label>
+      <input matInput [(ngModel)]="categorySearchTerm" #categorySearch (ngModelChange)="categorySearchTerm.set(categorySearch.value)">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <!-- Loading State -->
+    @if (isLoadingCategories()) {
+      <div class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading categories...</p>
+      </div>
+    } @else {
+      <!-- Cards Grid -->
+      <div class="card-grid">
+        @for (category of filteredCategories(); track category.id) {
+          <mat-card class="item-card category-card">
+            <mat-card-header>
+              <mat-card-title>{{ category.name }}</mat-card-title>
+              <mat-chip class="fields-chip">
+                <mat-icon>sports_soccer</mat-icon>
+                {{ category.fieldsCount }} field{{ category.fieldsCount !== 1 ? 's' : '' }}
+              </mat-chip>
+            </mat-card-header>
+            <mat-card-content>
+              @if (category.fieldsCount > 0) {
+                <p class="info-text">
+                  <mat-icon class="info-icon">info</mat-icon>
+                  Contains {{ category.fieldsCount }} field{{ category.fieldsCount !== 1 ? 's' : '' }}
+                </p>
+              }
+            </mat-card-content>
+            <mat-card-actions>
+              <button 
+                mat-raised-button 
+                color="warn" 
+                [disabled]="category.fieldsCount > 0"
+                [matTooltip]="category.fieldsCount > 0 ? 'Cannot delete category with fields' : 'Delete category'"
+                (click)="deleteCategory(category)">
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>category</mat-icon>
+            <p>No categories found</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Fields Section -->
+  <section class="admin-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <mat-icon>sports_soccer</mat-icon>
+        Fields Management
+      </h2>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="filter-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Fields</mat-label>
+        <input matInput [(ngModel)]="fieldSearchTerm" #fieldSearch (ngModelChange)="fieldSearchTerm.set(fieldSearch.value)">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="filter-chips">
+        <mat-chip-listbox [value]="fieldStatusFilter()" (change)="fieldStatusFilter.set($event.value)">
+          <mat-chip-option value="all" selected>All Fields</mat-chip-option>
+          <mat-chip-option value="approved">Approved</mat-chip-option>
+          <mat-chip-option value="pending">Pending</mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoadingFields()) {
+      <div class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading fields...</p>
+      </div>
+    } @else {
+      <!-- Fields Grid -->
+      <div class="fields-grid">
+        @for (field of filteredFields(); track field.id) {
+          <mat-card class="field-card">
+            <!-- Field Image -->
+            @if (field.fieldImages.length) {
+              <img 
+                mat-card-image
+                [src]="field.fieldImages[0].imageUrl"
+                [alt]="field.name"
+                class="field-image">
+            } @else {
+              <div class="field-image-placeholder">
+                <mat-icon>sports_soccer</mat-icon>
+              </div>
+            }
+
+            <mat-card-header>
+              <mat-card-title>{{ field.name }}</mat-card-title>
+              <mat-card-subtitle>
+                <div class="field-meta">
+                  <span>
+                    <mat-icon>location_city</mat-icon>
+                    {{ field.cityName }}
+                  </span>
+                  <span>
+                    <mat-icon>category</mat-icon>
+                    {{ field.categoryName }}
+                  </span>
+                </div>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <!-- Status Badge -->
+              <mat-chip [class]="field.isApproved ? 'status-chip approved' : 'status-chip pending'">
+                <mat-icon>{{ field.isApproved ? 'check_circle' : 'pending' }}</mat-icon>
+                {{ field.isApproved ? 'Approved' : 'Pending' }}
+              </mat-chip>
+
+              <!-- Document Button -->
+              @if (field.hasApprovalDocument) {
+                <button 
+                  mat-stroked-button 
+                  color="accent"
+                  class="pdf-button"
+                  (click)="downloadPdf(field)">
+                  <mat-icon>description</mat-icon>
+                  View Document
+                </button>
+              }
+            </mat-card-content>
+
+            <mat-card-actions class="field-actions">
+              <button 
+                mat-raised-button 
+                color="primary"
+                [disabled]="field.isApproved"
+                [matTooltip]="field.isApproved ? 'Already approved' : 'Approve field'"
+                (click)="approveField(field)">
+                <mat-icon>check_circle</mat-icon>
+                Approve
+              </button>
+
+              <button 
+                mat-stroked-button 
+                color="warn"
+                [disabled]="!field.isApproved"
+                [matTooltip]="!field.isApproved ? 'Already rejected/pending' : 'Reject field'"
+                (click)="rejectField(field)">
+                <mat-icon>cancel</mat-icon>
+                Reject
+              </button>
+
+              <button 
+                mat-raised-button 
+                color="warn"
+                matTooltip="Delete field"
+                (click)="deleteField(field)">
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>sports_soccer</mat-icon>
+            <p>No fields found</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
 </div>
