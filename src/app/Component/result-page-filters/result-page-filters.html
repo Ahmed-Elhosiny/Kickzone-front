@@ -27,6 +27,48 @@
     </mat-form-field>
   </div>
 
+  <!-- Category -->
+  <div class="filter-group">
+    <label class="filter-label">Category</label>
+    <mat-form-field appearance="outline" class="filter-input">
+      <mat-select 
+        [value]="selectedCategory()"
+        (valueChange)="updateCategoryFilter($event)"
+        placeholder="All Categories"
+        [disabled]="isLoadingCategories()"
+      >
+        <mat-option [value]="null">All Categories</mat-option>
+        @for (category of categories(); track category.id) {
+          <mat-option [value]="category.name">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+      @if (isLoadingCategories()) {
+        <mat-spinner matSuffix diameter="20"></mat-spinner>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- City -->
+  <div class="filter-group">
+    <label class="filter-label">City</label>
+    <mat-form-field appearance="outline" class="filter-input">
+      <mat-select 
+        [value]="selectedCity()"
+        (valueChange)="updateCityFilter($event)"
+        placeholder="All Cities"
+        [disabled]="isLoadingCities()"
+      >
+        <mat-option [value]="null">All Cities</mat-option>
+        @for (city of cities(); track city.id) {
+          <mat-option [value]="city.name">{{ city.name }}</mat-option>
+        }
+      </mat-select>
+      @if (isLoadingCities()) {
+        <mat-spinner matSuffix diameter="20"></mat-spinner>
+      }
+    </mat-form-field>
+  </div>
+
   <!-- Size -->
   <div class="filter-group">
     <label class="filter-label">Field Size</label>
