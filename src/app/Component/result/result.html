@@ -1,31 +1,37 @@
-<app-result-page-filters
-  (searchValue)="updateSearchTerm($event)"
-  (SelectedSize)="updateSize($event)"
-  (minPrice)="updateMin($event)"
-  (maxPrice)="updateMax($event)"
-></app-result-page-filters>
+<div class="results-page-container">
+  <!-- Left Sidebar - Filters -->
+  <aside class="filters-sidebar-container">
+    <app-result-page-filters
+      (searchValue)="updateSearchTerm($event)"
+      (SelectedSize)="updateSize($event)"
+      (minPrice)="updateMin($event)"
+      (maxPrice)="updateMax($event)"
+    ></app-result-page-filters>
+  </aside>
 
+  <!-- Right Content - Results -->
+  <main class="results-content">
+    @if(noResultsMessage() && !loading()){
+      <div class="alert alert-warning text-center">
+        {{ noResultsMessage() }}
+      </div>
+    }
 
-@if(noResultsMessage() && !loading()){
-
-  <div  class="alert alert-warning text-center my-3">
-    {{ noResultsMessage() }}
-  </div>
-}
-
-@if (fields().length > 0){
-<div class="row">
-  @for (fieldItem of fields(); track fieldItem.id) {
-  <div class="col-md-6 mb-4">
-    <app-field-card [field]="fieldItem"></app-field-card>
-  </div>
-  }
+    @if (fields().length > 0){
+      <div class="results-grid">
+        @for (fieldItem of fields(); track fieldItem.id) {
+          <div class="result-item">
+            <app-field-card [field]="fieldItem"></app-field-card>
+          </div>
+        }
+      </div>
+    } @else if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading results...</p>
+      </div>
+    }
+  </main>
 </div>
-} @else if (loading()) {
-<div class="text-center mt-5">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-  <p class="mt-2">Loading results...</p>
-</div>
-}

@@ -1,0 +1,151 @@
+/* ===== Page Container ===== */
+.results-page-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: calc(100vh - 100px);
+}
+
+/* ===== Left Sidebar - Filters ===== */
+.filters-sidebar-container {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar for Sidebar */
+.filters-sidebar-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filters-sidebar-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.filters-sidebar-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.filters-sidebar-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* ===== Right Content - Results ===== */
+.results-content {
+  min-width: 0;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.result-item {
+  display: flex;
+}
+
+.result-item app-field-card {
+  width: 100%;
+}
+
+/* ===== Loading State ===== */
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+/* ===== Alert Styling ===== */
+.alert {
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
+
+/* ===== Responsive Design ===== */
+
+/* Large Tablets & Small Desktops */
+@media (max-width: 1200px) {
+  .results-page-container {
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+  .results-page-container {
+    grid-template-columns: 240px 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .filters-sidebar-container {
+    top: 70px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+}
+
+/* Mobile Landscape & Small Tablets */
+@media (max-width: 768px) {
+  .results-page-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .filters-sidebar-container {
+    position: relative;
+    top: 0;
+    max-height: none;
+    margin-bottom: 20px;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+  .results-page-container {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .results-grid {
+    gap: 16px;
+  }
+
+  .loading-state {
+    padding: 40px 20px;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  .filters-sidebar-container {
+    display: none;
+  }
+
+  .results-page-container {
+    grid-template-columns: 1fr;
+  }
+}
