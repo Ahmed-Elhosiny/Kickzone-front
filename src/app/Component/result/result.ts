@@ -53,14 +53,6 @@ export class Result {
     const ps = this.pageSize();
     const isApproved = true;
 
-    // Require at least one filter to be set
-    if (!cat && !cty && !search) {
-      this.loading.set(false);
-      this.fields.set([]);
-      this.noResultsMessage.set('Please select a category or city to search for fields.');
-      return;
-    }
-
     this.loading.set(true);
     this.fields.set([]);
     this.noResultsMessage.set(null);
@@ -88,6 +80,16 @@ export class Result {
 
   updateSearchTerm(value: string) {
     this.searchTerm.set(value);
+    this.page.set(1);
+  }
+
+  updateCategory(value: string | null) {
+    this.category.set(value);
+    this.page.set(1);
+  }
+
+  updateCity(value: string | null) {
+    this.city.set(value);
     this.page.set(1);
   }
 
