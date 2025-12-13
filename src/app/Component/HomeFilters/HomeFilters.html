@@ -22,7 +22,7 @@
           placeholder="Choose your sport"
           required
         >
-          @for(cat of categories$ | async; track cat.id) {
+          @for(cat of categories(); track cat.id) {
           <mat-option [value]="cat.name">
             <div class="flex items-center gap-2">
               <span class="text-base">{{ cat.name }}</span>
@@ -50,7 +50,7 @@
           required
           #citySelect="ngModel"
         >
-          @for(city of cities$ | async; track city.id) {
+          @for(city of cities(); track city.id) {
           <mat-option [value]="city.name">
             <mat-icon class="text-base text-gray-600">near_me</mat-icon>
             <span class="text-base">{{ city.name }}</span>
