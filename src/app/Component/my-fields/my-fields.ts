@@ -30,6 +30,8 @@ export class MyFieldsComponent implements OnInit {
   }
 
   loadOwnerFields(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
     const userId = this.authService.getUserId();
     
     if (!userId) {
