@@ -344,13 +344,3 @@
   }
 }
 
-/* Material Snackbar Custom Styles */
-::ng-deep .success-snackbar {
-  background: #48bb78 !important;
-  color: white !important;
-}
-
-::ng-deep .error-snackbar {
-  background: #f56565 !important;
-  color: white !important;
-}
