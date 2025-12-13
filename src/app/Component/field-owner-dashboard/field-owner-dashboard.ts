@@ -43,11 +43,6 @@ export class FieldOwnerDashboardComponent implements OnInit {
     
     this.loadUserProfile();
     this.loadStats(userId);
-    
-    // Check if we're at the parent route without a child route
-    if (this.router.url === '/field-owner' || this.router.url === '/field-owner/') {
-      this.router.navigate(['/field-owner/my-fields'], { replaceUrl: true });
-    }
   }
 
   setActiveTab(tab: string): void {
