@@ -6,10 +6,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class SignalrService {
-  
   private hubConnection!: signalR.HubConnection;
-
-  constructor() {}
 
   startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
