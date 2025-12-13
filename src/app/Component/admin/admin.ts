@@ -103,7 +103,14 @@ export class AdminPanelComponent implements OnInit {
   }
 
   openPdf(url: string) {
-    window.open("application/pdf", '_blank');
+    // Open the stored PDF in a new tab
+    window.open(url, '_blank');
+  }
+
+  downloadPdf(field: IField) {
+    // Hit backend download endpoint for the field PDF
+    const downloadUrl = `/api/Fields/${field.id}/pdf`;
+    window.open(downloadUrl, '_blank');
   }
  addCity() {
   const dialogRef = this.dialog.open(AddItemDialogComponent, {
