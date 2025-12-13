@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { AuthService } from '../../auth/auth';
@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { IUserProfile } from '../../iuser';
 
 @Component({
@@ -24,30 +26,62 @@ import { IUserProfile } from '../../iuser';
     MatTabsModule,
     MatCardModule,
     MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.css',
 })
 export class UserProfileComponent implements OnInit {
+  // ===== Injected Services =====
+  private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
+  // ===== Signals =====
   userProfile = signal<IUserProfile | null>(null);
   loading = signal(true);
+  error = signal<string | null>(null);
   editMode = signal(false);
   emailChangeRequested = signal(false);
+  submitting = signal(false);
+  
+  // Password visibility toggles
+  showCurrentPassword = signal(false);
+  showNewPassword = signal(false);
+  showConfirmPassword = signal(false);
+
+  // ===== Computed Values =====
+  displayName = computed(() => {
+    const profile = this.userProfile();
+    return profile?.name || profile?.userName || 'User';
+  });
+
+  userRole = computed(() => {
+    const profile = this.userProfile();
+    if (!profile?.roles || profile.roles.length === 0) return 'Player';
+    if (profile.roles.includes('Admin')) return 'Admin';
+    if (profile.roles.includes('FieldOwner')) return 'Field Owner';
+    return 'Player';
+  });
+
+  roleIcon = computed(() => {
+    const role = this.userRole();
+    if (role === 'Admin') return 'admin_panel_settings';
+    if (role === 'Field Owner') return 'store';
+    return 'person';
+  });
+
+  // ===== Forms =====
   profileForm: FormGroup;
   changePasswordForm: FormGroup;
   changeUsernameForm: FormGroup;
   changeEmailForm: FormGroup;
-  showCurrentPassword = false;
-  showNewPassword = false;
-  showConfirmPassword = false;
-  private snackBar = inject(MatSnackBar);
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private authService: AuthService,
-    private router: Router
-  ) {
+  constructor() {
+    // Initialize forms
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(200)]],
       location: ['', [Validators.maxLength(500)]],
@@ -69,7 +103,7 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  passwordMatchValidator(control: any): { [key: string]: boolean } | null {
+  passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const newPassword = control.get('newPassword');
     const confirmPassword = control.get('confirmPassword');
 
@@ -132,12 +166,6 @@ export class UserProfileComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load profile - Full error:', err);
-        console.error('Error status:', err?.status);
-        console.error('Error message:', err?.message);
-        console.error('Error URL:', err?.url);
-        console.error('Redirected:', err?.redirected);
-        console.error('Error details:', err?.error);
-
         this.loading.set(false);
 
         let errorMessage = 'Failed to load profile';
@@ -155,11 +183,12 @@ export class UserProfileComponent implements OnInit {
           errorMessage = 'User profile endpoint not found. Please contact support.';
         } else if (err?.error?.message) {
           errorMessage = err.error.message;
+        } else if (err?.status === 0) {
+          errorMessage = 'Unable to connect to server. Please check your connection.';
         }
 
-
+        this.error.set(errorMessage);
         this.snackBar.open(errorMessage, '×', {
-
           duration: 8000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -168,8 +197,10 @@ export class UserProfileComponent implements OnInit {
 
         if (shouldLogout) {
           setTimeout(() => {
-            this.authService.logout();
-            this.router.navigate(['/login']);
+            this.authService.logout().subscribe({
+              next: () => this.router.navigate(['/login']),
+              error: () => this.router.navigate(['/login']),
+            });
           }, 2000);
         }
       },
@@ -187,6 +218,8 @@ export class UserProfileComponent implements OnInit {
           location: profile.location || '',
           phoneNumber: profile.phoneNumber,
         });
+        this.profileForm.markAsPristine();
+        this.profileForm.markAsUntouched();
       }
     }
   }
@@ -194,6 +227,12 @@ export class UserProfileComponent implements OnInit {
   saveProfile() {
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
+      this.snackBar.open('Please fix the errors before saving', '×', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
       return;
     }
 
@@ -207,12 +246,19 @@ export class UserProfileComponent implements OnInit {
 
     if (Object.keys(updatedData).length === 0) {
       this.editMode.set(false);
+      this.snackBar.open('No changes detected', '×', {
+        duration: 2000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+      });
       return;
     }
 
+    this.submitting.set(true);
     this.userService.updateProfile(updatedData).subscribe({
       next: () => {
-        this.snackBar.open('Profile updated successfully!', '×', {
+        this.submitting.set(false);
+        this.snackBar.open('✓ Profile updated successfully!', '×', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -222,9 +268,11 @@ export class UserProfileComponent implements OnInit {
         this.loadUserProfile();
       },
       error: (err) => {
+        this.submitting.set(false);
         console.error('Failed to update profile:', err);
-        this.snackBar.open('Failed to update profile', '×', {
-          duration: 4000,
+        const errorMessage = err?.error?.message || 'Failed to update profile. Please try again.';
+        this.snackBar.open(errorMessage, '×', {
+          duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
@@ -241,24 +289,37 @@ export class UserProfileComponent implements OnInit {
 
     const { currentPassword, newPassword } = this.changePasswordForm.value;
 
+    if (currentPassword === newPassword) {
+      this.snackBar.open('New password must be different from current password', '×', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
+      return;
+    }
+
+    this.submitting.set(true);
     this.userService.changePassword({ currentPassword, newPassword }).subscribe({
       next: () => {
-        this.snackBar.open('Password changed successfully!', '×', {
+        this.submitting.set(false);
+        this.snackBar.open('✓ Password changed successfully!', '×', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['success-snackbar'],
         });
         this.changePasswordForm.reset();
+        this.showCurrentPassword.set(false);
+        this.showNewPassword.set(false);
+        this.showConfirmPassword.set(false);
       },
       error: (err) => {
+        this.submitting.set(false);
         console.error('Failed to change password:', err);
-        let errorMessage = 'Failed to change password';
-        if (err?.error?.message) {
-          errorMessage = err.error.message;
-        }
+        let errorMessage = err?.error?.message || 'Failed to change password. Please check your current password.';
         this.snackBar.open(errorMessage, '×', {
-          duration: 4000,
+          duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
@@ -274,10 +335,23 @@ export class UserProfileComponent implements OnInit {
     }
 
     const { newUserName } = this.changeUsernameForm.value;
+    const currentProfile = this.userProfile();
 
+    if (newUserName === currentProfile?.userName) {
+      this.snackBar.open('New username must be different from current username', '×', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
+      return;
+    }
+
+    this.submitting.set(true);
     this.userService.changeUsername({ newUserName }).subscribe({
       next: () => {
-        this.snackBar.open('Username changed successfully!', '×', {
+        this.submitting.set(false);
+        this.snackBar.open('✓ Username changed successfully!', '×', {
           duration: 4000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -287,10 +361,11 @@ export class UserProfileComponent implements OnInit {
         this.loadUserProfile();
       },
       error: (err) => {
+        this.submitting.set(false);
         console.error('Failed to change username:', err);
-        const errorMessage = err?.error?.message || err?.error || 'Failed to change username';
+        const errorMessage = err?.error?.message || err?.error || 'Failed to change username. Username may already be taken.';
         this.snackBar.open(errorMessage, '×', {
-          duration: 4000,
+          duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
@@ -306,12 +381,25 @@ export class UserProfileComponent implements OnInit {
     }
 
     const { newEmail } = this.changeEmailForm.value;
+    const currentProfile = this.userProfile();
 
+    if (newEmail === currentProfile?.email) {
+      this.snackBar.open('New email must be different from current email', '×', {
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar'],
+      });
+      return;
+    }
+
+    this.submitting.set(true);
     this.userService.requestEmailChange({ newEmail }).subscribe({
       next: () => {
+        this.submitting.set(false);
         this.emailChangeRequested.set(true);
-        this.snackBar.open('Confirmation email sent! Check your inbox', '×', {
-          duration: 5000,
+        this.snackBar.open('✓ Confirmation email sent! Please check your inbox', '×', {
+          duration: 6000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['success-snackbar'],
@@ -324,10 +412,11 @@ export class UserProfileComponent implements OnInit {
         }, 60000);
       },
       error: (err) => {
+        this.submitting.set(false);
         console.error('Failed to request email change:', err);
-        const errorMessage = err?.error?.message || err?.error || 'Failed to request email change';
+        const errorMessage = err?.error?.message || err?.error || 'Failed to request email change. Email may already be in use.';
         this.snackBar.open(errorMessage, '×', {
-          duration: 4000,
+          duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
@@ -337,15 +426,15 @@ export class UserProfileComponent implements OnInit {
   }
 
   toggleCurrentPasswordVisibility() {
-    this.showCurrentPassword = !this.showCurrentPassword;
+    this.showCurrentPassword.set(!this.showCurrentPassword());
   }
 
   toggleNewPasswordVisibility() {
-    this.showNewPassword = !this.showNewPassword;
+    this.showNewPassword.set(!this.showNewPassword());
   }
 
   toggleConfirmPasswordVisibility() {
-    this.showConfirmPassword = !this.showConfirmPassword;
+    this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
   logout() {
