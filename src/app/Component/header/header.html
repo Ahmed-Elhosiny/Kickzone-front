@@ -1,3 +1,20 @@
-<header class="hero-header d-flex">
-  <app-filters></app-filters>
+<header class="hero-header">
+  <div class="hero-overlay"></div>
+  
+  <div class="hero-content">
+    <div class="hero-text-container">
+      <h1 class="hero-title">
+        Find Your <span class="highlight-word">{{ currentHighlightWord() }}</span> Field
+      </h1>
+      <p class="hero-subtitle">{{ heroSubtitle() }}</p>
+    </div>
+    
+    <div class="filters-container">
+      <app-filters></app-filters>
+    </div>
+  </div>
+  
+  <div class="hero-scroll-indicator">
+    <div class="scroll-arrow"></div>
+  </div>
 </header>

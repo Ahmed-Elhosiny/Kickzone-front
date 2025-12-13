@@ -47,6 +47,7 @@ export class NavBarComponent {
   // ===== Computed Values =====
   readonly isAuthenticated = computed(() => this.authState());
   readonly isAdmin = computed(() => this.authState() && this.authService.getUserRole() === 'Admin');
+  readonly isFieldOwner = computed(() => this.authState() && this.authService.getUserRole() === 'FieldOwner');
   readonly userRole = computed(() => this.authState() ? this.authService.getUserRole() : null);
   readonly userName = computed(() => this.authState() ? (this.authService.getUserName() || 'User') : null);
 

@@ -1,21 +1,39 @@
 <footer class="footer">
   <div class="footer-content">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      @for (stat of stats(); track stat.label) {
+        <div class="stat-item">
+          <mat-icon class="stat-icon">{{ stat.icon }}</mat-icon>
+          <div class="stat-content">
+            <span class="stat-value">{{ stat.value }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
     <div class="footer-grid">
       <!-- Brand Section -->
       <div class="footer-section brand-section">
         <div class="brand">
-          <h2 class="brand-name">KickZone</h2>
-          <p class="brand-tagline">Where Sport Time Starts</p>
+          <div class="brand-logo">
+            <mat-icon class="logo-icon">sports_soccer</mat-icon>
+            <h2 class="brand-name">{{ brandInfo().name }}</h2>
+          </div>
+          <p class="brand-tagline">{{ brandInfo().tagline }}</p>
+          <p class="brand-description">{{ brandInfo().description }}</p>
         </div>
 
         <div class="social-links">
-          @for (social of socialLinks; track social.url) {
+          @for (social of socialLinks(); track social.url) {
           <a
             [href]="social.url"
             [attr.aria-label]="social.label"
             class="social-link"
             target="_blank"
             rel="noopener noreferrer"
+            [attr.title]="social.label"
           >
             <mat-icon>{{ social.icon }}</mat-icon>
           </a>
@@ -27,55 +45,45 @@
       <div class="footer-section">
         <h3 class="section-title">Quick Links</h3>
         <ul class="footer-links">
+          @for (link of quickLinks(); track link.route) {
           <li>
-            <a [routerLink]="['/home']" class="footer-link">
-              <mat-icon class="link-icon">home</mat-icon>
-              <span>Home</span>
+            <a [routerLink]="link.route" class="footer-link">
+              <mat-icon class="link-icon">{{ link.icon }}</mat-icon>
+              <span>{{ link.label }}</span>
             </a>
           </li>
-          <li>
-            <a [routerLink]="['/result']" class="footer-link">
-              <mat-icon class="link-icon">sports_soccer</mat-icon>
-              <span>Find Fields</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/register']" class="footer-link">
-              <mat-icon class="link-icon">person_add</mat-icon>
-              <span>Sign Up</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/login']" class="footer-link">
-              <mat-icon class="link-icon">login</mat-icon>
-              <span>Login</span>
-            </a>
-          </li>
+          }
         </ul>
       </div>
 
-      <!-- Legal -->
+      <!-- Field Owners -->
       <div class="footer-section">
-        <h3 class="section-title">Legal</h3>
+        @if (isFieldOwner()) {
+          <h3 class="section-title">For Owners</h3>
+          <ul class="footer-links">
+            @for (link of ownerLinks(); track link.route) {
+            <li>
+              <a [routerLink]="link.route" class="footer-link">
+                <mat-icon class="link-icon">{{ link.icon }}</mat-icon>
+                <span>{{ link.label }}</span>
+              </a>
+            </li>
+            }
+          </ul>
+          
+          <h3 class="section-title" style="margin-top: 1.5rem;">Legal</h3>
+        } @else {
+          <h3 class="section-title">Legal</h3>
+        }
         <ul class="footer-links">
+          @for (link of legalLinks(); track link.route) {
           <li>
-            <a class="footer-link" [routerLink]="['/privacy']">
-              <mat-icon class="link-icon">privacy_tip</mat-icon>
-              <span>Privacy Policy</span>
+            <a [routerLink]="link.route" class="footer-link">
+              <mat-icon class="link-icon">{{ link.icon }}</mat-icon>
+              <span>{{ link.label }}</span>
             </a>
           </li>
-          <li>
-            <a class="footer-link" [routerLink]="['/terms']">
-              <mat-icon class="link-icon">gavel</mat-icon>
-              <span>Terms of Service</span>
-            </a>
-          </li>
-          <li>
-            <a class="footer-link" [routerLink]="['/cookies']">
-              <mat-icon class="link-icon">cookie</mat-icon>
-              <span>Cookie Policy</span>
-            </a>
-          </li>
+          }
         </ul>
       </div>
 
@@ -83,24 +91,31 @@
       <div class="footer-section">
         <h3 class="section-title">Contact Us</h3>
         <ul class="footer-links">
+          @for (contact of contactInfo(); track contact.label) {
           <li class="contact-item">
-            <mat-icon class="link-icon">email</mat-icon>
-            <a [href]="'mailto:' + companyEmail" class="footer-link contact-link">
-              {{ companyEmail }}
-            </a>
+            <mat-icon class="link-icon">{{ contact.icon }}</mat-icon>
+            @if (contact.type === 'email') {
+              <a [href]="contact.link" class="footer-link contact-link">
+                {{ contact.label }}
+              </a>
+            } @else {
+              <span class="contact-text">{{ contact.label }}</span>
+            }
           </li>
-          <li class="contact-item">
-            <mat-icon class="link-icon">location_on</mat-icon>
-            <span class="contact-text">Cairo, Egypt</span>
-          </li>
+          }
         </ul>
       </div>
     </div>
 
     <!-- Copyright Bar -->
     <div class="footer-bottom">
-      <p class="copyright">&copy; {{ currentYear }} KickZone. All rights reserved.</p>
-      <p class="made-with">Made with <mat-icon class="heart-icon">favorite</mat-icon> in Egypt</p>
+      <p class="copyright">
+        <mat-icon class="copyright-icon">copyright</mat-icon>
+        {{ currentYear() }} {{ brandInfo().name }}. All rights reserved.
+      </p>
+      <p class="made-with">
+        Made with <mat-icon class="heart-icon">favorite</mat-icon> in Egypt
+      </p>
     </div>
   </div>
 </footer>

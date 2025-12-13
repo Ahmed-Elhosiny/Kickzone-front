@@ -12,6 +12,7 @@ import { AuthGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
 import { AdminPanelComponent } from './Component/admin/admin';
 import { AdminGuard } from './auth/admin-guard';
+import { fieldOwnerGuard } from './auth/field-owner-guard';
 import { FieldDetails } from './Component/field-details/field-details';
 import { ReservationCart } from './Component/ReservationCart/reservation-cart/reservation-cart';
 
@@ -39,7 +40,7 @@ export const routes: Routes = [
       import('./Component/field-owner-dashboard/field-owner-dashboard').then(
         (m) => m.FieldOwnerDashboardComponent
       ),
-    canActivate: [AuthGuard],
+    canActivate: [fieldOwnerGuard],
     children: [
       {
         path: 'my-fields',

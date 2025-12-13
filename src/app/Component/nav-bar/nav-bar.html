@@ -109,10 +109,12 @@
           </div>
           <mat-divider></mat-divider>
           
-          <button mat-menu-item [routerLink]="['/field-owner/my-fields']">
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </button>
+          @if (isFieldOwner()) {
+            <button mat-menu-item [routerLink]="['/field-owner/my-fields']">
+              <mat-icon>dashboard</mat-icon>
+              <span>Dashboard</span>
+            </button>
+          }
           
           <button mat-menu-item [routerLink]="['/profile']">
             <mat-icon>person</mat-icon>
@@ -221,14 +223,16 @@
               </div>
             </div>
             
-            <a
-              mat-button
-              class="nav-link"
-              [routerLink]="['/field-owner/my-fields']"
-            >
-              <mat-icon>dashboard</mat-icon>
-              <span>Dashboard</span>
-            </a>
+            @if (isFieldOwner()) {
+              <a
+                mat-button
+                class="nav-link"
+                [routerLink]="['/field-owner/my-fields']"
+              >
+                <mat-icon>dashboard</mat-icon>
+                <span>Dashboard</span>
+              </a>
+            }
             
             <a
               mat-button

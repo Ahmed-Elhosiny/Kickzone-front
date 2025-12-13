@@ -1,5 +1,5 @@
 .footer {
-  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
   color: #e2e8f0;
   padding: 4rem 2rem 2rem;
   position: relative;
@@ -13,7 +13,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background: linear-gradient(90deg, #ffc107 0%, #ff9800 50%, #ffc107 100%);
   background-size: 200% 100%;
   animation: gradient 3s ease infinite;
 }
@@ -26,6 +26,58 @@
   50% {
     background-position: 100% 50%;
   }
+}
+
+/* Stats Bar */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(255, 193, 7, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 193, 7, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 193, 7, 0.1);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #ffc107;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #a0aec0;
+  margin-top: 0.25rem;
 }
 
 .footer-content {
@@ -47,10 +99,29 @@
   gap: 2rem;
 }
 
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #ffc107;
+  animation: rotateLogo 10s linear infinite;
+}
+
+@keyframes rotateLogo {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .brand-name {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -61,6 +132,14 @@
   color: #a0aec0;
   font-size: 0.95rem;
   margin: 0.5rem 0 0;
+  font-style: italic;
+}
+
+.brand-description {
+  color: #cbd5e0;
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0;
+  line-height: 1.5;
 }
 
 .social-links {
@@ -75,18 +154,18 @@
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
   text-decoration: none;
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
 
 .social-link:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #0f2027;
+  transform: translateY(-3px) rotate(5deg);
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
 }
 
 .social-link mat-icon {
@@ -118,7 +197,7 @@
   left: 0;
   width: 40px;
   height: 2px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%);
   border-radius: 2px;
 }
 
@@ -144,8 +223,8 @@
 }
 
 .footer-link:hover {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  color: #ffc107;
+  background: rgba(255, 193, 7, 0.1);
   transform: translateX(5px);
 }
 
@@ -153,7 +232,7 @@
   font-size: 1.2rem;
   width: 1.2rem;
   height: 1.2rem;
-  color: #667eea;
+  color: #ffc107;
 }
 
 .contact-item {
@@ -171,8 +250,15 @@
 }
 
 .contact-link:hover {
-  color: #667eea;
+  color: #ffc107;
   text-decoration: underline;
+}
+
+.copyright-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  color: #ffc107;
 }
 
 .contact-text {
@@ -227,6 +313,16 @@
     padding: 3rem 1.5rem 1.5rem;
   }
 
+  .stats-bar {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .stat-item {
+    justify-content: center;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -235,6 +331,10 @@
   .brand-section {
     text-align: center;
     align-items: center;
+  }
+
+  .brand-logo {
+    justify-content: center;
   }
 
   .social-links {
