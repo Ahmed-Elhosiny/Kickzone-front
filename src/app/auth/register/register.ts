@@ -187,7 +187,7 @@ export class RegisterComponent {
           localStorage.setItem('pending_email_confirmation', user.email);
         }
         
-        this.snackBar.open('Account created! Check your email to verify', '×', {
+        this.snackBar.open('Account created! Check your email to verify', 'Close', {
           duration: 6000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -216,7 +216,7 @@ export class RegisterComponent {
           errorMessage = err.error.title;
         }
         
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 6000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
