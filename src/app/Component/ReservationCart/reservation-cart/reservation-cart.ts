@@ -39,7 +39,12 @@ export class ReservationCart implements OnInit {
 
       error: (err) => {
         console.error('Failed to load cart', err);
-        this.snackBar.open('❌ فشل تحميل عربة الحجوزات.', 'إغلاق', { duration: 3000 });
+        this.snackBar.open('فشل تحميل عربة الحجوزات.', 'إغلاق', { 
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
         this.loadingCart.set(false);
       },
     });
@@ -71,11 +76,21 @@ export class ReservationCart implements OnInit {
     this.cartService.removeItem(slotId).subscribe({
       next: (newCart) => {
         this.cart.set(newCart);
-        this.snackBar.open('🗑️ تم إزالة الفترة بنجاح.', 'موافق', { duration: 2000 });
+        this.snackBar.open('تم إزالة الفترة بنجاح.', 'موافق', { 
+          duration: 2000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar'],
+        });
       },
       error: (err) => {
         console.error('Failed to remove item', err);
-        this.snackBar.open('❌ فشل في إزالة الفترة.', 'إغلاق', { duration: 3000 });
+        this.snackBar.open('فشل في إزالة الفترة.', 'إغلاق', { 
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+        });
       },
     });
   }
@@ -91,8 +106,11 @@ export class ReservationCart implements OnInit {
     const currentCart = this.cart();
 
     if (!currentCart || currentCart.items.length === 0) {
-      this.snackBar.open('🚫 لا يوجد عناصر في عربة الحجوزات لإتمام الدفع.', 'إغلاق', {
+      this.snackBar.open('لا يوجد عناصر في عربة الحجوزات لإتمام الدفع.', 'إغلاق', {
         duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['warning-snackbar'],
       });
       return;
     }
@@ -105,19 +123,32 @@ export class ReservationCart implements OnInit {
 
         if (response.paymentUrl) {
 
-          this.snackBar.open('💸 جاري تحويلك لبوابة الدفع...', 'موافق', { duration: 3000 });
+          this.snackBar.open('جاري تحويلك لبوابة الدفع...', 'موافق', { 
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['info-snackbar'],
+          });
           window.location.href = response.paymentUrl;
         } else {
 
-          this.snackBar.open(`🎉 ${response.message}`, 'موافق', { duration: 5000 });
+          this.snackBar.open(response.message || 'تم إتمام الطلب بنجاح!', 'موافق', { 
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar'],
+          });
           this.cart.set({ userId: currentCart.userId, items: [] });
         }
       },
       error: (err) => {
         this.isCheckingOut.set(false);
         console.error('Checkout failed', err);
-        this.snackBar.open('❌ فشل عملية الدفع. يرجى المحاولة مرة أخرى.', 'إغلاق', {
+        this.snackBar.open('فشل عملية الدفع. يرجى المحاولة مرة أخرى.', 'إغلاق', {
           duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
         });
         this.loadCart();
       },
