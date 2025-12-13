@@ -1,5 +1,4 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -16,7 +15,7 @@ import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule, MatSnackBarModule],
+  imports: [MatSnackBarModule],
   templateUrl: './admin.html',
   styleUrls: ['./admin.css'],
 })
