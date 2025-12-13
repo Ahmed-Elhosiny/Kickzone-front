@@ -1,48 +1,85 @@
 <app-header></app-header>
 
-<div class="container my-5">
-  <!-- Mission -->
-  <div class="row align-items-center mb-5">
-    <!-- Image Left -->
-    <div class="col-md-6 mb-4 mb-md-0">
-      <img
-        [src]="missionImage"
-        class="img-fluid rounded shadow-sm w-75 d-block mx-auto"
-        alt="Mission Image"
-      />
-    </div>
+<!-- Mission & Vision Section -->
+<section class="mission-vision-section">
+  <div class="container">
+    <!-- Mission Card -->
+    <mat-card class="info-card mission-card">
+      <div class="card-layout">
+        <div class="image-container">
+          <img
+            [src]="missionImage()"
+            class="section-image"
+            alt="Mission Image"
+          />
+          <div class="image-overlay">
+            <mat-icon class="overlay-icon">{{ mission().icon }}</mat-icon>
+          </div>
+        </div>
 
-    <!-- Text Right -->
-    <div class="col-md-6">
-      <h2 class="fw-bold mb-3 text-center fs-2 fw-bold">Mission</h2>
-      <p class="text-muted lh-lg fs-5 fw-semibold fst-italic">
-        Our mission is to simplify how players organize matches, and book sports fields through a
-        smart, user-friendly digital platform. We aim to make playing sports more accessible,
-        organized, and enjoyable — helping communities stay active while supporting field owners
-        with efficient booking management.
-      </p>
+        <div class="content-container">
+          <mat-card-header>
+            <mat-card-title class="section-title">
+              <mat-icon class="title-icon">{{ mission().icon }}</mat-icon>
+              <span>{{ mission().title }}</span>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="section-content">{{ mission().content }}</p>
+          </mat-card-content>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Vision Card -->
+    <mat-card class="info-card vision-card">
+      <div class="card-layout reverse">
+        <div class="content-container">
+          <mat-card-header>
+            <mat-card-title class="section-title">
+              <mat-icon class="title-icon">{{ vision().icon }}</mat-icon>
+              <span>{{ vision().title }}</span>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="section-content">{{ vision().content }}</p>
+          </mat-card-content>
+        </div>
+
+        <div class="image-container">
+          <img
+            [src]="visionImage()"
+            class="section-image"
+            alt="Vision Image"
+          />
+          <div class="image-overlay">
+            <mat-icon class="overlay-icon">{{ vision().icon }}</mat-icon>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="container">
+    <h2 class="features-title">
+      <mat-icon class="features-icon">star</mat-icon>
+      Why Choose KickZone?
+    </h2>
+    <div class="features-grid">
+      @for (feature of features(); track feature.title) {
+        <mat-card class="feature-card">
+          <mat-card-content>
+            <div class="feature-icon-container">
+              <mat-icon class="feature-icon">{{ feature.icon }}</mat-icon>
+            </div>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-description">{{ feature.description }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
     </div>
   </div>
-
-  <!-- Vision -->
-  <div class="row align-items-center mb-5">
-    <!-- Text Left -->
-    <div class="col-md-6 order-md-1 order-2 text-center text-md-start">
-      <h2 class="fw-bold mb-3 fs-2 text-center">Vision</h2>
-      <p class="text-muted lh-lg fs-5 fw-semibold fst-italic">
-        Our vision is to become the leading platform for sports booking and community play —
-        inspiring people to stay connected through sports, empowering local field owners, and
-        building a vibrant network where every player finds their perfect game, anytime, anywhere.
-      </p>
-    </div>
-
-    <!-- Image Right -->
-    <div class="col-md-6 order-md-2 order-1 mb-4 mb-md-0">
-      <img
-        [src]="vissionImage"
-        class="img-fluid rounded shadow-sm w-75 d-block mx-auto"
-        alt="Vision Image"
-      />
-    </div>
-  </div>
-</div>
+</section>

@@ -8,6 +8,19 @@
   backdrop-filter: blur(10px);
   min-height: 64px;
   padding: 0 !important;
+  display: block !important;
+  overflow-x: visible;
+}
+
+/* Override Material Toolbar defaults */
+::ng-deep .navbar.mat-toolbar {
+  display: block !important;
+}
+
+::ng-deep .navbar.mat-toolbar-row,
+::ng-deep .navbar.mat-toolbar-single-row {
+  display: flex !important;
+  flex-direction: row !important;
 }
 
 .navbar-container {
@@ -16,9 +29,12 @@
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   height: 64px;
+  position: relative;
 }
 
 /* Logo */
@@ -71,30 +87,35 @@
 /* Desktop Navigation */
 .navbar-nav {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
-  margin-left: 32px;
+  gap: 4px;
+  margin-left: 16px;
+  flex-shrink: 0;
 }
 
 .navbar-nav .nav-link {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #e0e0e0 !important;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  padding: 8px 16px !important;
+  padding: 6px 12px !important;
   border-radius: 8px;
   transition: all 0.3s ease;
   position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .navbar-nav .nav-link mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .navbar-nav .nav-link::before {
@@ -134,7 +155,8 @@
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .cart-button {
@@ -358,7 +380,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .desktop-nav,
   .desktop-actions {
     display: none;
@@ -383,10 +405,27 @@
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 993px) {
   .mobile-nav,
   .mobile-menu-button {
     display: none !important;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 992px) {
+  .navbar-container {
+    padding: 0 20px;
+  }
+  
+  .navbar-nav {
+    margin-left: 12px;
+    gap: 2px;
+  }
+  
+  .navbar-nav .nav-link {
+    font-size: 13px;
+    padding: 6px 10px !important;
   }
 }
 

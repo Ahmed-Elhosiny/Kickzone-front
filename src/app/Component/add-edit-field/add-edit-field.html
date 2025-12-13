@@ -295,10 +295,12 @@
         class="btn btn-primary">
         @if (isSubmitting()) {
           <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-          Saving...
+          <span>Saving...</span>
         } @else {
-          <mat-icon>{{ isEditMode() ? 'update' : 'add' }}</mat-icon>
-          {{ isEditMode() ? 'Update Field' : 'Create Field' }}
+          <ng-container>
+            <mat-icon>{{ isEditMode() ? 'update' : 'add' }}</mat-icon>
+            <span>{{ isEditMode() ? 'Update Field' : 'Create Field' }}</span>
+          </ng-container>
         }
       </button>
     </div>

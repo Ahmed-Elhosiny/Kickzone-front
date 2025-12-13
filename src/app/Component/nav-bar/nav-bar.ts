@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,12 +40,15 @@ export class NavBarComponent {
   // ===== Signals =====
   readonly isLoggingOut = signal(false);
   readonly mobileMenuOpen = signal(false);
+  
+  // Convert authentication observable to signal for reactive updates
+  private readonly authState = toSignal(this.authService.isAuthenticated$, { initialValue: this.authService.isAuthenticated() });
 
   // ===== Computed Values =====
-  readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
-  readonly isAdmin = computed(() => this.authService.getUserRole() === 'Admin');
-  readonly userRole = computed(() => this.authService.getUserRole());
-  readonly userName = computed(() => this.authService.getUserName() || 'User');
+  readonly isAuthenticated = computed(() => this.authState());
+  readonly isAdmin = computed(() => this.authState() && this.authService.getUserRole() === 'Admin');
+  readonly userRole = computed(() => this.authState() ? this.authService.getUserRole() : null);
+  readonly userName = computed(() => this.authState() ? (this.authService.getUserName() || 'User') : null);
 
   // ===== Actions =====
   logout(): void {
