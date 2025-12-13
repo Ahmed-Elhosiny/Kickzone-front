@@ -57,7 +57,7 @@ export class ResendVerificationComponent {
         this.isLoading.set(false);
         this.snackBar.open(
           'Verification email sent! Check your inbox',
-          '×',
+          'Close',
           {
             duration: 6000,
             horizontalPosition: 'end',
@@ -70,7 +70,7 @@ export class ResendVerificationComponent {
       error: (err) => {
         this.isLoading.set(false);
         const errorMessage = err.error?.message || err.error || 'Failed to send verification email';
-        this.snackBar.open(errorMessage, '×', {
+        this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
