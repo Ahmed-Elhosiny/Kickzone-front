@@ -1,6 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
   <div class="container">
-    <!-- Logo (Left) -->
     <a
       class="navbar-brand fw-bold fs-2 text-warning logo"
       [routerLink]="['/home']"
@@ -9,7 +8,6 @@
       KickZone
     </a>
 
-    <!-- Toggle Button (Mobile) -->
     <button
       class="navbar-toggler"
       type="button"
@@ -22,9 +20,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Links + Button -->
     <div class="collapse navbar-collapse" id="mainNav">
-      <!-- Center Links -->
       <ul class="navbar-nav mx-lg-auto mb-2 mb-lg-0">
         <li class="nav-item mx-lg-3">
           <a
@@ -50,53 +46,56 @@
         </li>
         @if (authService.getUserRole() === 'Admin') {
         <li class="nav-item mx-lg-3">
-        <a
-          [routerLink]="['/admin']"
-          class="nav-link fw-bold fs-5"
-          aria-label="Admin Panel"
-           routerLinkActive="active"
-        >
-          Admin Panel
-        </a>
-
+          <a
+            [routerLink]="['/admin']"
+            class="nav-link fw-bold fs-5"
+            aria-label="Admin Panel"
+            routerLinkActive="active"
+          >
+            Admin Panel
+          </a>
         </li>
-      }
+        }
       </ul>
 
-      <!-- Auth Buttons (Right) -->
       <div class="auth-section d-flex align-items-center gap-3">
+        <button
+          class="btn reservatinList p-0 me-3 position-relative"
+          (click)="cart()"
+          aria-label="Reservation List"
+          title="Reservation List"
+        >
+          <i class="bi bi-journal-check fs-4 text-warning"></i>
+        </button>
+
         @if (!isAuthenticated) {
-          <a
-            [routerLink]="['/login']"
-            class="btn-auth btn-login"
-            aria-label="Login to your account"
-          >
-            Login
-          </a>
-          <a
-            [routerLink]="['/register']"
-            class="btn-auth btn-register"
-            aria-label="Create new account"
-          >
-            Sign Up
-          </a>
+        <a [routerLink]="['/login']" class="btn-auth btn-login" aria-label="Login to your account">
+          Login
+        </a>
+        <a
+          [routerLink]="['/register']"
+          class="btn-auth btn-register"
+          aria-label="Create new account"
+        >
+          Sign Up
+        </a>
         } @else {
-          <div class="user-menu">
-            <a
-              [routerLink]="['/profile']"
-              class="btn-auth btn-profile"
-              aria-label="View your profile"
-            >
-              Profile
-            </a>
-            <button
-              class="btn-auth btn-logout"
-              (click)="logout()"
-              aria-label="Logout from your account"
-            >
-              Logout
-            </button>
-          </div>
+        <div class="user-menu">
+          <a
+            [routerLink]="['/profile']"
+            class="btn-auth btn-profile"
+            aria-label="View your profile"
+          >
+            Profile
+          </a>
+          <button
+            class="btn-auth btn-logout"
+            (click)="logout()"
+            aria-label="Logout from your account"
+          >
+            Logout
+          </button>
+        </div>
         }
       </div>
     </div>

@@ -4,6 +4,9 @@ import { TimeSlotService } from '../../services/time slot/time-slot-service';
 import { Period } from '../../Model/ITimeSlot/day-schedule';
 import { ITimeSlot } from '../../Model/ITimeSlot/itime-slot';
 import { IField } from '../../Model/IField/ifield';
+import { ReservationCartService } from '../../services/ReservationCart/reservation-cart';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-time-slot',
@@ -16,12 +19,16 @@ import { IField } from '../../Model/IField/ifield';
 export class TimeSlot implements OnInit {
   fieldSignal = input.required<IField>();
   private timeSlotService = inject(TimeSlotService);
+  private cartService = inject(ReservationCartService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
 
   selectedDate = signal<Date>(new Date());
 
   selectedPeriod = signal<Period>('Morning');
   dailySlots = signal<ITimeSlot[]>([]);
   isLoading = signal<boolean>(false);
+  isBooking = signal<boolean>(false);
 
   constructor() {
     effect(() => {
@@ -67,12 +74,12 @@ export class TimeSlot implements OnInit {
   }
 
   private isMorningSlot(slot: ITimeSlot): boolean {
-    const hour = new Date(slot.startAtDateTime).getHours();
+    const hour = new Date(slot.startAtDateTime).getUTCHours();
     return hour < 12;
   }
 
   private isAfternoonSlot(slot: ITimeSlot): boolean {
-    const hour = new Date(slot.startAtDateTime).getHours();
+    const hour = new Date(slot.startAtDateTime).getUTCHours();
     return hour >= 12;
   }
 
@@ -89,6 +96,9 @@ export class TimeSlot implements OnInit {
         const slotDate = new Date(slot.startAtDateTime);
 
         const sameDay =
+          // slotDate.getUTCFullYear() === selected.getFullYear() &&
+          // slotDate.getUTCMonth() === selected.getMonth() &&
+          // slotDate.getUTCDate() === selected.getDate();
           slotDate.getFullYear() === selected.getFullYear() &&
           slotDate.getMonth() === selected.getMonth() &&
           slotDate.getDate() === selected.getDate();
@@ -111,6 +121,56 @@ export class TimeSlot implements OnInit {
   }
 
   bookTimeSlot(slot: ITimeSlot): void {
-    alert(`Attempting to book slot at ${slot.startAtDateTime}`);
+
+    if (this.isBooking()) {
+      return;
+    }
+
+    this.isBooking.set(true);
+    const slotId = slot.id;
+
+    this.cartService.addItem(slotId).subscribe({
+      next: (newCart) => {
+        this.isBooking.set(false);
+        if (newCart) {
+          const snackBarRef = this.snackBar.open(
+            `✅ تمت إضافة الفترة ${this.getStartTime(slot)} إلى عربة الحجوزات!`,
+            'عرض العربة',
+            {
+              duration: 8000,
+            }
+          );
+
+
+          snackBarRef.onAction().subscribe(() => {
+            this.router.navigate(['/reservation-cart']);
+          });
+
+
+          this.dailySlots.update((slots) =>
+            slots.map((s) => (s.id === slotId ? { ...s, isAvailable: false } : s))
+          );
+        } else {
+
+          this.snackBar.open(
+            '⚠️ لا يمكن إضافة الفترة. قد تكون محجوزة للتو أو لديك تعارض.',
+            'إغلاق',
+            { duration: 7000 }
+          );
+         
+          this.fetchTimeSlotsForDay(
+            this.fieldSignal().id,
+            this.formatDateForApi(this.selectedDate())
+          );
+        }
+      },
+      error: (err) => {
+        this.isBooking.set(false);
+        console.error('Failed to add item to cart', err);
+        this.snackBar.open('❌ فشل في إضافة الفترة. يرجى التأكد من تسجيل الدخول.', 'إغلاق', {
+          duration: 5000,
+        });
+      },
+    });
   }
 }

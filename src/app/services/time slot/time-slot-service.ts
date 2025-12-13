@@ -30,9 +30,14 @@ export class TimeSlotService {
   }
 
   getAvailableTimeSlots(fieldId: number, date: string): Observable<ITimeSlot[]> {
+    const startDate = new Date(date);
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);
+
     const params = {
       fieldId: fieldId.toString(),
-      date: date,
+      StartDateUTC: startDate.toISOString(),
+      EndDateUTC: endDate.toISOString(),
     };
 
     return this.http.get<ITimeSlot[]>(`${this.apiUrl}/available`, { params }).pipe(
