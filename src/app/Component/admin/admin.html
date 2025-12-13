@@ -12,9 +12,11 @@
       (click)="deleteCity(city)">
       Delete
     </button>
-    <p *ngIf="city.fieldsCount > 0" class="warning">
-       Cannot delete a city that contains fields
-    </p>
+     @if (city.fieldsCount > 0) {
+      <p class="warning">
+        Cannot delete a city that contains fields
+      </p>
+     }
   </div>
 </div>
 
@@ -31,9 +33,11 @@
       (click)="deleteCategory(category)">
       Delete
     </button>
-    <p *ngIf="category.fieldsCount > 0" class="warning">
-       Cannot delete a category that contains fields
-    </p>
+     @if (category.fieldsCount > 0) {
+      <p class="warning">
+        Cannot delete a category that contains fields
+      </p>
+     }
   </div>
 </div>
 
@@ -41,10 +45,12 @@
 <h2 class="section-title">Fields</h2>
 <div class="card-grid">
   <div class="card field-card" *ngFor="let field of fields()">
-    <img *ngIf="field.fieldImages.length"
-         [src]="field.fieldImages[0].imageUrl"
-         class="field-img"
-         alt="Field Image">
+        @if (field.fieldImages.length) {
+       <img
+          [src]="field.fieldImages[0].imageUrl"
+          class="field-img"
+          alt="Field Image">
+        }
 
     <h3>{{ field.name }}</h3>
     <p class="info">City: {{ field.cityName }}</p>
@@ -54,12 +60,19 @@
       {{ field.isApproved ? 'Approved' : 'Pending' }}
     </span>
 
-    <button
-      *ngIf="field.approvalDocumentUrl"
-      class="btn pdf"
-      (click)="openPdf(field.approvalDocumentUrl)">
-       View Document
-    </button>
+    @if (field.documentUrl) {
+      <button
+        class="btn pdf"
+        (click)="openPdf(field.documentUrl)">
+         View Document
+      </button>
+
+      <button
+        class="btn pdf"
+        (click)="downloadPdf(field)">
+         Download Document
+      </button>
+    }
 
     <div class="btn-row">
       <button class="btn approve"
