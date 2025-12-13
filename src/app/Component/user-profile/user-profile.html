@@ -5,23 +5,29 @@
       <mat-spinner diameter="50"></mat-spinner>
       <p>Loading profile...</p>
     </div>
+    } @else if (error()) {
+    <div class="error-state">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>Failed to Load Profile</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="loadUserProfile()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </div>
     } @else if (userProfile()) {
     <div class="profile-header">
       <div class="profile-avatar">
         <mat-icon class="avatar-icon">account_circle</mat-icon>
       </div>
       <div class="profile-info">
-        <h1 class="profile-name">{{ userProfile()?.name || userProfile()?.userName }}</h1>
+        <h1 class="profile-name">{{ displayName() }}</h1>
         <p class="profile-email">{{ userProfile()?.email }}</p>
         <span class="profile-role" 
-              [class.admin]="userProfile()?.roles?.includes('Admin')"
-              [class.owner]="userProfile()?.roles?.includes('FieldOwner')">
-          <mat-icon>
-            {{ userProfile()?.roles?.includes('Admin') ? 'admin_panel_settings' : 
-               userProfile()?.roles?.includes('FieldOwner') ? 'store' : 'person' }}
-          </mat-icon>
-          {{ userProfile()?.roles?.includes('Admin') ? 'Admin' : 
-             userProfile()?.roles?.includes('FieldOwner') ? 'Field Owner' : 'Player' }}
+              [class.admin]="userRole() === 'Admin'"
+              [class.owner]="userRole() === 'Field Owner'">
+          <mat-icon>{{ roleIcon() }}</mat-icon>
+          {{ userRole() }}
         </span>
       </div>
     </div>
@@ -135,10 +141,14 @@
                     class="save-button"
                     type="button"
                     (click)="saveProfile()"
-                    [disabled]="profileForm.invalid"
+                    [disabled]="profileForm.invalid || submitting()"
                   >
+                    @if (submitting()) {
+                    <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                    } @else {
                     <mat-icon>save</mat-icon>
-                    Save Changes
+                    }
+                    {{ submitting() ? 'Saving...' : 'Save Changes' }}
                   </button>
                 </div>
                 }
@@ -167,7 +177,7 @@
                   </label>
                   <div class="password-wrapper">
                     <input
-                      [type]="showCurrentPassword ? 'text' : 'password'"
+                      [type]="showCurrentPassword() ? 'text' : 'password'"
                       formControlName="currentPassword"
                       class="form-input"
                       placeholder="Enter current password"
@@ -177,8 +187,9 @@
                       mat-icon-button
                       class="visibility-toggle"
                       (click)="toggleCurrentPasswordVisibility()"
+                      [attr.aria-label]="showCurrentPassword() ? 'Hide password' : 'Show password'"
                     >
-                      <mat-icon>{{ showCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      <mat-icon>{{ showCurrentPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                   </div>
                   @if (changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.errors) {
@@ -196,7 +207,7 @@
                   </label>
                   <div class="password-wrapper">
                     <input
-                      [type]="showNewPassword ? 'text' : 'password'"
+                      [type]="showNewPassword() ? 'text' : 'password'"
                       formControlName="newPassword"
                       class="form-input"
                       placeholder="Enter new password"
@@ -206,8 +217,9 @@
                       mat-icon-button
                       class="visibility-toggle"
                       (click)="toggleNewPasswordVisibility()"
+                      [attr.aria-label]="showNewPassword() ? 'Hide password' : 'Show password'"
                     >
-                      <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      <mat-icon>{{ showNewPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                   </div>
                   @if (changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.errors) {
@@ -225,7 +237,7 @@
                   </label>
                   <div class="password-wrapper">
                     <input
-                      [type]="showConfirmPassword ? 'text' : 'password'"
+                      [type]="showConfirmPassword() ? 'text' : 'password'"
                       formControlName="confirmPassword"
                       class="form-input"
                       placeholder="Confirm new password"
@@ -235,8 +247,9 @@
                       mat-icon-button
                       class="visibility-toggle"
                       (click)="toggleConfirmPasswordVisibility()"
+                      [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
                     >
-                      <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                   </div>
                   @if (changePasswordForm.get('confirmPassword')?.touched && changePasswordForm.get('confirmPassword')?.errors) {
@@ -258,11 +271,15 @@
                     mat-raised-button
                     color="primary"
                     type="submit"
-                    [disabled]="changePasswordForm.invalid"
+                    [disabled]="changePasswordForm.invalid || submitting()"
                     class="save-button"
                   >
+                    @if (submitting()) {
+                    <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                    } @else {
                     <mat-icon>check</mat-icon>
-                    Update Password
+                    }
+                    {{ submitting() ? 'Updating...' : 'Update Password' }}
                   </button>
                 </div>
               </form>
@@ -316,11 +333,15 @@
                     mat-raised-button
                     color="primary"
                     type="submit"
-                    [disabled]="changeUsernameForm.invalid"
+                    [disabled]="changeUsernameForm.invalid || submitting()"
                     class="save-button"
                   >
+                    @if (submitting()) {
+                    <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                    } @else {
                     <mat-icon>check</mat-icon>
-                    Update Username
+                    }
+                    {{ submitting() ? 'Updating...' : 'Update Username' }}
                   </button>
                 </div>
               </form>
@@ -375,11 +396,15 @@
                     mat-raised-button
                     color="primary"
                     type="submit"
-                    [disabled]="changeEmailForm.invalid"
+                    [disabled]="changeEmailForm.invalid || submitting()"
                     class="save-button"
                   >
+                    @if (submitting()) {
+                    <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                    } @else {
                     <mat-icon>check</mat-icon>
-                    Request Email Change
+                    }
+                    {{ submitting() ? 'Sending...' : 'Request Email Change' }}
                   </button>
                 </div>
               </form>
