@@ -107,7 +107,7 @@ export class ConfirmEmailComponent implements OnInit {
           this.errorMessage = '';
           this.cdr.markForCheck();
           
-          this.snackBar.open('✓ Email verified successfully!', '×', {
+          this.snackBar.open('Email verified successfully!', 'Close', {
             duration: 4000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
@@ -126,7 +126,7 @@ export class ConfirmEmailComponent implements OnInit {
           this.errorMessage = err.error?.message || err.error || 'Failed to confirm email. The link may be invalid or expired.';
           this.cdr.markForCheck();
           
-          this.snackBar.open(this.errorMessage, '×', {
+          this.snackBar.open(this.errorMessage, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
