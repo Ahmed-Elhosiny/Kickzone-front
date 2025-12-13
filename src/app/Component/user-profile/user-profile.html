@@ -13,9 +13,15 @@
       <div class="profile-info">
         <h1 class="profile-name">{{ userProfile()?.name || userProfile()?.userName }}</h1>
         <p class="profile-email">{{ userProfile()?.email }}</p>
-        <span class="profile-role" [class.owner]="userProfile()?.roles?.includes('FieldOwner')">
-          <mat-icon>{{ userProfile()?.roles?.includes('FieldOwner') ? 'store' : 'person' }}</mat-icon>
-          {{ userProfile()?.roles?.includes('FieldOwner') ? 'Field Owner' : 'Player' }}
+        <span class="profile-role" 
+              [class.admin]="userProfile()?.roles?.includes('Admin')"
+              [class.owner]="userProfile()?.roles?.includes('FieldOwner')">
+          <mat-icon>
+            {{ userProfile()?.roles?.includes('Admin') ? 'admin_panel_settings' : 
+               userProfile()?.roles?.includes('FieldOwner') ? 'store' : 'person' }}
+          </mat-icon>
+          {{ userProfile()?.roles?.includes('Admin') ? 'Admin' : 
+             userProfile()?.roles?.includes('FieldOwner') ? 'Field Owner' : 'Player' }}
         </span>
       </div>
     </div>
