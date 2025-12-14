@@ -3,7 +3,7 @@ import { ReservationService } from './Reservation/reservation';
 import { IReservation } from '../Model/IReservation/ireservation';
 
 @Injectable({ providedIn: 'root' })
-export class GlobalReservationsService {
+export class UserBookingService {
   reservations = signal<IReservation[]>([]);
   loading = signal(true);
 
@@ -11,13 +11,19 @@ export class GlobalReservationsService {
 
   loadReservations() {
     this.loading.set(true);
+
     this.reservationService.getMyReservations().subscribe({
       next: (res) => {
         this.reservations.set(res);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: () => {
+        this.loading.set(false);
+      }
     });
   }
-}
 
+  paidReservations() {
+    return this.reservations().filter(r => r.amountPaid > 0);
+  }
+}

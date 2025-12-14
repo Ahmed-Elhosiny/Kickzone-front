@@ -15,6 +15,7 @@ import { AdminGuard } from './auth/admin-guard';
 import { fieldOwnerGuard } from './auth/field-owner-guard';
 import { FieldDetails } from './Component/field-details/field-details';
 import { ReservationCart } from './Component/ReservationCart/reservation-cart/reservation-cart';
+import { Bookings } from './Component/bookings/bookings';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -28,6 +29,7 @@ export const routes: Routes = [
   { path: 'result', component: Result },
   { path: 'field/:id', component: FieldDetails },
   { path: 'reservation-cart', component: ReservationCart },
+  { path: 'my-bookings', component:Bookings  },
   {
     path: 'profile',
     loadComponent: () =>

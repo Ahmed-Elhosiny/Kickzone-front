@@ -1,48 +1,25 @@
 <mat-toolbar class="navbar" color="primary">
   <div class="navbar-container">
     <!-- Logo -->
-    <a
-      class="navbar-logo"
-      [routerLink]="['/home']"
-      aria-label="KickZone Home"
-    >
+    <a class="navbar-logo" [routerLink]="['/home']" aria-label="KickZone Home">
       <mat-icon class="logo-icon">sports_soccer</mat-icon>
       <span class="logo-text">KickZone</span>
     </a>
 
     <!-- Desktop Navigation -->
     <nav class="navbar-nav desktop-nav">
-      <a
-        mat-button
-        class="nav-link"
-        [routerLink]="['/home']"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        aria-label="Home page"
-      >
+      <a mat-button class="nav-link" [routerLink]="['/home']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Home page">
         <mat-icon>home</mat-icon>
         <span>Home</span>
       </a>
 
-      <a
-        mat-button
-        class="nav-link"
-        [routerLink]="['/result']"
-        routerLinkActive="active"
-        aria-label="Browse fields"
-      >
+      <a mat-button class="nav-link" [routerLink]="['/result']" routerLinkActive="active" aria-label="Browse fields">
         <mat-icon>search</mat-icon>
         <span>Fields</span>
       </a>
 
       @if (isAdmin()) {
-        <a
-          mat-button
-          class="nav-link"
-          [routerLink]="['/admin']"
-          routerLinkActive="active"
-          aria-label="Admin Panel"
-        >
+        <a mat-button class="nav-link" [routerLink]="['/admin']" routerLinkActive="active" aria-label="Admin Panel">
           <mat-icon>admin_panel_settings</mat-icon>
           <span>Admin</span>
         </a>
@@ -54,46 +31,35 @@
 
     <!-- Desktop Actions -->
     <div class="navbar-actions desktop-actions">
-      <!-- Cart Button -->
+      <!-- Paid Reservations Button -->
       <button
+        *ngIf=" isAuthenticated()"
         mat-icon-button
         class="cart-button"
-        (click)="navigateToCart()"
-        aria-label="Reservation Cart"
-        matTooltip="View Reservations"
+        (click)="navigateToPaidReservations()"
+        matTooltip="My Paid Reservations"
+        aria-label="My Paid Reservations"
       >
+        <mat-icon>event_available</mat-icon>
+      </button>
+
+      <!-- Cart Button -->
+      <button mat-icon-button class="cart-button" (click)="navigateToCart()" aria-label="Reservation Cart" matTooltip="View Reservations">
         <mat-icon>shopping_cart</mat-icon>
       </button>
 
       @if (!isAuthenticated()) {
-        <!-- Guest Actions -->
-        <a
-          mat-stroked-button
-          class="btn-login"
-          [routerLink]="['/login']"
-          aria-label="Login to your account"
-        >
+        <a mat-stroked-button class="btn-login" [routerLink]="['/login']" aria-label="Login to your account">
           <mat-icon>login</mat-icon>
           Login
         </a>
-        <a
-          mat-raised-button
-          color="accent"
-          class="btn-register"
-          [routerLink]="['/register']"
-          aria-label="Create new account"
-        >
+        <a mat-raised-button color="accent" class="btn-register" [routerLink]="['/register']" aria-label="Create new account">
           <mat-icon>person_add</mat-icon>
           Sign Up
         </a>
       } @else {
         <!-- Authenticated User Menu -->
-        <button
-          mat-button
-          [matMenuTriggerFor]="userMenu"
-          class="user-menu-trigger"
-          aria-label="User menu"
-        >
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger" aria-label="User menu">
           <mat-icon>account_circle</mat-icon>
           <span class="user-name">{{ userName() }}</span>
           <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
@@ -108,27 +74,22 @@
             </div>
           </div>
           <mat-divider></mat-divider>
-          
+
           @if (isFieldOwner()) {
             <button mat-menu-item [routerLink]="['/field-owner/my-fields']">
               <mat-icon>dashboard</mat-icon>
               <span>Dashboard</span>
             </button>
           }
-          
+
           <button mat-menu-item [routerLink]="['/profile']">
             <mat-icon>person</mat-icon>
             <span>Profile</span>
           </button>
-          
+
           <mat-divider></mat-divider>
-          
-          <button 
-            mat-menu-item 
-            (click)="logout()"
-            [disabled]="isLoggingOut()"
-            class="logout-item"
-          >
+
+          <button mat-menu-item (click)="logout()" [disabled]="isLoggingOut()" class="logout-item">
             <mat-icon>logout</mat-icon>
             <span>{{ isLoggingOut() ? 'Logging out...' : 'Logout' }}</span>
           </button>
@@ -137,12 +98,7 @@
     </div>
 
     <!-- Mobile Menu Button -->
-    <button
-      mat-icon-button
-      class="mobile-menu-button"
-      (click)="toggleMobileMenu()"
-      aria-label="Toggle navigation menu"
-    >
+    <button mat-icon-button class="mobile-menu-button" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu">
       <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
     </button>
   </div>
@@ -151,43 +107,28 @@
   @if (mobileMenuOpen()) {
     <div class="mobile-nav" (click)="closeMobileMenu()">
       <nav class="mobile-nav-links">
-        <a
-          mat-button
-          class="nav-link"
-          [routerLink]="['/home']"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
+        <a mat-button class="nav-link" [routerLink]="['/home']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <mat-icon>home</mat-icon>
           <span>Home</span>
         </a>
 
-        <a
-          mat-button
-          class="nav-link"
-          [routerLink]="['/result']"
-          routerLinkActive="active"
-        >
+        <a mat-button class="nav-link" [routerLink]="['/result']" routerLinkActive="active">
           <mat-icon>search</mat-icon>
           <span>Fields</span>
         </a>
 
-        <a
-          mat-button
-          class="nav-link"
-          (click)="navigateToCart()"
-        >
+        <a *ngIf="isAuthenticated()" mat-button class="nav-link" (click)="navigateToPaidReservations()">
+          <mat-icon>event_available</mat-icon>
+          <span>Paid Reservations</span>
+        </a>
+
+        <a mat-button class="nav-link" (click)="navigateToCart()">
           <mat-icon>shopping_cart</mat-icon>
           <span>Reservations</span>
         </a>
 
         @if (isAdmin()) {
-          <a
-            mat-button
-            class="nav-link"
-            [routerLink]="['/admin']"
-            routerLinkActive="active"
-          >
+          <a mat-button class="nav-link" [routerLink]="['/admin']" routerLinkActive="active">
             <mat-icon>admin_panel_settings</mat-icon>
             <span>Admin Panel</span>
           </a>
@@ -196,20 +137,11 @@
         <mat-divider></mat-divider>
 
         @if (!isAuthenticated()) {
-          <a
-            mat-stroked-button
-            class="mobile-action-btn btn-login"
-            [routerLink]="['/login']"
-          >
+          <a mat-stroked-button class="mobile-action-btn btn-login" [routerLink]="['/login']">
             <mat-icon>login</mat-icon>
             Login
           </a>
-          <a
-            mat-raised-button
-            color="accent"
-            class="mobile-action-btn btn-register"
-            [routerLink]="['/register']"
-          >
+          <a mat-raised-button color="accent" class="mobile-action-btn btn-register" [routerLink]="['/register']">
             <mat-icon>person_add</mat-icon>
             Sign Up
           </a>
@@ -222,33 +154,20 @@
                 <p class="mobile-user-role">{{ userRole() }}</p>
               </div>
             </div>
-            
+
             @if (isFieldOwner()) {
-              <a
-                mat-button
-                class="nav-link"
-                [routerLink]="['/field-owner/my-fields']"
-              >
+              <a mat-button class="nav-link" [routerLink]="['/field-owner/my-fields']">
                 <mat-icon>dashboard</mat-icon>
                 <span>Dashboard</span>
               </a>
             }
-            
-            <a
-              mat-button
-              class="nav-link"
-              [routerLink]="['/profile']"
-            >
+
+            <a mat-button class="nav-link" [routerLink]="['/profile']">
               <mat-icon>person</mat-icon>
               <span>Profile</span>
             </a>
-            
-            <button
-              mat-stroked-button
-              class="mobile-action-btn btn-logout"
-              (click)="logout()"
-              [disabled]="isLoggingOut()"
-            >
+
+            <button mat-stroked-button class="mobile-action-btn btn-logout" (click)="logout()" [disabled]="isLoggingOut()">
               <mat-icon>logout</mat-icon>
               <span>{{ isLoggingOut() ? 'Logging out...' : 'Logout' }}</span>
             </button>

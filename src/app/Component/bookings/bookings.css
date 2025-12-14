@@ -1,0 +1,98 @@
+/* Page Title */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #203a43;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  padding: 40px 0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #777;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 16px;
+}
+
+/* Grid */
+.reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.reservation-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #203a43;
+  margin-bottom: 12px;
+}
+
+.card-header mat-icon {
+  color: #ffc107;
+}
+
+/* Card Body */
+.card-body p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.card-body mat-icon {
+  font-size: 18px;
+  color: #999;
+}
+
+/* Price */
+.price {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 22px;
+  }
+}

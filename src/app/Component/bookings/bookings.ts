@@ -1,11 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UserBookingService } from '../../services/user-bookings';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-bookings',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
 })
-export class Bookings {
+export class Bookings implements OnInit {
+  bookingService = inject(UserBookingService);
 
+  ngOnInit(): void {
+    this.bookingService.loadReservations();
+  }
 }

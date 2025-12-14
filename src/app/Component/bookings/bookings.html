@@ -1,1 +1,42 @@
-<p>bookings works!</p>
+<h2 class="page-title">My Paid Reservations</h2>
+
+<!-- Loading -->
+<div *ngIf="bookingService.loading()" class="loading">
+  <span>Loading your reservations...</span>
+</div>
+
+<!-- Empty State -->
+<div
+  *ngIf="!bookingService.loading() && bookingService.paidReservations().length === 0"
+  class="empty-state"
+>
+  <mat-icon>event_busy</mat-icon>
+  <p>No paid reservations yet</p>
+</div>
+
+<!-- Reservations -->
+<div
+  class="reservations-grid"
+  *ngIf="!bookingService.loading() && bookingService.paidReservations().length > 0"
+>
+  <div class="reservation-card" *ngFor="let r of bookingService.paidReservations()">
+
+    <div class="card-header">
+      <mat-icon>sports_soccer</mat-icon>
+      <span>{{ r.timeSlot?.fieldName || 'Field' }}</span>
+    </div>
+
+    <div class="card-body">
+      <p>
+        <mat-icon>schedule</mat-icon>
+        {{ r.timeSlot?.startAtDateTime | date:'medium' }}
+      </p>
+
+      <p class="price">
+        <mat-icon>payments</mat-icon>
+        {{ r.amountPaid }} EGP
+      </p>
+    </div>
+
+  </div>
+</div>
