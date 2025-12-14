@@ -1,105 +1,283 @@
-<div class="container py-5">
-  <h1 class="display-5 fw-bold text-dark mb-4">
-    @if (field(); as fieldData) {
-    {{ fieldData.name }}
-    } @else { Loading Field Details... }
-  </h1>
-
-  <div class="row g-4 mb-5 custom-details-row">
-    <div class="col-md-8">
-      @if (field(); as fieldData) {
-      <div class="card shadow-sm border-0 custom-image-container">
-        @if (fieldData.fieldImages.length > 0) {
-        <img
-          [src]="fieldData.fieldImages[0].imageUrl"
-          [alt]="'Image of ' + fieldData.name"
-          class="card-img-top custom-field-image"
-        />
-        } @else {
-        <div class="bg-light d-flex align-items-center justify-content-center custom-field-image">
-          <span class="text-muted">No Image Available</span>
-        </div>
-        }
-      </div>
-      }
+<!-- Loading State -->
+@if (isLoading()) {
+<div class="loading-container">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <mat-spinner class="mx-auto"></mat-spinner>
+      <p class="mt-3 text-muted">Loading field details...</p>
     </div>
-
-    <div class="col-md-4 d-flex flex-column gap-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-primary text-white fs-5 fw-semibold">
-          @if (field(); as fieldData) {
-          {{ fieldData.categoryName }} Pitches } @else { Details }
-        </div>
-        <div class="card-body">
-          @if (field(); as fieldData) {
-          <ul class="list-unstyled mb-0">
-            <li><strong class="text-primary">Size:</strong> {{ fieldData.size }}</li>
-            <li><strong class="text-primary">Open At:</strong> {{ fieldData.openAt }}:00</li>
-            <li><strong class="text-primary">Close At:</strong> {{ fieldData.closeAt }}:00</li>
-            <li>
-              <strong class="text-primary">Price/Hour:</strong>
-              {{ fieldData.pricePerHour | currency : 'EGP' : 'symbol' : '1.0-2' }}
-            </li>
-          </ul>
-          }
-        </div>
+    
+    <!-- Skeleton Loaders -->
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="skeleton skeleton-image"></div>
       </div>
-
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-primary text-white fs-5 fw-semibold">Address</div>
-        <div class="card-body d-flex flex-column justify-content-between">
-          @if (field(); as fieldData) {
-          <p class="card-text">{{ fieldData.location }}, {{ fieldData.cityName }}</p>
-
-          <a
-            (click)="scrollToMap(); $event.preventDefault()"
-            href="#google-map"
-            class="btn btn-outline-primary mt-3 align-self-start"
-          >
-            View on Map
-          </a>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <section class="time-slot-section">
-    @if(field(); as currentField) {
-    <app-time-slot [fieldSignal]="currentField"></app-time-slot>
-    }
-  </section>
-
-  <div class="row justify-content-start mb-4">
-    <div class="col-md-8">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-light fs-5 fw-semibold">Description</div>
-        <div class="card-body">
-          <p class="text-muted fst-italic mb-0">
-            A modern and well-maintained football field located in the heart of
-            {{ field()?.cityName || 'the city' }}. Ideal for evening games with friends or league
-            matches.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row justify-content-start mb-5">
-    <div class="col-md-8">
-      <div id="google-map" class="shadow-lg border rounded overflow-hidden">
-        @if (field(); as fieldData) {
-        <iframe
-          [src]="getSafeMapUrl(fieldData.location, fieldData.cityName)"
-          width="100%"
-          height="400"
-          style="border: 0"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-        }
+      <div class="col-lg-4">
+        <div class="skeleton skeleton-card mb-3"></div>
+        <div class="skeleton skeleton-card"></div>
       </div>
     </div>
   </div>
 </div>
+}
+
+<!-- Error State -->
+@else if (hasError()) {
+<div class="error-container">
+  <div class="container py-5">
+    <div class="error-card text-center">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2 class="mt-3">Oops! Something went wrong</h2>
+      <p class="text-muted">{{ errorMessage() }}</p>
+      <button mat-raised-button color="primary" (click)="goBack()" class="mt-3">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Fields
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Main Content -->
+@else if (field(); as fieldData) {
+<div class="field-details-container">
+  <!-- Header Section with Back Button -->
+  <div class="header-section">
+    <div class="container">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="field-header">
+        <h1 class="field-title">{{ fieldData.name }}</h1>
+        <div class="field-meta">
+          <span class="category-badge">
+            <mat-icon>sports_soccer</mat-icon>
+            {{ fieldData.categoryName }}
+          </span>
+          <span class="location-badge">
+            <mat-icon>location_on</mat-icon>
+            {{ fieldData.cityName }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container main-content">
+    <div class="row g-4 mb-5">
+      <!-- Image Gallery Section -->
+      <div class="col-lg-8">
+        <div class="image-gallery-card">
+          @if (hasImages()) {
+          <div class="main-image-container">
+            <img
+              [src]="currentImage()?.imageUrl"
+              [alt]="'Image of ' + fieldData.name"
+              class="main-image"
+            />
+            
+            <!-- Navigation Arrows -->
+            @if (fieldData.fieldImages.length > 1) {
+            <button mat-icon-button class="nav-arrow nav-arrow-left" (click)="previousImage()">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button mat-icon-button class="nav-arrow nav-arrow-right" (click)="nextImage()">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+            
+            <!-- Image Counter -->
+            <div class="image-counter">
+              {{ selectedImageIndex() + 1 }} / {{ fieldData.fieldImages.length }}
+            </div>
+            }
+          </div>
+          
+          <!-- Thumbnail Gallery -->
+          @if (fieldData.fieldImages.length > 1) {
+          <div class="thumbnail-gallery">
+            @for (image of fieldData.fieldImages; track image.id; let idx = $index) {
+            <div 
+              class="thumbnail-item" 
+              [class.active]="idx === selectedImageIndex()"
+              (click)="selectImage(idx)"
+            >
+              <img [src]="image.imageUrl" [alt]="'Thumbnail ' + (idx + 1)" />
+            </div>
+            }
+          </div>
+          }
+          } @else {
+          <div class="no-image-placeholder">
+            <mat-icon>image_not_supported</mat-icon>
+            <p>No images available</p>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Info Cards Section -->
+      <div class="col-lg-4">
+        <!-- Field Details Card -->
+        <mat-card class="info-card details-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              Field Details
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="info-list">
+              <div class="info-item">
+                <mat-icon>straighten</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Size</span>
+                  <span class="info-value">{{ formatSize(fieldData.size) }}</span>
+                </div>
+              </div>
+              
+              <div class="info-item">
+                <mat-icon>schedule</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Operating Hours</span>
+                  <span class="info-value">{{ fieldData.openAt }}:00 - {{ fieldData.closeAt }}:00</span>
+                </div>
+              </div>
+              
+              <div class="info-item price-item">
+                <mat-icon>payments</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Price per Hour</span>
+                  <span class="info-value price-value">
+                    {{ fieldData.pricePerHour | currency : 'EGP' : 'symbol' : '1.0-0' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <mat-icon>person</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Owner</span>
+                  <span class="info-value">{{ fieldData.ownerName }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Location Card -->
+        <mat-card class="info-card location-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>location_on</mat-icon>
+              Location
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="location-address">
+              <mat-icon>place</mat-icon>
+              {{ fieldData.location }}, {{ fieldData.cityName }}
+            </p>
+            <div class="location-actions">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="scrollToMap()" 
+                class="w-100 mb-2"
+              >
+                <mat-icon>map</mat-icon>
+                View on Map
+              </button>
+              <button 
+                mat-stroked-button 
+                (click)="openMapInNewTab()" 
+                class="w-100"
+              >
+                <mat-icon>open_in_new</mat-icon>
+                Open in Google Maps
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Time Slots Section -->
+    <section class="time-slot-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <mat-icon>event_available</mat-icon>
+          Available Time Slots
+        </h2>
+        <p class="section-subtitle">Select a time slot to book your game</p>
+      </div>
+      <app-time-slot [fieldSignal]="fieldData"></app-time-slot>
+    </section>
+
+    <!-- Description Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <mat-card class="description-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>description</mat-icon>
+              About This Field
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="description-text">
+              A modern and well-maintained football field located in {{ fieldData.cityName }}. 
+              Perfect for evening games with friends or competitive league matches. 
+              The field features quality turf and is regularly maintained to ensure the best playing experience.
+            </p>
+            <div class="features-list">
+              <div class="feature-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Quality Surface</span>
+              </div>
+              <div class="feature-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Well Lit</span>
+              </div>
+              <div class="feature-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Convenient Location</span>
+              </div>
+              <div class="feature-item">
+                <mat-icon>check_circle</mat-icon>
+                <span>Regular Maintenance</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <mat-card id="google-map" class="map-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>map</mat-icon>
+              Location Map
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="p-0">
+            <div class="map-container">
+              <iframe
+                [src]="getSafeMapUrl(fieldData.location, fieldData.cityName)"
+                width="100%"
+                height="450"
+                style="border: 0"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+}
