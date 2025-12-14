@@ -62,12 +62,15 @@
         </div>
         } @else { @for (slot of filteredSlots(); track slot.id) {
         <button
-          [disabled]="slot.isReserved || !slot.isAvailable || isBooking()"
-          (click)="bookTimeSlot(slot)"
-          class="time-slot-box text-center p-2 rounded border"
-          [style.background]="slot.isAvailable ? 'green' : 'gray'"
-          [style.color]="'white'"
+            [disabled]="slot.isReserved || isBooking()"
+            (click)="bookTimeSlot(slot)"
+            class="time-slot-box text-center p-2 rounded border"
+            [ngClass]="{
+              'slot-available': slot.isAvailable && !slot.isReserved,
+              'slot-booked': slot.isReserved
+            }"
         >
+
           <div class="fw-bold time" [class.text-dark]="!slot.isAvailable">
             {{ getStartTime(slot) }}
           </div>
