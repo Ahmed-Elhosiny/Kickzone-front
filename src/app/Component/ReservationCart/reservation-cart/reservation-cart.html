@@ -2,101 +2,116 @@
   <h2 class="mb-4 text-center text-primary fw-bold">Reservation List</h2>
   <hr class="mb-5" />
 
+  <!-- Loading State -->
   @if (loadingCart()) {
-  <mat-card class="p-4 text-center shadow-sm">
-    <mat-card-content>
-      <p>
-        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-        Loading Reservations...
-      </p>
-    </mat-card-content>
-  </mat-card>
-  } @if (!loadingCart() && cart() && cart()!.items.length === 0) {
-  <mat-card class="p-4 text-center shadow-sm mat-warn">
-    <mat-card-content>
-      <h3 class="mat-card-title">You Have No Reservation Yet!</h3>
-      <p class="mat-card-subtitle">
-        Ready to play? Find and add your desired Play Times on the Fields page.
-      </p>
-    </mat-card-content>
-  </mat-card>
-  } @if (!loadingCart() && cart() && cart()!.items.length > 0) {
-  <div class="row">
-    <div class="col-lg-8 mb-4">
-      <h3 class="h5 mb-3 fw-bold text-secondary">Added Reservations</h3>
+    <mat-card class="p-4 text-center shadow-sm">
+      <mat-card-content>
+        <p>
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Loading Reservations...
+        </p>
+      </mat-card-content>
+    </mat-card>
+  }
 
-      <div class="cart-items-list">
-        @for (item of cart()!.items; track item.timeSlotId) {
-        <mat-card class="cart-item-card mb-3 shadow-sm">
-          <mat-card-content class="d-flex justify-content-between align-items-start">
-            <div class="item-details">
-              <h4 class="mat-card-title text-primary fw-bold mb-1">{{ item.fieldName }}</h4>
+  <!-- Empty State -->
+  @if (!loadingCart() && cart() && cart()!.items.length === 0) {
+    <mat-card class="p-4 text-center shadow-sm mat-warn">
+      <mat-card-content>
+        <h3 class="mat-card-title">You Have No Reservation Yet!</h3>
+        <p class="mat-card-subtitle">
+          Ready to play? Find and add your desired Play Times on the Fields page.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  }
 
-              <p class="mat-card-subtitle mb-0">
-                <i class="bi bi-clock me-1"></i>
-                <strong>البداية:</strong> {{ item.slotStart | date : 'shortTime' }}
-              </p>
-              <p class="mat-card-subtitle small text-muted">
-                <i class="bi bi-calendar-check me-1"></i>
-                {{ item.slotStart | date : 'EEE, d MMM y' }}
-              </p>
+  <!-- Cart Items -->
+  @if (!loadingCart() && cart() && cart()!.items.length > 0) {
+    <div class="row">
+      <!-- Items List -->
+      <div class="col-lg-8 mb-4">
+        <h3 class="h5 mb-3 fw-bold text-secondary">Added Reservations</h3>
+
+        <div class="cart-items-list">
+          @for (item of cart()!.items; track item.timeSlotId) {
+            <mat-card class="cart-item-card mb-3 shadow-sm"
+                      [ngClass]="{'confirmed-item': item.isConfirmed}">
+              <mat-card-content class="d-flex justify-content-between align-items-start flex-wrap">
+
+                <!-- Item Details -->
+                <div class="item-details flex-grow-1">
+                  <h4 class="mat-card-title text-primary fw-bold mb-1">{{ item.fieldName }}</h4>
+
+                  <p class="mat-card-subtitle mb-0">
+                    <i class="bi bi-clock me-1"></i>
+                    <strong>Start:</strong> {{ item.slotStart | date:'shortTime' }}
+                  </p>
+                  <p class="mat-card-subtitle small text-muted">
+                    <i class="bi bi-calendar-check me-1"></i>
+                    {{ item.slotStart | date:'EEE, d MMM y' }}
+                  </p>
+
+                  <!-- Confirmed Badge -->
+                  @if(item.isConfirmed) {
+                    <span class="badge bg-success mt-1">Confirmed ✔️</span>
+                  }
+                </div>
+
+                <!-- Price & Actions -->
+                <div class="item-price-action text-end mt-2 mt-lg-0">
+                  <p class="h5 text-success fw-bold mb-2">
+                    {{ item.price | currency : 'EGP' : 'symbol' : '1.0-2' }}
+                  </p>
+                  <mat-card-actions class="p-0 m-0">
+                    <button mat-flat-button color="warn"
+                            (click)="removeItemFromCart(item.timeSlotId)"
+                            [disabled]="item.isConfirmed">
+                      <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                  </mat-card-actions>
+                </div>
+
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="col-lg-4">
+        <mat-card class="cart-summary shadow-lg sticky-top" style="top: 20px">
+          <mat-card-title class="bg-primary text-white p-3 rounded-top mb-0">
+            <h3 class="h5 mb-0"><i class="bi bi-cash-stack me-2"></i>Booking Total</h3>
+          </mat-card-title>
+
+          <mat-card-content class="p-3">
+            <div class="d-flex justify-content-between fw-bold mb-3 border-bottom pb-2">
+              <span>Total :</span>
+              <span class="text-success h5">
+                {{ totalPrice() | currency : 'EGP' : 'symbol' : '1.0-2' }}
+              </span>
             </div>
 
-            <div class="item-price-action text-end">
-              <p class="h5 text-success fw-bold mb-2">
-                {{ item.price | currency : 'EGP' : 'symbol' : '1.0-2' }}
-              </p>
-              <mat-card-actions class="p-0 m-0">
-                <button mat-flat-button color="warn" (click)="removeItemFromCart(item.timeSlotId)">
-                  <i class="bi bi-trash me-1"></i> Delete
-                </button>
-              </mat-card-actions>
-            </div>
+            <mat-card-actions class="d-flex flex-column gap-2 p-0 m-0">
+              <button mat-raised-button color="primary" class="w-100"
+                      (click)="checkout()"
+                      [disabled]="isCheckingOut() || cart()!.items.length === 0">
+                @if (isCheckingOut()) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Confirming Reservation...
+                } @else {
+                  <i class="bi bi-bag-check me-2"></i> Pay & Confirm Booking
+                }
+              </button>
+
+              <button mat-button color="basic" class="w-100" (click)="clearCart()">
+                <i class="bi bi-x-octagon me-1"></i> Clear List
+              </button>
+            </mat-card-actions>
           </mat-card-content>
         </mat-card>
-        }
       </div>
     </div>
-
-    <div class="col-lg-4">
-      <mat-card class="cart-summary shadow-lg sticky-top" style="top: 20px">
-        <mat-card-title class="bg-primary text-white p-3 rounded-top mb-0">
-          <h3 class="h5 mb-0"><i class="bi bi-cash-stack me-2"></i>Booking Total</h3>
-        </mat-card-title>
-
-        <mat-card-content class="p-3">
-          <div class="d-flex justify-content-between fw-bold mb-3 border-bottom pb-2">
-            <span>Total :</span>
-            <span class="text-success h5">
-              {{ totalPrice() | currency : 'EGP' : 'symbol' : '1.0-2' }}
-            </span>
-          </div>
-
-          <mat-card-actions class="d-flex flex-column gap-2 p-0 m-0">
-            <button
-              mat-raised-button
-              color="primary"
-              class="w-100"
-              (click)="checkout()"
-              [disabled]="isCheckingOut() || cart()!.items.length === 0"
-            >
-              @if (isCheckingOut()) {
-              <span
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Confirming Reservation... } @else {
-              <i class="bi bi-bag-check me-2"></i> Pay & Confirm Booking}
-            </button>
-
-            <button mat-button color="basic" class="w-100" (click)="clearCart()">
-              <i class="bi bi-x-octagon me-1"></i> Clear List
-            </button>
-          </mat-card-actions>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
   }
 </div>

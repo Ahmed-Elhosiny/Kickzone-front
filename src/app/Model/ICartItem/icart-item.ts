@@ -4,4 +4,6 @@ export interface ICartItem {
   price: number;
   slotStart: string;
   fieldName: string;
+  isReserved?: boolean;
+  isConfirmed?: boolean;
 }
