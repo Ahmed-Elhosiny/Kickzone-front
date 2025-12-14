@@ -144,5 +144,12 @@ export class ReservationCart implements OnInit {
     }
     return currentCart.items.reduce((sum, item) => sum + item.price, 0);
   });
+  allItemsConfirmed(): boolean {
+  const currentCart = this.cart();
+  if (!currentCart || !currentCart.items) return false;
+
+  return currentCart.items.every(item => item.isConfirmed);
+}
+
 
 }

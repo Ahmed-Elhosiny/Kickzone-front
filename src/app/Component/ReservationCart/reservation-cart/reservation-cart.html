@@ -94,15 +94,19 @@
             </div>
 
             <mat-card-actions class="d-flex flex-column gap-2 p-0 m-0">
-              <button mat-raised-button color="primary" class="w-100"
-                      (click)="checkout()"
-                      [disabled]="isCheckingOut() || cart()!.items.length === 0">
-                @if (isCheckingOut()) {
-                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Confirming Reservation...
-                } @else {
-                  <i class="bi bi-bag-check me-2"></i> Pay & Confirm Booking
-                }
+              <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-100"
+                    (click)="checkout()"
+                    [disabled]="isCheckingOut() || cart()!.items.length === 0 || allItemsConfirmed()"
+              >
+                    @if (isCheckingOut()) {
+                      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Confirming Reservation...
+                    } @else {
+                      <i class="bi bi-bag-check me-2"></i> Pay & Confirm Booking
+                    }
               </button>
 
               <button mat-button color="basic" class="w-100" (click)="clearCart()">
