@@ -11,14 +11,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SignalrService } from '../../services/signalr/signalr-service';
 
 @Component({
   selector: 'app-field-details',
   standalone: true,
   imports: [
-    CurrencyPipe, 
-    CommonModule, 
-    TimeSlot, 
+    CurrencyPipe,
+    CommonModule,
+    TimeSlot,
     MatSnackBarModule,
     MatButtonModule,
     MatIconModule,
@@ -29,6 +30,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './field-details.css',
 })
 export class FieldDetails implements OnInit, OnDestroy {
+  private signalr = inject(SignalrService);
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fieldService = inject(FieldService);
@@ -42,9 +45,9 @@ export class FieldDetails implements OnInit, OnDestroy {
   hasError = signal<boolean>(false);
   errorMessage = signal<string>('');
   selectedImageIndex = signal<number>(0);
-  
+
   private routeSubscription?: Subscription;
-  
+
   // Computed values for better reactivity
   hasImages = computed(() => {
     const fieldData = this.field();
@@ -67,13 +70,13 @@ export class FieldDetails implements OnInit, OnDestroy {
       if (id !== null) {
         this.isLoading.set(true);
         this.hasError.set(false);
-        
+
         this.fieldService.getFieldById(id).pipe(
           catchError((error) => {
             console.error('Error fetching field:', error);
             this.hasError.set(true);
             this.isLoading.set(false);
-            
+
             if (error.status === 404) {
               this.errorMessage.set('Field not found. It may have been removed.');
             } else if (error.status === 0) {
@@ -81,14 +84,14 @@ export class FieldDetails implements OnInit, OnDestroy {
             } else {
               this.errorMessage.set('Failed to load field details. Please try again.');
             }
-            
+
             this.snackBar.open(this.errorMessage(), 'Close', {
               duration: 5000,
               horizontalPosition: 'end',
               verticalPosition: 'top',
               panelClass: ['error-snackbar']
             });
-            
+
             return of(null);
           })
         ).subscribe((res) => {
@@ -103,6 +106,16 @@ export class FieldDetails implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.signalr.startConnection();
+
+  this.signalr.onSlotsUpdated(() => {
+    const id = this.fieldId();
+    if (id) {
+      this.fieldService.getFieldById(id).subscribe(res => {
+        this.field.set(res);
+      });
+    }
+  });
     this.routeSubscription = this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
       if (isNaN(id) || id <= 0) {
@@ -116,6 +129,7 @@ export class FieldDetails implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.signalr.stopConnection();
     this.routeSubscription?.unsubscribe();
   }
 

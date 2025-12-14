@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class SignalrService {
-  private hubConnection!: signalR.HubConnection;
+  private hubConnection?: signalR.HubConnection;
 
   startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -18,7 +18,11 @@ export class SignalrService {
   }
 
   onSlotsUpdated(callback: () => void) {
-    this.hubConnection.on('SlotsUpdated', callback);
+    this.hubConnection?.on('SlotsUpdated', callback);
+  }
+   stopConnection() {
+    this.hubConnection?.stop();
+    this.hubConnection = undefined;
   }
 
 }
