@@ -67,15 +67,7 @@
   @if (!isLoading() && hasFields()) {
     <div class="fields-grid">
       @for (field of fields(); track field.id) {
-        <mat-card
-          class="field-card"
-          tabindex="0"
-          role="link"
-          style="cursor: pointer;"
-          (click)="goToField(field.id)"
-          (keydown.enter)="goToField(field.id)"
-          (keydown.space)="$event.preventDefault(); goToField(field.id)"
-        >
+        <mat-card class="field-card">
           <div class="field-image">
             <img [src]="getMainImage(field)" [alt]="field.name" />
             <span class="status-badge" [class]="getStatusClass(field)">
@@ -116,7 +108,7 @@
                   Uploading…
                 } @else {
                   <mat-icon>upload_file</mat-icon>
-                  <a>Upload Document</a>
+                  <span>Upload Document</span>
                 }
               </label>
 
@@ -131,6 +123,15 @@
             }
 
             <div class="field-actions">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="btn-view"
+                (click)="goToField(field.id); $event.stopPropagation()"
+              >
+                <mat-icon>open_in_new</mat-icon>
+                View
+              </button>
               <button
                 mat-stroked-button
                 color="primary"
