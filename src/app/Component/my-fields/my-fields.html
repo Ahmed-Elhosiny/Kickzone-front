@@ -67,7 +67,7 @@
   @if (!isLoading() && hasFields()) {
     <div class="fields-grid">
       @for (field of fields(); track field.id) {
-        <mat-card class="field-card">
+        <mat-card class="field-card" [routerLink]="['/field', field.id]" tabindex="0" role="link" style="cursor: pointer;">
           <div class="field-image">
             <img [src]="getMainImage(field)" [alt]="field.name" />
             <span class="status-badge" [class]="getStatusClass(field)">
