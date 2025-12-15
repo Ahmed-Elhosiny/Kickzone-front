@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,6 +31,7 @@ export class FieldReservationsComponent implements OnInit {
   private readonly reservationService = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
   readonly reservations = signal<IGetReservationDto[]>([]);
   readonly isLoading = signal(true);
@@ -105,6 +107,6 @@ export class FieldReservationsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/field-owner/my-fields']);
+    this.location.back();
   }
 }
