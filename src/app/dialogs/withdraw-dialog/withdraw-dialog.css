@@ -1,0 +1,49 @@
+.withdraw-dialog {
+  min-width: 400px;
+}
+
+.field-info {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.field-info p {
+  margin: 0.5rem 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.info-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  border-radius: 4px;
+}
+
+.info-message p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #1565c0;
+}
+
+mat-dialog-actions {
+  padding: 1rem 0 0 0;
+  gap: 0.5rem;
+}
+
+.button-spinner {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .withdraw-dialog {
+    min-width: 300px;
+  }
+}
