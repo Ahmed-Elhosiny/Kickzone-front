@@ -214,17 +214,10 @@ export class MyFieldsComponent implements OnInit {
             verticalPosition: 'top',
             panelClass: ['success-snackbar'],
           });
-          // Optimistically update the local UI: mark the field as having a document
-          // and set approval to `null` (pending review) so the upload button disappears
-          // immediately and the status shows "Pending Review".
-          this.fields.update((list) =>
-            list.map((f) =>
-              f.id === fieldId ? { ...f, hasApprovalDocument: true, isApproved: null } : f
-            )
+          // Update the fields list immediately so the UI shows "Pending Review"
+          this.fields.update(list =>
+            list.map(f => f.id === fieldId ? { ...f, hasApprovalDocument: true, isApproved: null } : f)
           );
-
-          // Refresh from server to pick up any authoritative changes
-          this.loadOwnerFields();
         },
         error: (err) => {
           const errorMessage = err?.error?.message || 'Failed to upload document. Please try again.';
