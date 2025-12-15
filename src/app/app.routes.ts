@@ -80,5 +80,17 @@ export const routes: Routes = [
     loadComponent: () => import('./Component/admin/admin').then((m) => m.AdminPanelComponent),
     canActivate: [AdminGuard],
   },
+  {
+    path: 'admin/field-reservations/:id',
+    loadComponent: () =>
+      import('./Component/field-reservations/field-reservations').then((m) => m.FieldReservationsComponent),
+    canActivate: [AdminGuard],
+  },
+  {
+    path: 'admin/withdrawal-history/:id',
+    loadComponent: () =>
+      import('./Component/withdrawal-history/withdrawal-history').then((m) => m.WithdrawalHistoryComponent),
+    canActivate: [AdminGuard],
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 ];

@@ -352,11 +352,11 @@ export class AdminPanelComponent implements OnInit {
   }
 
   viewReservations(field: IField): void {
-    this.router.navigate(['/field-owner/field-reservations', field.id]);
+    this.router.navigate(['/admin/field-reservations', field.id]);
   }
 
   viewWithdrawalHistory(field: IField): void {
-    this.router.navigate(['/field-owner/withdrawal-history', field.id]);
+    this.router.navigate(['/admin/withdrawal-history', field.id]);
   }
 
   // ===== UI Helpers =====
