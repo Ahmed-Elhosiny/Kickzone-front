@@ -55,7 +55,7 @@ export class FooterComponent {
 
   readonly contactInfo = signal([
     { icon: 'email', label: this.companyEmail(), type: 'email', link: `mailto:${this.companyEmail()}` },
-    { icon: 'location_on', label: 'Cairo, Egypt', type: 'text' },
+    { icon: 'location_on', label: 'PortSaid, Egypt', type: 'text' },
   ]);
 
   readonly stats = signal([
