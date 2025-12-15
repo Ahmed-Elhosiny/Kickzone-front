@@ -92,6 +92,10 @@
                 <mat-icon>schedule</mat-icon>
                 <span>{{ field.openAt }}:00 - {{ field.closeAt }}:00</span>
               </div>
+              <div class="info-row balance-row">
+                <mat-icon>account_balance_wallet</mat-icon>
+                <span><strong>Balance:</strong> {{ field.balance }} EGP</span>
+              </div>
             </div>
 
             @if (!field.hasApprovalDocument) {
@@ -155,6 +159,40 @@
                   <mat-icon>delete</mat-icon>
                 }
                 Delete
+              </button>
+            </div>
+
+            <div class="additional-actions">
+              <button
+                mat-flat-button
+                color="accent"
+                (click)="goToFieldReservations(field.id); $event.stopPropagation()"
+                class="full-width-btn"
+              >
+                <mat-icon>event</mat-icon>
+                My Reservations
+              </button>
+
+              <button
+                mat-flat-button
+                color="primary"
+                (click)="goToWithdrawalHistory(field.id); $event.stopPropagation()"
+                class="full-width-btn"
+              >
+                <mat-icon>history</mat-icon>
+                Withdrawal History
+              </button>
+
+              <button
+                mat-flat-button
+                color="primary"
+                (click)="openWithdrawDialog(field); $event.stopPropagation()"
+                class="full-width-btn"
+                [disabled]="field.balance <= 0"
+                [matTooltip]="field.balance <= 0 ? 'No balance available' : 'Withdraw funds'"
+              >
+                <mat-icon>payment</mat-icon>
+                Withdraw
               </button>
             </div>
           </mat-card-content>
