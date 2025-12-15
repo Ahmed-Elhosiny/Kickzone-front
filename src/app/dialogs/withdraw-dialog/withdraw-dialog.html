@@ -1,0 +1,52 @@
+<div class="withdraw-dialog">
+  <h2 mat-dialog-title>Withdraw Funds</h2>
+  
+  <mat-dialog-content>
+    <div class="field-info">
+      <p><strong>Field:</strong> {{ data.fieldName }}</p>
+      <p><strong>Available Balance:</strong> {{ data.currentBalance }} EGP</p>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Withdrawal Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="amount"
+        [max]="data.currentBalance"
+        min="1"
+        step="0.01"
+        placeholder="Enter amount"
+        [disabled]="isSubmitting()"
+      />
+      <span matSuffix>EGP</span>
+    </mat-form-field>
+
+    <div class="info-message">
+      <p>Your withdrawal request will be reviewed by an administrator.</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button
+      mat-stroked-button
+      (click)="onCancel()"
+      [disabled]="isSubmitting()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="isSubmitting() || amount <= 0"
+    >
+      @if (isSubmitting()) {
+        <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
+        Submitting...
+      } @else {
+        Submit Request
+      }
+    </button>
+  </mat-dialog-actions>
+</div>
