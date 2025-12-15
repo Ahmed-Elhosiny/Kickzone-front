@@ -42,6 +42,32 @@ mat-dialog-actions {
   vertical-align: middle;
 }
 
+.quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.quick-actions span {
+  color: rgba(0,0,0,0.6);
+  font-size: 0.875rem;
+}
+
+.remaining {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: #fff8e1;
+  border-left: 4px solid #ffb300;
+  border-radius: 4px;
+}
+
+.input-error {
+  color: #b00020;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 600px) {
   .withdraw-dialog {
     min-width: 300px;
