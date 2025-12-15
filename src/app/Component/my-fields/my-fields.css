@@ -314,6 +314,18 @@
   flex-shrink: 0;
 }
 
+.balance-row {
+  background: #e6f7ff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.balance-row mat-icon {
+  color: #1890ff;
+}
+
 /* =========================
    Upload Button
 ========================= */
@@ -361,6 +373,31 @@
 }
 
 .field-actions button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* =========================
+   Additional Actions
+========================= */
+
+.additional-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.full-width-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.full-width-btn mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
