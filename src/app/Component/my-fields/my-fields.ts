@@ -58,7 +58,7 @@ export class MyFieldsComponent implements OnInit {
     this.fields().filter(f => f.isApproved === true).length
   );
   readonly pendingFieldsCount = computed(() => 
-    this.fields().filter(f => f.isApproved === null && f.hasApprovalDocument).length
+    this.fields().filter(f => f.hasApprovalDocument && !f.isApproved).length
   );
 
   ngOnInit(): void {
@@ -153,24 +153,21 @@ export class MyFieldsComponent implements OnInit {
   }
 
   getStatusText(field: IField): string {
-    if (!field.hasApprovalDocument) return 'Document Required';
-    if (field.isApproved === null) return 'Pending Review';
-    if (field.isApproved === false) return 'Rejected';
-    return 'Approved';
+    if (field.isApproved) return 'Approved';
+    if (field.hasApprovalDocument) return 'Pending Review';
+    return 'Document Required';
   }
 
   getStatusClass(field: IField): string {
-    if (!field.hasApprovalDocument) return 'status-no-doc';
-    if (field.isApproved === null) return 'status-pending';
-    if (field.isApproved === false) return 'status-rejected';
-    return 'status-approved';
+    if (field.isApproved) return 'status-approved';
+    if (field.hasApprovalDocument) return 'status-pending';
+    return 'status-no-doc';
   }
 
   getStatusIcon(field: IField): string {
-    if (!field.hasApprovalDocument) return 'description';
-    if (field.isApproved === null) return 'schedule';
-    if (field.isApproved === false) return 'cancel';
-    return 'check_circle';
+    if (field.isApproved) return 'check_circle';
+    if (field.hasApprovalDocument) return 'schedule';
+    return 'description';
   }
 
   // ===== Upload =====
@@ -216,7 +213,7 @@ export class MyFieldsComponent implements OnInit {
           });
           // Update the fields list immediately so the UI shows "Pending Review"
           this.fields.update(list =>
-            list.map(f => f.id === fieldId ? { ...f, hasApprovalDocument: true, isApproved: null } : f)
+            list.map(f => f.id === fieldId ? { ...f, hasApprovalDocument: true, isApproved: false } : f)
           );
         },
         error: (err) => {
