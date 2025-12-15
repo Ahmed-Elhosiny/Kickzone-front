@@ -11,13 +11,13 @@ export class ReservationService {
   private apiUrl = `${environment.apiUrl}/Reservations`;
 
   // user
-  getMyReservations() {
-    return this.http.get<IReservation[]>(`${this.apiUrl}/my`);
+  getMyReservations(userId:number|null) {
+    return this.http.get<IReservation[]>(`${this.apiUrl}/user/${userId}`);
   }
 
   // owner
-  getReservationsForMyFields() {
-    return this.http.get<IReservation[]>(`${this.apiUrl}/owner`);
+  getReservationsForMyField(fieldId: number|null) {
+    return this.http.get<IReservation[]>(`${this.apiUrl}/field/${fieldId}`);
   }
 }
 

@@ -8,6 +8,7 @@ import { ReservationCartService } from '../../../services/ReservationCart/reserv
 import { ICheckoutResponse } from '../../../Model/ICheckOut/icheckout-response';
 import { ReservationService } from '../../../services/Reservation/reservation';
 import { IReservation } from '../../../Model/IReservation/ireservation';
+import { AuthService } from '../../../auth/auth';
 
 @Component({
   selector: 'app-reservation-cart',
@@ -26,6 +27,7 @@ export class ReservationCart implements OnInit {
 
   private cartService = inject(ReservationCartService);
   private reservationService = inject(ReservationService);
+  private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
 
   ngOnInit(): void {
@@ -60,7 +62,7 @@ export class ReservationCart implements OnInit {
 
   loadMyReservations(): void {
     this.loadingReservations.set(true);
-    this.reservationService.getMyReservations().subscribe({
+    this.reservationService.getMyReservations(this.authService.getUserId()).subscribe({
       next: (res) => {
         this.myReservations.set(res);
         this.loadingReservations.set(false);
