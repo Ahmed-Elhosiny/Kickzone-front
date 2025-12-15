@@ -345,10 +345,20 @@ export class AdminPanelComponent implements OnInit {
     }
     
     this.showSuccess('Downloading document...');
-    window.open(
-      `${this.fieldService.apiUrl}/${field.id}/pdf`,
-      '_blank'
-    );
+    this.fieldService.getFieldPdf(field.id).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${field.name}-approval-document.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.showSuccess('Document downloaded successfully');
+      },
+      error: (err) => {
+        this.showError(err?.error?.message || 'Failed to download document');
+      }
+    });
   }
 
   viewReservations(field: IField): void {
