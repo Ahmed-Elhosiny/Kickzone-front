@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -51,6 +52,7 @@ export class AdminPanelComponent implements OnInit {
   private readonly fieldService = inject(FieldService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
   // ===== Signals =====
   readonly cities = signal<ICity[]>([]);
@@ -347,6 +349,14 @@ export class AdminPanelComponent implements OnInit {
       `${this.fieldService.apiUrl}/${field.id}/pdf`,
       '_blank'
     );
+  }
+
+  viewReservations(field: IField): void {
+    this.router.navigate(['/field-owner/field-reservations', field.id]);
+  }
+
+  viewWithdrawalHistory(field: IField): void {
+    this.router.navigate(['/field-owner/withdrawal-history', field.id]);
   }
 
   // ===== UI Helpers =====

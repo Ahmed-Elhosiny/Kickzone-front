@@ -321,6 +321,24 @@
                 <mat-icon>delete</mat-icon>
                 Delete
               </button>
+
+              <button 
+                mat-stroked-button 
+                color="accent"
+                matTooltip="View reservations"
+                (click)="viewReservations(field)">
+                <mat-icon>event</mat-icon>
+                Reservations
+              </button>
+
+              <button 
+                mat-stroked-button 
+                color="accent"
+                matTooltip="View withdrawal history"
+                (click)="viewWithdrawalHistory(field)">
+                <mat-icon>history</mat-icon>
+                Withdrawals
+              </button>
             </mat-card-actions>
           </mat-card>
         } @empty {
