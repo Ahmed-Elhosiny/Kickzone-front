@@ -101,6 +101,7 @@
                 class="upload-button"
                 [class.uploading]="uploadingDocId() === field.id"
                 [for]="'doc-' + field.id"
+                (click)="$event.stopPropagation()"
               >
                 @if (uploadingDocId() === field.id) {
                   <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
@@ -116,7 +117,7 @@
                 accept=".pdf"
                 hidden
                 [id]="'doc-' + field.id"
-                (change)="uploadDocument(field.id, $event)"
+                (change)="uploadDocument(field.id, $event); $event.stopPropagation()"
                 [disabled]="uploadingDocId() === field.id"
               />
             }
@@ -125,7 +126,7 @@
               <button
                 mat-stroked-button
                 color="primary"
-                (click)="editField(field.id)"
+                (click)="editField(field.id); $event.stopPropagation()"
                 [disabled]="field.isApproved !== true"
                 [matTooltip]="field.isApproved !== true ? 'Field must be approved to edit' : 'Edit field'"
               >
@@ -136,7 +137,7 @@
               <button
                 mat-stroked-button
                 color="warn"
-                (click)="confirmDelete(field)"
+                (click)="confirmDelete(field); $event.stopPropagation()"
                 [disabled]="deletingFieldId() === field.id"
               >
                 @if (deletingFieldId() === field.id) {
