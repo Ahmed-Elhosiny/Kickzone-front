@@ -18,6 +18,13 @@
         <span>Fields</span>
       </a>
 
+      @if (isFieldOwner()) {
+        <a mat-button class="nav-link" [routerLink]="['/field-owner/my-fields']" routerLinkActive="active" aria-label="Field Owner Dashboard">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+      }
+
       @if (isAdmin()) {
         <a mat-button class="nav-link" [routerLink]="['/admin']" routerLinkActive="active" aria-label="Admin Panel">
           <mat-icon>admin_panel_settings</mat-icon>
@@ -75,13 +82,6 @@
           </div>
           <mat-divider></mat-divider>
 
-          @if (isFieldOwner()) {
-            <button mat-menu-item [routerLink]="['/field-owner/my-fields']">
-              <mat-icon>dashboard</mat-icon>
-              <span>Dashboard</span>
-            </button>
-          }
-
           <button mat-menu-item [routerLink]="['/profile']">
             <mat-icon>person</mat-icon>
             <span>Profile</span>
@@ -117,10 +117,19 @@
           <span>Fields</span>
         </a>
 
-        <a *ngIf="isAuthenticated()" mat-button class="nav-link" (click)="navigateToPaidReservations()">
-          <mat-icon>event_available</mat-icon>
-          <span>Paid Reservations</span>
-        </a>
+        @if (isFieldOwner()) {
+          <a mat-button class="nav-link" [routerLink]="['/field-owner/my-fields']" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </a>
+        }
+
+        @if (isAuthenticated()) {
+          <a mat-button class="nav-link" (click)="navigateToPaidReservations()">
+            <mat-icon>event_available</mat-icon>
+            <span>Paid Reservations</span>
+          </a>
+        }
 
         <a mat-button class="nav-link" (click)="navigateToCart()">
           <mat-icon>shopping_cart</mat-icon>
@@ -154,13 +163,6 @@
                 <p class="mobile-user-role">{{ userRole() }}</p>
               </div>
             </div>
-
-            @if (isFieldOwner()) {
-              <a mat-button class="nav-link" [routerLink]="['/field-owner/my-fields']">
-                <mat-icon>dashboard</mat-icon>
-                <span>Dashboard</span>
-              </a>
-            }
 
             <a mat-button class="nav-link" [routerLink]="['/profile']">
               <mat-icon>person</mat-icon>
