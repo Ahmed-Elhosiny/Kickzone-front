@@ -1,0 +1,89 @@
+<div class="field-reservations-container">
+  <div class="page-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Field Reservations</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading reservations...</p>
+    </div>
+  }
+
+  @if (!isLoading() && error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <div>
+            <h3>Failed to Load Reservations</h3>
+            <p>{{ error() }}</p>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" (click)="loadFieldReservations()">
+          <mat-icon>refresh</mat-icon>
+          Try Again
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!isLoading() && reservations().length === 0 && !error()) {
+    <mat-card class="empty-state">
+      <mat-card-content>
+        <mat-icon class="empty-icon">event_busy</mat-icon>
+        <h2>No reservations yet</h2>
+        <p>This field hasn't been reserved yet</p>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!isLoading() && reservations().length > 0) {
+    <mat-card>
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="reservations()" class="reservations-table">
+            <ng-container matColumnDef="userName">
+              <th mat-header-cell *matHeaderCellDef>User</th>
+              <td mat-cell *matCellDef="let reservation">{{ reservation.userName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="slotStart">
+              <th mat-header-cell *matHeaderCellDef>Slot Time</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.slotStart | date: 'medium' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="amountPaid">
+              <th mat-header-cell *matHeaderCellDef>Amount</th>
+              <td mat-cell *matCellDef="let reservation">{{ reservation.amountPaid }} EGP</td>
+            </ng-container>
+
+            <ng-container matColumnDef="reservedAt">
+              <th mat-header-cell *matHeaderCellDef>Reserved At</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.reservedAt | date: 'short' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let reservation">
+                <mat-chip [color]="getStatusColor(reservation.status)" highlighted>
+                  {{ getStatusLabel(reservation.status) }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
