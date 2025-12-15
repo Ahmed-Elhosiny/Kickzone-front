@@ -1,0 +1,101 @@
+.withdrawal-history-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.back-button {
+  color: #2196f3;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  gap: 1rem;
+}
+
+.error-card,
+.empty-state {
+  margin-top: 2rem;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: #f44336;
+}
+
+.empty-state mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: #9e9e9e;
+  margin-bottom: 1rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.withdrawal-table {
+  width: 100%;
+}
+
+.withdrawal-table th {
+  font-weight: 600;
+  color: #424242;
+}
+
+.withdrawal-table td {
+  padding: 1rem 0.5rem;
+}
+
+mat-paginator {
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .withdrawal-table th,
+  .withdrawal-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+}
