@@ -59,6 +59,16 @@ export const routes: Routes = [
           import('./Component/add-edit-field/add-edit-field').then((m) => m.AddEditFieldComponent),
       },
       {
+        path: 'withdrawal-history/:id',
+        loadComponent: () =>
+          import('./Component/withdrawal-history/withdrawal-history').then((m) => m.WithdrawalHistoryComponent),
+      },
+      {
+        path: 'field-reservations/:id',
+        loadComponent: () =>
+          import('./Component/field-reservations/field-reservations').then((m) => m.FieldReservationsComponent),
+      },
+      {
         path: '',
         redirectTo: 'my-fields',
         pathMatch: 'full',
