@@ -227,4 +227,9 @@ export class MyFieldsComponent implements OnInit {
         },
       });
   }
+
+  // ===== Navigation =====
+  goToField(fieldId: number): void {
+    this.router.navigate(['/field', fieldId]);
+  }
 }
