@@ -19,6 +19,7 @@ import { finalize, timeout } from 'rxjs/operators';
 import { FieldService } from '../../services/Field/field-service';
 import { AuthService } from '../../auth/auth';
 import { IField } from '../../Model/IField/ifield';
+import { WithdrawDialogComponent } from '../../dialogs/withdraw-dialog/withdraw-dialog';
 
 @Component({
   selector: 'app-my-fields',
@@ -231,5 +232,32 @@ export class MyFieldsComponent implements OnInit {
   // ===== Navigation =====
   goToField(fieldId: number): void {
     this.router.navigate(['/field', fieldId]);
+  }
+
+  goToWithdrawalHistory(fieldId: number): void {
+    this.router.navigate(['/field-owner/withdrawal-history', fieldId]);
+  }
+
+  goToFieldReservations(fieldId: number): void {
+    this.router.navigate(['/field-owner/field-reservations', fieldId]);
+  }
+
+  // ===== Withdraw =====
+  openWithdrawDialog(field: IField): void {
+    const dialogRef = this.dialog.open(WithdrawDialogComponent, {
+      width: '500px',
+      data: {
+        fieldId: field.id,
+        fieldName: field.name,
+        currentBalance: field.balance,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Reload fields to get updated balance
+        this.loadOwnerFields();
+      }
+    });
   }
 }
