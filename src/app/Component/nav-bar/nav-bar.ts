@@ -55,7 +55,7 @@ export class NavBarComponent {
 
   // ===== Paid Reservations Computed =====
   readonly hasPaidReservations = computed(() =>
-    this.userBooking.paidReservations().length > 0
+    this.userBooking.upcomingPaidReservations().length > 0
   );
 
   // ===== Actions =====
