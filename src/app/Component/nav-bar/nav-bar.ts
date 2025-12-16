@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject,OnInit } from '@angular/core';
+import { Component, signal, computed, inject,OnInit, effect } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -32,7 +32,7 @@ import { UserBookingService } from '../../services/user-bookings';
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.css'],
 })
-export class NavBarComponent implements OnInit {
+export class NavBarComponent  {
   // ===== Injected Services =====
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -96,10 +96,19 @@ export class NavBarComponent implements OnInit {
   closeMobileMenu(): void {
     this.mobileMenuOpen.set(false);
   }
-  ngOnInit(): void {
-  if (this.isAuthenticated()) {
-    this.userBooking.loadReservations();
+//   ngOnInit(): void {
+//   if (this.isAuthenticated()) {
+//     this.userBooking.loadReservations();
+//   }
+// }
+constructor() {
+    effect(() => {
+      if (this.authService.isAuthenticated()) {
+        this.userBooking.loadReservations();
+      } else {
+        this.userBooking.reservations.set([]);
+      }
+    });
   }
-}
 
 }
