@@ -7,8 +7,8 @@ import { ICart } from '../../../Model/ICart/icart';
 import { ReservationCartService } from '../../../services/ReservationCart/reservation-cart';
 import { ICheckoutResponse } from '../../../Model/ICheckOut/icheckout-response';
 import { ReservationService } from '../../../services/Reservation/reservation';
-import { IReservation } from '../../../Model/IReservation/ireservation';
 import { AuthService } from '../../../auth/auth';
+import { IGetReservationDto } from '../../../Model/IReservation/ireservation-dto';
 
 @Component({
   selector: 'app-reservation-cart',
@@ -22,7 +22,7 @@ export class ReservationCart implements OnInit {
   isCheckingOut = signal(false);
 
 
-  myReservations = signal<IReservation[]>([]);
+  myReservations = signal<IGetReservationDto[]>([]);
   loadingReservations = signal(true);
 
   private cartService = inject(ReservationCartService);
@@ -61,18 +61,27 @@ export class ReservationCart implements OnInit {
 
 
   loadMyReservations(): void {
-    this.loadingReservations.set(true);
-    this.reservationService.getMyReservations(this.authService.getUserId()).subscribe({
-      next: (res) => {
-        this.myReservations.set(res);
-        this.loadingReservations.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load reservations', err);
-        this.loadingReservations.set(false);
-      },
-    });
+  this.loadingReservations.set(true);
+
+  const userId = this.authService.getUserId();
+
+  if (userId === null) {
+    this.loadingReservations.set(false);
+    return;
   }
+
+  this.reservationService.getMyReservations(userId).subscribe({
+    next: (res) => {
+      this.myReservations.set(res);
+      this.loadingReservations.set(false);
+    },
+    error: (err) => {
+      console.error('Failed to load reservations', err);
+      this.loadingReservations.set(false);
+    },
+  });
+}
+
 
   removeItemFromCart(slotId: number): void {
     this.cartService.removeItem(slotId).subscribe({
