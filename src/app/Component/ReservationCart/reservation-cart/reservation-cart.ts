@@ -125,7 +125,7 @@ export class ReservationCart implements OnInit {
           ...currentCart,
           items: currentCart.items.map(item => ({
             ...item,
-            isConfirmed: true // تم الدفع
+            isConfirmed: true
           }))
         });
       }
