@@ -16,4 +16,11 @@ export class Bookings implements OnInit {
   ngOnInit(): void {
     this.bookingService.loadReservations();
   }
+  formatLocalDate(date: string) {
+  const d = new Date(date);
+  return new Date(
+    d.getTime() - d.getTimezoneOffset() * 60000
+  );
+}
+
 }

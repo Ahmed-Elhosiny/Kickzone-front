@@ -29,7 +29,6 @@ export class UserBookingService {
     });
   }
 
-  /** الحجوزات المدفوعة ولسه جاية */
   upcomingPaidReservations() {
     const now = new Date();
 

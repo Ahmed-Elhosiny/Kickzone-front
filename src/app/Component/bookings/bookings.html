@@ -1,35 +1,41 @@
-<h2 class="page-title">My Paid Reservations</h2>
+<h2 class="page-title">My Upcoming Paid Reservations</h2>
 
 <!-- Loading -->
 <div *ngIf="bookingService.loading()" class="loading">
-  <span>Loading your reservations...</span>
+  Loading your reservations...
 </div>
 
-<!-- Empty State -->
+<!-- Empty -->
 <div
-  *ngIf="!bookingService.loading() && bookingService.paidReservations().length === 0"
+  *ngIf="!bookingService.loading()
+  && bookingService.upcomingPaidReservations().length === 0"
   class="empty-state"
 >
   <mat-icon>event_busy</mat-icon>
-  <p>No paid reservations yet</p>
+  <p>No upcoming paid reservations</p>
 </div>
 
-<!-- Reservations -->
+<!-- List -->
 <div
   class="reservations-grid"
-  *ngIf="!bookingService.loading() && bookingService.paidReservations().length > 0"
+  *ngIf="bookingService.upcomingPaidReservations().length > 0"
 >
-  <div class="reservation-card" *ngFor="let r of bookingService.paidReservations()">
+  <div
+    class="reservation-card"
+    *ngFor="let r of bookingService.upcomingPaidReservations()"
+  >
 
     <div class="card-header">
       <mat-icon>sports_soccer</mat-icon>
-      <span>{{ r.timeSlot?.fieldName || 'Field' }}</span>
+      <span>{{ r.fieldName }}</span>
     </div>
 
     <div class="card-body">
+
       <p>
         <mat-icon>schedule</mat-icon>
-        {{ r.timeSlot?.startAtDateTime | date:'medium' }}
+        {{ formatLocalDate(r.slotStart) | date:'medium' }}
+
       </p>
 
       <p class="price">
