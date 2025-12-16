@@ -32,7 +32,7 @@ import { UserBookingService } from '../../services/user-bookings';
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.css'],
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
   // ===== Injected Services =====
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);

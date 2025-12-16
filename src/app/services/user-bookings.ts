@@ -29,13 +29,24 @@ export class UserBookingService {
     });
   }
 
-  upcomingPaidReservations() {
-    const now = new Date();
+upcomingPaidReservations() {
+  const now = new Date();
 
-    return this.reservations().filter(r =>
-      r.amountPaid > 0 &&
-      r.status === ReservationStatus.Complete &&
-      new Date(r.slotStart) > now
+  return this.reservations().filter(r => {
+    const slotDate = new Date(r.slotStart);
+
+    return (
+      !isNaN(slotDate.getTime()) &&
+      slotDate.getTime() > now.getTime() &&
+      Number(r.amountPaid) > 0
     );
-  }
+  });
+}
+
+
+// upcomingPaidReservations() {
+//   console.log('RESERVATIONS SIGNAL VALUE 👉', this.reservations());
+//   return this.reservations();
+// }
+
 }

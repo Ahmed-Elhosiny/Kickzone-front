@@ -34,8 +34,7 @@
 
       <p>
         <mat-icon>schedule</mat-icon>
-        {{ formatLocalDate(r.slotStart) | date:'medium' }}
-
+              {{ getLocalDate(r.slotStart) | date:'medium' }}
       </p>
 
       <p class="price">
