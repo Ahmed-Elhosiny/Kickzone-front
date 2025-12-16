@@ -1,21 +1,37 @@
 <div class="withdraw-dialog">
-  <h2 mat-dialog-title>Withdraw Funds</h2>
+  <div class="dialog-header">
+    <h2 mat-dialog-title>💰 Withdraw Funds</h2>
+  </div>
 
   <mat-dialog-content>
-    <div class="field-info" role="group" aria-label="Field info">
-      <p><strong>Field:</strong> {{ data.fieldName }}</p>
-      <p><strong>Available Balance:</strong> {{ data.currentBalance | number:'1.2-2' }} EGP</p>
+    
+    <mat-card class="balance-card mat-elevation-z2">
+      <div class="balance-info-row">
+        <div class="balance-item">
+          <p class="label">Field:</p>
+          <p class="value field-name">{{ data.fieldName }}</p>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="balance-item available-balance">
+          <p class="label">Available Balance:</p>
+          <mat-chip-row color="accent" selected class="balance-chip">
+            {{ data.currentBalance | number:'1.2-2' }} EGP
+          </mat-chip-row>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="quick-actions-group">
+      <span class="quick-label">Quick amounts:</span>
+      <div class="quick-buttons">
+        <button mat-button (click)="setPercent(25)" [disabled]="isSubmitting()">25%</button>
+        <button mat-button (click)="setPercent(50)" [disabled]="isSubmitting()">50%</button>
+        <button mat-button (click)="setPercent(75)" [disabled]="isSubmitting()">75%</button>
+        <button mat-flat-button color="primary" (click)="setPercent(100)" [disabled]="isSubmitting()">MAX</button>
+      </div>
     </div>
 
-    <div class="quick-actions">
-      <span>Quick amounts:</span>
-      <button mat-mini-button (click)="setPercent(25)" [disabled]="isSubmitting()">25%</button>
-      <button mat-mini-button (click)="setPercent(50)" [disabled]="isSubmitting()">50%</button>
-      <button mat-mini-button (click)="setPercent(75)" [disabled]="isSubmitting()">75%</button>
-      <button mat-mini-button (click)="setPercent(100)" [disabled]="isSubmitting()">100%</button>
-    </div>
-
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width amount-input-field">
       <mat-label>Withdrawal Amount</mat-label>
       <input
         matInput
@@ -25,34 +41,33 @@
         [max]="data.currentBalance"
         min="0.01"
         step="0.01"
-        placeholder="Enter amount"
+        placeholder="e.g. 500.00"
         [disabled]="isSubmitting()"
         aria-label="Withdrawal amount"
       />
       <span matSuffix>EGP</span>
-      <mat-hint align="end">Min 0.01 — Max {{ data.currentBalance | number:'1.2-2' }}</mat-hint>
+      <mat-hint align="end">Min 0.01 — Max {{ data.currentBalance | number:'1.2-2' }} EGP</mat-hint>
+      <mat-error *ngIf="amountError">{{ amountError }}</mat-error>
     </mat-form-field>
 
-    <div *ngIf="amountError" class="input-error" role="alert">{{ amountError }}</div>
+    <mat-card class="remaining-card mat-elevation-z0">
+      <p><strong>Remaining balance:</strong></p>
+      <p class="remaining-value">{{ remainingBalance | number:'1.2-2' }} EGP</p>
+    </mat-card>
 
-    <div class="remaining">
-      <p><strong>Remaining balance:</strong> {{ remainingBalance | number:'1.2-2' }} EGP</p>
-    </div>
-
-    <div class="info-message">
-      <p>Your withdrawal request will be reviewed by an administrator. Typical review time: 1-3 business days.</p>
-    </div>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-stroked-button (click)="onCancel()" [disabled]="isSubmitting()">Cancel</button>
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting()">Cancel</button>
 
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="disableSubmit">
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="disableSubmit || amountError">
       <ng-container *ngIf="isSubmitting(); else submitLabel">
         <mat-spinner diameter="18" class="button-spinner" strokeWidth="3"></mat-spinner>
-        Submitting...
+        Processing...
       </ng-container>
-      <ng-template #submitLabel>Submit Request</ng-template>
+      <ng-template #submitLabel>
+        Withdraw Now
+      </ng-template>
     </button>
   </mat-dialog-actions>
 </div>

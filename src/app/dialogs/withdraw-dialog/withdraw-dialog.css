@@ -1,39 +1,134 @@
+/* Container and Header */
 .withdraw-dialog {
-  min-width: 400px;
+  min-width: 450px; /* Slightly wider for better spacing */
 }
 
-.field-info {
-  background-color: #f5f5f5;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
+.dialog-header {
+  padding: 16px 24px 0; /* Match dialog padding */
 }
 
-.field-info p {
-  margin: 0.5rem 0;
+.dialog-header h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-dialog-content {
+  padding: 0 24px 20px 24px !important; /* Adjust padding for better look */
+}
+
+/* Balance Card */
+.balance-card {
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #e3f2fd; /* Light blue - Primary theme light color */
+}
+
+.balance-info-row {
+  display: flex;
+  justify-content: space-around; /* Space out the two items */
+  align-items: center;
+}
+
+.balance-item {
+  text-align: center;
+}
+
+.balance-item .label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+}
+
+.balance-chip {
+  height: 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1565c0 !important; /* Darker primary color for text */
+}
+
+.field-name {
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-top: 4px;
+}
+
+/* Quick Actions */
+.quick-actions-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.quick-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.quick-buttons button {
+  flex-grow: 1; /* Make buttons equally sized */
+  font-weight: 500;
+  border-radius: 8px; /* Slightly more modern button shape */
+}
+
+/* Input Field */
+.amount-input-field {
+  margin-top: 10px;
 }
 
 .full-width {
   width: 100%;
 }
 
-.info-message {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
-  border-radius: 4px;
+/* Target the container for the suffix */
+.amount-input-field span {
+  /* You may need to increase the size of the overall suffix area */
+  padding-right: 8px; /* Adds space to the right of the suffix content */
 }
 
-.info-message p {
+/* Target the matSuffix content itself */
+.amount-input-field [matSuffix] {
+  /* Adjusting the content display if needed */
+  padding-left: 4px; /* Optional: adds a little space between the input value and EGP */
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Remaining Balance */
+.remaining-card {
+  padding: 12px;
+  margin-top: 15px;
+  background-color: #fffde7; /* Soft light yellow */
+  border-left: 4px solid #ffb300; /* Amber border for attention */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remaining-card p {
   margin: 0;
-  font-size: 0.875rem;
-  color: #1565c0;
 }
 
+.remaining-value {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #ffb300;
+}
+
+/* Actions */
 mat-dialog-actions {
-  padding: 1rem 0 0 0;
-  gap: 0.5rem;
+  padding: 16px 24px 24px 24px;
+  gap: 8px;
+  border-top: 1px solid #eee; /* Subtle separator */
 }
 
 .button-spinner {
@@ -42,34 +137,20 @@ mat-dialog-actions {
   vertical-align: middle;
 }
 
-.quick-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.quick-actions span {
-  color: rgba(0,0,0,0.6);
-  font-size: 0.875rem;
-}
-
-.remaining {
-  margin-top: 0.75rem;
-  padding: 0.5rem;
-  background: #fff8e1;
-  border-left: 4px solid #ffb300;
-  border-radius: 4px;
-}
-
-.input-error {
-  color: #b00020;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-}
-
+/* Responsiveness */
 @media (max-width: 600px) {
   .withdraw-dialog {
-    min-width: 300px;
+    min-width: 80vw; /* Full width on small screens */
+  }
+  
+  mat-dialog-actions,
+  .dialog-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  mat-dialog-content {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 }

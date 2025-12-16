@@ -9,6 +9,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { WithdrawalService } from '../../services/withdrawal/withdrawal.service';
 import { IWithdrawRequest } from '../../Model/IWithdrawal/iwithdrawal';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatChipsModule } from '@angular/material/chips';
 
 export interface WithdrawDialogData {
   fieldId: number;
@@ -28,6 +31,9 @@ export interface WithdrawDialogData {
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatCardModule,
+    MatDividerModule,
+    MatChipsModule
   ],
   templateUrl: './withdraw-dialog.html',
   styleUrls: ['./withdraw-dialog.css'],
