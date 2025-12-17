@@ -7,76 +7,103 @@
   </div>
 
   @if (isLoading()) {
-    <div class="loading-container">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading withdrawal history...</p>
-    </div>
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading withdrawal history...</p>
+  </div>
   }
 
   @if (!isLoading() && error()) {
-    <mat-card class="error-card">
-      <mat-card-content>
-        <div class="error-content">
-          <mat-icon class="error-icon">error_outline</mat-icon>
-          <div>
-            <h3>Failed to Load Withdrawal History</h3>
-            <p>{{ error() }}</p>
-          </div>
+  <mat-card class="error-card">
+    <mat-card-content>
+      <div class="error-content">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <div>
+          <h3>Failed to Load Withdrawal History</h3>
+          <p>{{ error() }}</p>
         </div>
-        <button mat-raised-button color="primary" (click)="loadWithdrawalHistory()">
-          <mat-icon>refresh</mat-icon>
-          Try Again
-        </button>
-      </mat-card-content>
-    </mat-card>
+      </div>
+      <button mat-raised-button color="primary" (click)="loadWithdrawalHistory()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </mat-card-content>
+  </mat-card>
   }
 
   @if (!isLoading() && withdrawals().length === 0 && !error()) {
-    <mat-card class="empty-state">
-      <mat-card-content>
-        <mat-icon class="empty-icon">receipt_long</mat-icon>
-        <h2>No withdrawal history</h2>
-        <p>You haven't made any withdrawals yet</p>
-      </mat-card-content>
-    </mat-card>
+  <mat-card class="empty-state">
+    <mat-card-content>
+      <mat-icon class="empty-icon">receipt_long</mat-icon>
+      <h2>No withdrawal history</h2>
+      <p>You haven't made any withdrawals yet</p>
+    </mat-card-content>
+  </mat-card>
   }
 
   @if (!isLoading() && withdrawals().length > 0) {
-    <mat-card>
-      <mat-card-content>
-        <div class="table-container">
-          <table mat-table [dataSource]="withdrawals()" class="withdrawal-table">
-            <ng-container matColumnDef="fieldName">
-              <th mat-header-cell *matHeaderCellDef>Field Name</th>
-              <td mat-cell *matCellDef="let withdrawal">{{ withdrawal.fieldName }}</td>
-            </ng-container>
+  <mat-card>
+    <mat-card-content>
+      <div class="table-container">
+        <table mat-table [dataSource]="withdrawals()" class="withdrawal-table">
+          <ng-container matColumnDef="fieldName">
+            <th mat-header-cell *matHeaderCellDef>Field Name</th>
+            <td mat-cell *matCellDef="let withdrawal">{{ withdrawal.fieldName }}</td>
+          </ng-container>
 
-            <ng-container matColumnDef="amount">
-              <th mat-header-cell *matHeaderCellDef>Amount</th>
-              <td mat-cell *matCellDef="let withdrawal">{{ withdrawal.amount }} EGP</td>
-            </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let withdrawal">{{ withdrawal.amount }} EGP</td>
+          </ng-container>
 
-            <ng-container matColumnDef="createdAt">
-              <th mat-header-cell *matHeaderCellDef>Date</th>
-              <td mat-cell *matCellDef="let withdrawal">
-                {{ withdrawal.createdAt | date: 'medium' }}
-              </td>
-            </ng-container>
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let withdrawal">
+              {{ withdrawal.createdAt | date: 'medium' }}
+            </td>
+          </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let withdrawal">
-                <mat-chip [color]="getStatusColor(withdrawal.status)" highlighted>
-                  {{ getStatusLabel(withdrawal.status) }}
-                </mat-chip>
-              </td>
-            </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let withdrawal">
+              <mat-chip [color]="getStatusColor(withdrawal.status)" highlighted>
+                {{ getStatusLabel(withdrawal.status) }}
+              </mat-chip>
+            </td>
+          </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
-      </mat-card-content>
-    </mat-card>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="pagination-wrapper">
+    <div class="pagination-bar">
+      <button mat-icon-button [disabled]="page() === 1" (click)="goToPage(page() - 1)" class="nav-btn">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="page-numbers">
+        @for (p of [].constructor(numberOfPages()); track $index) {
+        <button class="page-num" [class.active]="page() === ($index + 1)" (click)="goToPage($index + 1)">
+          {{ $index + 1 }}
+        </button>
+        }
+      </div>
+
+      <button mat-icon-button [disabled]="page() === numberOfPages()" (click)="goToPage(page() + 1)" class="nav-btn">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    <span class="page-info">
+      Showing {{ startIndex() + 1 }} - {{ (startIndex() + pageSize() > totalCount()) ?
+      totalCount() : startIndex() + pageSize() }}
+      of {{ totalCount() }} fields
+    </span>
+  </div>
+
   }
 </div>

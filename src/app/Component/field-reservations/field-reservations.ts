@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -10,7 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ReservationService } from '../../services/Reservation/reservation';
-import { IGetReservationDto, ReservationStatus } from '../../Model/IReservation/ireservation-dto';
+import { IGetReservationDto, IReservationsResponse, ReservationStatus } from '../../Model/IReservation/ireservation-dto';
 import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialogs/user-contact-info/user-contact-info';
 
 @Component({
@@ -30,7 +30,7 @@ import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialo
   templateUrl: './field-reservations.html',
   styleUrls: ['./field-reservations.css'],
 })
-export class FieldReservationsComponent implements OnInit {
+export class FieldReservationsComponent  {
   private readonly reservationService = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -41,10 +41,21 @@ export class FieldReservationsComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly error = signal<string | null>(null);
   readonly fieldId = signal<number | null>(null);
+  page = signal(1);
+  pageSize = signal(8);
+  totalCount = signal(0);
+
+   startIndex = computed(() => {
+    return (this.page() - 1) * this.pageSize();
+  });
+
+  numberOfPages = computed(() => {
+    return Math.ceil(this.totalCount() / this.pageSize());
+  });
 
   displayedColumns: string[] = ['userName', 'slotStart', 'amountPaid', 'reservedAt', 'status'];
 
-  ngOnInit(): void {
+  constructor() {
     this.route.params.subscribe((params) => {
       const id = Number(params['id']);
       if (id) {
@@ -52,7 +63,9 @@ export class FieldReservationsComponent implements OnInit {
         this.loadFieldReservations();
       }
     });
+    effect(() => this.loadFieldReservations());
   }
+
 
   loadFieldReservations(): void {
     const fieldId = this.fieldId();
@@ -61,9 +74,10 @@ export class FieldReservationsComponent implements OnInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.reservationService.getReservationsForMyField(fieldId).subscribe({
-      next: (reservations: any[]) => {
-        this.reservations.set(reservations);
+    this.reservationService.getReservationsForMyField(fieldId, this.page(), this.pageSize()).subscribe({
+      next: (data: IReservationsResponse) => {
+        this.reservations.set(data.reservations);
+        this.totalCount.set(data.totalCount);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -71,6 +85,10 @@ export class FieldReservationsComponent implements OnInit {
         this.error.set(err?.error?.message || 'Failed to load reservations');
       },
     });
+  }
+
+ goToPage(pageNumber: number) {
+    this.page.set(pageNumber);
   }
 
   private normalizeReservationStatus(value: any): ReservationStatus | null {

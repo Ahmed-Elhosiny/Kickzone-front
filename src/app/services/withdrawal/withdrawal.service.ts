@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { IWithdrawalHistory, IWithdrawRequest } from '../../Model/IWithdrawal/iwithdrawal';
+import { IWithdrawalHistory, IWithdrawalsResponse, IWithdrawRequest } from '../../Model/IWithdrawal/iwithdrawal';
 
 export interface PaginatedResponse<T> {
   items: T[];
@@ -19,12 +19,12 @@ export class WithdrawalService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  getWithdrawalHistory(fieldId: number, page: number = 1, pageSize: number = 10): Observable<IWithdrawalHistory[]> {
+  getWithdrawalHistory(fieldId: number, page: number = 1, pageSize: number = 50): Observable<IWithdrawalsResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
     
-    return this.http.get<IWithdrawalHistory[]>(
+    return this.http.get<IWithdrawalsResponse>(
       `${this.apiUrl}/WithDrawHistory/${fieldId}`,
       { params }
     );

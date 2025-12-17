@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { WithdrawalService } from '../../services/withdrawal/withdrawal.service';
-import { IWithdrawalHistory, WithdrawalStatus } from '../../Model/IWithdrawal/iwithdrawal';
+import { IWithdrawalHistory, IWithdrawalsResponse, WithdrawalStatus } from '../../Model/IWithdrawal/iwithdrawal';
 
 @Component({
   selector: 'app-withdrawal-history',
@@ -27,7 +27,7 @@ import { IWithdrawalHistory, WithdrawalStatus } from '../../Model/IWithdrawal/iw
   templateUrl: './withdrawal-history.html',
   styleUrls: ['./withdrawal-history.css'],
 })
-export class WithdrawalHistoryComponent implements OnInit {
+export class WithdrawalHistoryComponent {
   private readonly withdrawalService = inject(WithdrawalService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -37,10 +37,21 @@ export class WithdrawalHistoryComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly error = signal<string | null>(null);
   readonly fieldId = signal<number | null>(null);
+  page = signal(1);
+  pageSize = signal(8);
+  totalCount = signal(0);
+
+   startIndex = computed(() => {
+    return (this.page() - 1) * this.pageSize();
+  });
+
+  numberOfPages = computed(() => {
+    return Math.ceil(this.totalCount() / this.pageSize());
+  });
 
   displayedColumns: string[] = ['fieldName', 'amount', 'createdAt', 'status'];
 
-  ngOnInit(): void {
+  constructor() {
     this.route.params.subscribe((params) => {
       const id = Number(params['id']);
       if (id) {
@@ -48,6 +59,7 @@ export class WithdrawalHistoryComponent implements OnInit {
         this.loadWithdrawalHistory();
       }
     });
+    effect(() => this.loadWithdrawalHistory());
   }
 
   loadWithdrawalHistory(): void {
@@ -58,10 +70,11 @@ export class WithdrawalHistoryComponent implements OnInit {
     this.error.set(null);
 
     this.withdrawalService
-      .getWithdrawalHistory(fieldId, 1, 100)
+      .getWithdrawalHistory(fieldId, this.page(), this.pageSize())
       .subscribe({
-        next: (withdrawals: IWithdrawalHistory[]) => {
-          this.withdrawals.set(withdrawals);
+        next: (data: IWithdrawalsResponse) => {
+          this.withdrawals.set(data.withDrawHistories);
+          this.totalCount.set(data.totalCount);
           this.isLoading.set(false);
         },
         error: (err) => {
@@ -69,6 +82,10 @@ export class WithdrawalHistoryComponent implements OnInit {
           this.error.set(err?.error?.message || 'Failed to load withdrawal history');
         },
       });
+  }
+
+ goToPage(pageNumber: number) {
+    this.page.set(pageNumber);
   }
 
   private normalizeStatus(value: any): WithdrawalStatus | null {

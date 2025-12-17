@@ -89,5 +89,33 @@
         </div>
       </mat-card-content>
     </mat-card>
+
+
+    <div class="pagination-wrapper">
+  <div class="pagination-bar">
+    <button mat-icon-button [disabled]="page() === 1" (click)="goToPage(page() - 1)" class="nav-btn">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="page-numbers">
+      @for (p of [].constructor(numberOfPages()); track $index) {
+      <button class="page-num" [class.active]="page() === ($index + 1)" (click)="goToPage($index + 1)">
+        {{ $index + 1 }}
+      </button>
+      }
+    </div>
+
+    <button mat-icon-button [disabled]="page() === numberOfPages()" (click)="goToPage(page() + 1)" class="nav-btn">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <span class="page-info">
+    Showing {{ startIndex() + 1 }} - {{ (startIndex() + pageSize() > totalCount()) ?
+    totalCount() : startIndex() + pageSize() }}
+    of {{ totalCount() }} fields
+  </span>
+</div>
+
   }
 </div>

@@ -32,7 +32,6 @@ export class ReservationCart implements OnInit {
 
   ngOnInit(): void {
     this.loadCart();
-    this.loadMyReservations();
   }
 
   loadCart(): void {
@@ -58,29 +57,6 @@ export class ReservationCart implements OnInit {
       },
     });
   }
-
-
-  loadMyReservations(): void {
-  this.loadingReservations.set(true);
-
-  const userId = this.authService.getUserId();
-
-  if (userId === null) {
-    this.loadingReservations.set(false);
-    return;
-  }
-
-  this.reservationService.getMyReservations(userId).subscribe({
-    next: (res) => {
-      this.myReservations.set(res);
-      this.loadingReservations.set(false);
-    },
-    error: (err) => {
-      console.error('Failed to load reservations', err);
-      this.loadingReservations.set(false);
-    },
-  });
-}
 
 
   removeItemFromCart(slotId: number): void {

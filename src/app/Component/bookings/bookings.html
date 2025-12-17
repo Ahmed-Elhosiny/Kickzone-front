@@ -1,41 +1,35 @@
 <h2 class="page-title">My Upcoming Paid Reservations</h2>
 
 <!-- Loading -->
-<div *ngIf="bookingService.loading()" class="loading">
+@if(loading()){
+<div class="loading">
   Loading your reservations...
 </div>
+}
 
 <!-- Empty -->
-<div
-  *ngIf="!bookingService.loading()
-  && bookingService.reservations().length > 0
-  && bookingService.upcomingPaidReservations().length === 0"
-  class="empty-state"
->
+@if(!loading() && reservations().length === 0){
+<div class="empty-state">
   <mat-icon>event_busy</mat-icon>
   <p>No upcoming paid reservations</p>
 </div>
+}
 
 <!-- List -->
-<div
-  class="reservations-grid"
-  *ngIf="bookingService.upcomingPaidReservations().length > 0"
->
-  <div
-    class="reservation-card"
-    *ngFor="let r of bookingService.upcomingPaidReservations()"
-  >
+@if(!loading() && reservations().length > 0){
+<div class="reservations-grid">
 
+  @for(r of reservations(); track r.id){
+  <div class="reservation-card">
     <div class="card-header">
       <mat-icon>sports_soccer</mat-icon>
       <span>{{ r.fieldName }}</span>
     </div>
 
     <div class="card-body">
-
       <p>
         <mat-icon>schedule</mat-icon>
-              {{ getLocalDate(r.slotStart) | date:'medium' }}
+        {{ getLocalDate(r.slotStart) | date:'medium' }}
       </p>
 
       <p class="price">
@@ -43,6 +37,34 @@
         {{ r.amountPaid }} EGP
       </p>
     </div>
-
   </div>
+  }
 </div>
+
+<div class="pagination-wrapper">
+  <div class="pagination-bar">
+    <button mat-icon-button [disabled]="page() === 1" (click)="goToPage(page() - 1)" class="nav-btn">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="page-numbers">
+      @for (p of [].constructor(numberOfPages()); track $index) {
+      <button class="page-num" [class.active]="page() === ($index + 1)" (click)="goToPage($index + 1)">
+        {{ $index + 1 }}
+      </button>
+      }
+    </div>
+
+    <button mat-icon-button [disabled]="page() === numberOfPages()" (click)="goToPage(page() + 1)" class="nav-btn">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <span class="page-info">
+    Showing {{ startIndex() + 1 }} - {{ (startIndex() + pageSize() > totalCount()) ?
+    totalCount() : startIndex() + pageSize() }}
+    of {{ totalCount() }} fields
+  </span>
+</div>
+
+}

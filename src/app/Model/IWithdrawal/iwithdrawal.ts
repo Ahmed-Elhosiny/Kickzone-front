@@ -15,3 +15,8 @@ export interface IWithdrawRequest {
   fieldId: number;
   amount: number;
 }
+
+export interface IWithdrawalsResponse {
+  withDrawHistories: IWithdrawalHistory[];
+  totalCount: number;
+}

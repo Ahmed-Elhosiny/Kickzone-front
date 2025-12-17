@@ -11,7 +11,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../auth/auth';
-import { UserBookingService } from '../../services/user-bookings';
+import { ReservationService } from '../../services/Reservation/reservation';
+
 
 @Component({
   selector: 'app-nav-bar',
@@ -37,7 +38,6 @@ export class NavBarComponent  {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
-  public userBooking: UserBookingService = inject(UserBookingService);
 
   // ===== Signals =====
   readonly isLoggingOut = signal(false);
@@ -52,11 +52,6 @@ export class NavBarComponent  {
   readonly isFieldOwner = computed(() => this.authState() && this.authService.getUserRole() === 'FieldOwner');
   readonly userRole = computed(() => this.authState() ? this.authService.getUserRole() : null);
   readonly userName = computed(() => this.authState() ? (this.authService.getUserName() || 'User') : null);
-
-  // ===== Paid Reservations Computed =====
-  readonly hasPaidReservations = computed(() =>
-    this.userBooking.upcomingPaidReservations().length > 0
-  );
 
   // ===== Actions =====
   logout(): void {
@@ -102,13 +97,13 @@ export class NavBarComponent  {
 //   }
 // }
 constructor() {
-    effect(() => {
+/*     effect(() => {
       if (this.authService.isAuthenticated()) {
         this.userBooking.loadReservations();
       } else {
         this.userBooking.reservations.set([]);
       }
-    });
+    }); */
   }
 
 }

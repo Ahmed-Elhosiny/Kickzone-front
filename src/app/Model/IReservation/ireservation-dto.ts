@@ -16,3 +16,10 @@ export interface IGetReservationDto {
   status: ReservationStatus | number | string;
   expiresAt?: string;
 }
+
+export interface IReservationsResponse{
+
+reservations: IGetReservationDto[];
+totalCount: number;
+
+}
