@@ -349,6 +349,23 @@
   font-weight: 700 !important;
 }
 
+.owner-link {
+  padding: 0 !important;
+  min-width: auto !important;
+  font-size: 1.1rem !important;
+  color: #667eea !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  transition: all 0.3s;
+}
+
+.owner-link:hover {
+  color: #764ba2 !important;
+  text-decoration: underline;
+}
+
 /* ===== LOCATION CARD ===== */
 .location-address {
   display: flex;

@@ -11,7 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { SignalrService } from '../../services/signalr/signalr-service';
+import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialogs/user-contact-info/user-contact-info';
 
 @Component({
   selector: 'app-field-details',
@@ -24,7 +26,8 @@ import { SignalrService } from '../../services/signalr/signalr-service';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './field-details.html',
   styleUrl: './field-details.css',
@@ -38,6 +41,7 @@ export class FieldDetails implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private scroller = inject(ViewportScroller);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   field = signal<IField | null>(null);
   fieldId = signal<number | null>(null);
@@ -176,6 +180,32 @@ export class FieldDetails implements OnInit, OnDestroy {
 
   formatSize(size: string): string {
     return size.replace('Side_', '') + ' vs ' + size.replace('Side_', '');
+  }
+
+  openUserContactInfo(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    const fieldData = this.field();
+    console.log('Field data:', fieldData);
+    console.log('Owner ID:', fieldData?.ownerId);
+    console.log('Owner Username:', fieldData?.ownerUserName);
+    
+    if (fieldData?.ownerId) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { userId: fieldData.ownerId } as UserContactInfoDialogData,
+      });
+    } else if (fieldData?.ownerUserName) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { username: fieldData.ownerUserName } as UserContactInfoDialogData,
+      });
+    } else {
+      this.snackBar.open('Owner information is not available', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+    }
   }
 
   openMapInNewTab(): void {

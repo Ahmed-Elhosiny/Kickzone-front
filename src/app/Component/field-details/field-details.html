@@ -157,7 +157,9 @@
                 <mat-icon>person</mat-icon>
                 <div class="info-content">
                   <span class="info-label">Owner</span>
-                  <span class="info-value">{{ fieldData.ownerName }}</span>
+                  <button mat-button class="info-value owner-link" (click)="openUserContactInfo($event)">
+                    {{ fieldData.ownerName }}
+                  </button>
                 </div>
               </div>
             </div>
