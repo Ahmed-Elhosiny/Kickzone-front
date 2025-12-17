@@ -48,7 +48,7 @@ export class ReservationCart implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load cart', err);
-        this.snackBar.open('فشل تحميل عربة الحجوزات.', 'إغلاق', {
+        this.snackBar.open('Failed to load reservation cart', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -87,7 +87,7 @@ export class ReservationCart implements OnInit {
     this.cartService.removeItem(slotId).subscribe({
       next: (newCart) => {
         this.cart.set(newCart);
-        this.snackBar.open('تم إزالة الفترة بنجاح.', 'موافق', {
+        this.snackBar.open('Item removed successfully.', 'OK', {
           duration: 2000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -96,7 +96,7 @@ export class ReservationCart implements OnInit {
       },
       error: (err) => {
         console.error('Failed to remove item', err);
-        this.snackBar.open('فشل في إزالة الفترة.', 'إغلاق', {
+        this.snackBar.open('Failed to remove item.', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
@@ -114,7 +114,7 @@ export class ReservationCart implements OnInit {
   const currentCart = this.cart();
 
   if (!currentCart || currentCart.items.length === 0) {
-    this.snackBar.open('لا يوجد عناصر في عربة الحجوزات لإتمام الدفع.', 'إغلاق', { duration: 3000 });
+    this.snackBar.open('No items in reservation cart to checkout.', 'Close', { duration: 3000 });
     return;
   }
 
@@ -128,7 +128,7 @@ export class ReservationCart implements OnInit {
       //   this.snackBar.open('جاري تحويلك لبوابة الدفع...', 'موافق', { duration: 3000 });
       //   window.location.href = response.paymentUrl;
       // } else {
-        this.snackBar.open(response.message || 'تم إتمام الطلب بنجاح!', 'موافق', { duration: 5000 });
+        this.snackBar.open(response.message || 'reservation checked out successfully', 'OK', { duration: 5000 });
 
         this.cart.set({
           ...currentCart,
@@ -142,7 +142,7 @@ export class ReservationCart implements OnInit {
     error: (err) => {
       this.isCheckingOut.set(false);
       console.error('Checkout failed', err);
-      this.snackBar.open('فشل عملية الدفع. يرجى المحاولة مرة أخرى.', 'إغلاق', { duration: 5000 });
+      this.snackBar.open('Failed to complete checkout. Please try again.', 'Close', { duration: 5000 });
     }
   });
 }

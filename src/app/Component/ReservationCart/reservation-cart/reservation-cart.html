@@ -1,5 +1,5 @@
 <div class="reservation-cart-container container py-5">
-  <h2 class="mb-4 text-center text-primary fw-bold">Reservation List</h2>
+  <h2 class="page-title">Reservation Cart</h2>
   <hr class="mb-5" />
 
   <!-- Loading State -->
@@ -8,7 +8,7 @@
       <mat-card-content>
         <p>
           <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Loading Reservations...
+          Loading Reservation Cart...
         </p>
       </mat-card-content>
     </mat-card>
@@ -18,7 +18,7 @@
   @if (!loadingCart() && cart() && cart()!.items.length === 0) {
     <mat-card class="p-4 text-center shadow-sm mat-warn">
       <mat-card-content>
-        <h3 class="mat-card-title">You Have No Reservation Yet!</h3>
+        <h3 class="mat-card-title">You Have No Reservations in your Cart Yet!</h3>
         <p class="mat-card-subtitle">
           Ready to play? Find and add your desired Play Times on the Fields page.
         </p>
