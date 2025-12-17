@@ -8,8 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ReservationService } from '../../services/Reservation/reservation';
 import { IGetReservationDto, ReservationStatus } from '../../Model/IReservation/ireservation-dto';
+import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialogs/user-contact-info/user-contact-info';
 
 @Component({
   selector: 'app-field-reservations',
@@ -23,6 +25,7 @@ import { IGetReservationDto, ReservationStatus } from '../../Model/IReservation/
     MatProgressSpinnerModule,
     MatTableModule,
     MatChipsModule,
+    MatDialogModule,
   ],
   templateUrl: './field-reservations.html',
   styleUrls: ['./field-reservations.css'],
@@ -32,6 +35,7 @@ export class FieldReservationsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+  private readonly dialog = inject(MatDialog);
 
   readonly reservations = signal<IGetReservationDto[]>([]);
   readonly isLoading = signal(true);
@@ -103,6 +107,22 @@ export class FieldReservationsComponent implements OnInit {
         return 'accent';
       default:
         return '';
+    }
+  }
+
+  openUserContactInfo(userId: number, username?: string): void {
+    console.log('Opening user contact info for userId:', userId, 'or username:', username);
+    
+    if (userId) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { userId } as UserContactInfoDialogData,
+      });
+    } else if (username) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { username } as UserContactInfoDialogData,
+      });
+    } else {
+      console.warn('Neither userId nor username provided');
     }
   }
 
