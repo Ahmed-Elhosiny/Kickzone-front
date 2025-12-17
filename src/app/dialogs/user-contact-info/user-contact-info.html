@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>User Contact Information</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="50" color="primary"></mat-spinner>
+        <p class="loading-text">Loading user information...</p>
+      </div>
+    } @else if (user) {
+      <div class="user-info">
+        <div class="info-item">
+          <strong>Name:</strong>
+          <span>{{ user.name || 'N/A' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="info-item">
+          <strong>Username:</strong>
+          <span>{{ user.userName || 'N/A' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="info-item">
+          <strong>Email:</strong>
+          <span>{{ user.email || 'N/A' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="info-item">
+          <strong>Phone:</strong>
+          <span>{{ user.phoneNumber || 'N/A' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="info-item">
+          <strong>Location:</strong>
+          <span>{{ user.location || 'N/A' }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="error-container">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <h3 class="error-title">Failed to Load User Information</h3>
+        <p class="error-message">Unable to retrieve user details. Please try again later.</p>
+      </div>
+    }
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="close()">
+      <mat-icon>close</mat-icon>
+      Close
+    </button>
+  </mat-card-actions>
+</mat-card>
