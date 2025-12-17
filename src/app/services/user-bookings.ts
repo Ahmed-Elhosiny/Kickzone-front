@@ -18,7 +18,11 @@ export class UserBookingService {
     this.loading.set(true);
 
     const userId = this.authService.getUserId();
-    if (!userId) return;
+    if (!userId) {
+  this.loading.set(false);
+  return;
+}
+
 
     this.reservationService.getMyReservations(userId).subscribe({
       next: (res) => {

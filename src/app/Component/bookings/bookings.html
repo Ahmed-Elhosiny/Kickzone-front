@@ -8,6 +8,7 @@
 <!-- Empty -->
 <div
   *ngIf="!bookingService.loading()
+  && bookingService.reservations().length > 0
   && bookingService.upcomingPaidReservations().length === 0"
   class="empty-state"
 >
