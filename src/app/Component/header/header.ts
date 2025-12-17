@@ -1,15 +1,20 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeFilters } from "../HomeFilters/HomeFilters";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, HomeFilters],
+  imports: [CommonModule,
+     /* HomeFilters */
+    ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
+
+  private readonly router = inject(Router);  
   // ===== Signals =====
   readonly heroTitle = signal('Find Your Perfect Field');
   readonly heroSubtitle = signal('Book sports pitches and courts across Egypt');
@@ -31,4 +36,9 @@ export class Header {
   readonly currentHighlightWord = computed(() => 
     this.highlightWords()[this.currentWordIndex()]
   );
+
+  navigateToFields() {
+    this.router.navigate(['/result']);
+  }
+
 }

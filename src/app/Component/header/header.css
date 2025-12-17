@@ -65,7 +65,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: 30px;
   animation: fadeInUp 1s ease-out;
 }
 
@@ -263,5 +263,80 @@
   .highlight-word::after {
     height: 3px;
     bottom: -6px;
+  }
+}
+
+/* Go to Fields Button */
+/* Container for the button to add spacing */
+.hero-actions {
+  margin-top: 5px;
+  animation: fadeInUp 1s ease-out 0.5s backwards; /* Delays appearance slightly after title */
+}
+
+.btn-primary-explore {
+  position: relative;
+  padding: 25px 42px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #0f2027; /* Dark text for contrast against gold */
+  background: rgba(255, 193, 7, 0.6);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  overflow: hidden;
+}
+
+/* The Shine Effect */
+.btn-primary-explore::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.btn-primary-explore:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+  background: rgba(255, 193, 7, 0.9); /* Slightly lighter on hover */
+}
+
+.btn-primary-explore:hover::before {
+  left: 100%;
+}
+
+.btn-primary-explore:active {
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+.btn-primary-explore:hover .btn-icon {
+  transform: translateX(5px);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .btn-primary-explore {
+    padding: 14px 32px;
+    font-size: 16px;
   }
 }

@@ -1,6 +1,6 @@
 <header class="hero-header">
   <div class="hero-overlay"></div>
-  
+
   <div class="hero-content">
     <div class="hero-text-container">
       <h1 class="hero-title">
@@ -8,12 +8,22 @@
       </h1>
       <p class="hero-subtitle">{{ heroSubtitle() }}</p>
     </div>
-    
-    <div class="filters-container">
+
+    <div class="hero-actions">
+      <button class="btn-primary-explore" (click)="navigateToFields()">
+        Explore Fields Now
+        <span class="btn-icon">→</span>
+      </button>
+    </div>
+
+    <!--     <div class="filters-container">
       <app-filters></app-filters>
+    </div> -->
+    <div>
+
     </div>
   </div>
-  
+
   <div class="hero-scroll-indicator">
     <div class="scroll-arrow"></div>
   </div>
