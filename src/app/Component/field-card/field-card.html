@@ -66,7 +66,9 @@
     @if (field()?.ownerName) {
       <div class="field-info-item">
         <mat-icon class="info-icon">person</mat-icon>
-        <span class="info-text">{{ field()?.ownerName }}</span>
+        <button mat-button class="owner-link" (click)="openUserContactInfo($event)">
+          {{ field()?.ownerName }}
+        </button>
       </div>
     }
   </mat-card-content>

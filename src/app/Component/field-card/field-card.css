@@ -304,3 +304,19 @@
   outline: 2px solid #ff9800;
   outline-offset: 2px;
 }
+
+/* ===== Owner Link ===== */
+.owner-link {
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  text-transform: none;
+  min-width: auto;
+  height: auto;
+}
+
+.owner-link:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
