@@ -12,7 +12,7 @@
   <!-- Search -->
   <div class="filter-group">
     <label class="filter-label">Search</label>
-    <mat-form-field appearance="outline" class="filter-input">
+    <mat-form-field appearance="outline" class="filter-input" subscriptSizing="dynamic">
       <input 
         matInput 
         placeholder="Search fields..."
@@ -30,7 +30,7 @@
   <!-- Category -->
   <div class="filter-group">
     <label class="filter-label">Category</label>
-    <mat-form-field appearance="outline" class="filter-input">
+    <mat-form-field appearance="outline" class="filter-input" subscriptSizing="dynamic">
       <mat-select 
         [value]="selectedCategory()"
         (valueChange)="updateCategoryFilter($event)"
@@ -51,7 +51,7 @@
   <!-- City -->
   <div class="filter-group">
     <label class="filter-label">City</label>
-    <mat-form-field appearance="outline" class="filter-input">
+    <mat-form-field appearance="outline" class="filter-input" subscriptSizing="dynamic">
       <mat-select 
         [value]="selectedCity()"
         (valueChange)="updateCityFilter($event)"
@@ -72,7 +72,7 @@
   <!-- Size -->
   <div class="filter-group">
     <label class="filter-label">Field Size</label>
-    <mat-form-field appearance="outline" class="filter-input">
+    <mat-form-field appearance="outline" class="filter-input" subscriptSizing="dynamic">
       <mat-select 
         [value]="selectedSize()"
         (valueChange)="updateSizeFilter($event)"
@@ -95,7 +95,7 @@
     </div>
 
     <div class="price-inputs">
-      <mat-form-field appearance="outline" class="price-field">
+      <mat-form-field appearance="outline" class="price-field" subscriptSizing="dynamic">
         <mat-label>Min</mat-label>
         <input 
           matInput 
@@ -109,7 +109,7 @@
 
       <span class="price-separator">-</span>
 
-      <mat-form-field appearance="outline" class="price-field">
+      <mat-form-field appearance="outline" class="price-field" subscriptSizing="dynamic"> 
         <mat-label>Max</mat-label>
         <input 
           matInput 

@@ -1,14 +1,17 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
 import { FieldCard } from '../field-card/field-card';
 import { ActivatedRoute } from '@angular/router';
 import { IField } from '../../Model/IField/ifield';
 import { IFieldResponse } from '../../Model/IField/ifield-response';
 import { FiltrationResultService } from '../../services/Field/filtration-result';
 import { ResultPageFilters } from '../result-page-filters/result-page-filters';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-result',
-  imports: [FieldCard, ResultPageFilters],
+  imports: [FieldCard, 
+    ResultPageFilters,
+  MatIconModule],
   templateUrl: './result.html',
   styleUrls: ['./result.css'],
 })
@@ -26,8 +29,17 @@ export class Result {
   minPrice = signal<number | null>(0);
   maxPrice = signal<number | null>(1000);
   page = signal<number>(1);
-  pageSize = signal<number>(6);
+  pageSize = signal<number>(4);
+  totalCount = signal<number>(0);
   noResultsMessage = signal<string | null>(null);
+
+    startIndex = computed(() => {
+      return (this.page() - 1) * this.pageSize();
+    });
+  
+        numberOfPages = computed(() => {
+    return Math.ceil(this.totalCount() / this.pageSize());
+  });
 
   constructor() {
 
@@ -52,6 +64,7 @@ export class Result {
     const pg = this.page();
     const ps = this.pageSize();
     const isApproved = true;
+    const tc = this.totalCount();
 
     this.loading.set(true);
     this.fields.set([]);
@@ -62,6 +75,7 @@ export class Result {
       .subscribe({
         next: (res: IFieldResponse) => {
           this.fields.set(res.fields);
+          this.totalCount.set(res.totalCount);
           this.loading.set(false);
 
           if (res.fields.length === 0) {
@@ -106,5 +120,9 @@ export class Result {
   updateMax(value: number | null) {
     this.maxPrice.set(value);
     this.page.set(1);
+  }
+
+  goToPage(pageNumber: number) {
+    this.page.set(pageNumber);
   }
 }

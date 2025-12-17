@@ -1,39 +1,59 @@
 <div class="results-page-container">
   <!-- Left Sidebar - Filters -->
   <aside class="filters-sidebar-container">
-    <app-result-page-filters
-      (searchValue)="updateSearchTerm($event)"
-      (SelectedCategory)="updateCategory($event)"
-      (SelectedCity)="updateCity($event)"
-      (SelectedSize)="updateSize($event)"
-      (minPrice)="updateMin($event)"
-      (maxPrice)="updateMax($event)"
-    ></app-result-page-filters>
+    <app-result-page-filters (searchValue)="updateSearchTerm($event)" (SelectedCategory)="updateCategory($event)"
+      (SelectedCity)="updateCity($event)" (SelectedSize)="updateSize($event)" (minPrice)="updateMin($event)"
+      (maxPrice)="updateMax($event)"></app-result-page-filters>
   </aside>
 
   <!-- Right Content - Results -->
   <main class="results-content">
     @if(noResultsMessage() && !loading()){
-      <div class="alert alert-warning text-center">
-        {{ noResultsMessage() }}
-      </div>
+    <div class="alert alert-warning text-center">
+      {{ noResultsMessage() }}
+    </div>
     }
 
     @if (fields().length > 0){
-      <div class="results-grid">
-        @for (fieldItem of fields(); track fieldItem.id) {
-          <div class="result-item">
-            <app-field-card [field]="fieldItem"></app-field-card>
-          </div>
-        }
+    <div class="results-grid">
+      @for (fieldItem of fields(); track fieldItem.id) {
+      <div class="result-item">
+        <app-field-card [field]="fieldItem"></app-field-card>
       </div>
-    } @else if (loading()) {
-      <div class="loading-state">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+      }
+    </div>
+    <div class="pagination-wrapper">
+      <div class="pagination-bar">
+        <button mat-icon-button [disabled]="page() === 1" (click)="goToPage(page() - 1)" class="nav-btn">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="page-numbers">
+          @for (p of [].constructor(numberOfPages()); track $index) {
+          <button class="page-num" [class.active]="page() === ($index + 1)" (click)="goToPage($index + 1)">
+            {{ $index + 1 }}
+          </button>
+          }
         </div>
-        <p class="mt-2">Loading results...</p>
+
+        <button mat-icon-button [disabled]="page() === numberOfPages()" (click)="goToPage(page() + 1)" class="nav-btn">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
       </div>
+
+      <span class="page-info">
+        Showing {{ startIndex() + 1 }} - {{ (startIndex() + pageSize() > totalCount()) ?
+        totalCount() : startIndex() + pageSize() }}
+        of {{ totalCount() }} fields
+      </span>
+    </div>
+    } @else if (loading()) {
+    <div class="loading-state">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading results...</p>
+    </div>
     }
   </main>
 </div>
