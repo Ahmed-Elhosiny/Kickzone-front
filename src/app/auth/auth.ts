@@ -57,7 +57,7 @@ export class AuthService {
       tap((res) => {
         if (isPlatformBrowser(this.platformId) && typeof window !== 'undefined') {
           localStorage.setItem(this.tokenKey, res.token);
-          localStorage.setItem(this.refreshTokenKey, res.refreshToken);
+          localStorage.setItem(this.refreshTokenKey, res.newRefreshToken);
           this.isAuthenticatedSubject.next(true);
         }
       }),
