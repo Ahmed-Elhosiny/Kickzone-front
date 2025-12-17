@@ -260,6 +260,14 @@
                 <mat-icon>category</mat-icon>
                 {{ field.categoryName }}
               </span>
+              @if (field.ownerName) {
+              <span>
+                <mat-icon>person</mat-icon>
+                <button mat-button class="owner-link-small" (click)="openUserContactInfo($event, field.ownerId, field.ownerUserName)">
+                  {{ field.ownerName }}
+                </button>
+              </span>
+              }
             </div>
           </mat-card-subtitle>
         </mat-card-header>

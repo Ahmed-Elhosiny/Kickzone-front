@@ -342,6 +342,24 @@
   height: 16px;
 }
 
+.owner-link-small {
+  padding: 0 !important;
+  min-width: auto !important;
+  font-size: 13px !important;
+  color: #667eea !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  height: auto !important;
+  line-height: 1 !important;
+}
+
+.owner-link-small:hover {
+  color: #764ba2 !important;
+  text-decoration: underline;
+}
+
 .field-card mat-card-content {
   padding: 0 20px 20px 20px !important;
   display: flex;

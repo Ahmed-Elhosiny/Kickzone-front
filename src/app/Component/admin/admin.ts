@@ -23,6 +23,7 @@ import { ICategory } from '../../Model/ICategory/icategory';
 import { IField } from '../../Model/IField/ifield';
 
 import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
+import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialogs/user-contact-info/user-contact-info';
 import { MatPaginatedTabHeader } from '@angular/material/tabs';
 
 @Component({
@@ -384,6 +385,23 @@ export class AdminPanelComponent implements OnInit {
 
   viewWithdrawalHistory(field: IField): void {
     this.router.navigate(['/admin/withdrawal-history', field.id]);
+  }
+
+  openUserContactInfo(event: Event, userId: number, username?: string): void {
+    event.stopPropagation();
+    console.log('Opening user contact info for userId:', userId, 'or username:', username);
+    
+    if (userId) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { userId } as UserContactInfoDialogData,
+      });
+    } else if (username) {
+      this.dialog.open(UserContactInfoComponent, {
+        data: { username } as UserContactInfoDialogData,
+      });
+    } else {
+      this.showError('User information is not available.');
+    }
   }
 
   // ===== UI Helpers =====
