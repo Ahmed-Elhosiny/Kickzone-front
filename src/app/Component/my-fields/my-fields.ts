@@ -52,6 +52,8 @@ export class MyFieldsComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly uploadingDocId = signal<number | null>(null);
   readonly deletingFieldId = signal<number | null>(null);
+  currentPage = signal<number>(1);
+  itemsPerPage = signal<number>(2);
 
   // ===== Computed =====
   readonly hasFields = computed(() => this.fields().length > 0);
@@ -61,6 +63,25 @@ export class MyFieldsComponent implements OnInit {
   readonly pendingFieldsCount = computed(() => 
     this.fields().filter(f => f.hasApprovalDocument && !f.isApproved).length
   );
+
+    numberOfPages = computed(() => {
+    return Math.ceil(this.fields().length / this.itemsPerPage());
+  });
+
+  startIndex = computed(() => {
+    return (this.currentPage() - 1) * this.itemsPerPage();
+  });
+
+    paginatedFields = computed(() => {
+      const start = this.startIndex();
+      const end = start + this.itemsPerPage();
+      return this.fields().slice(start, end);
+    } );
+
+  changePage(newPage: number): void {
+    if (newPage < 1 || newPage > this.numberOfPages()) return;
+    this.currentPage.set(newPage);
+  }
 
   ngOnInit(): void {
     this.loadOwnerFields();

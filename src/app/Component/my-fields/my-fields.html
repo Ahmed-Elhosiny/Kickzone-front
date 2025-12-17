@@ -4,18 +4,18 @@
       <h1>My Fields</h1>
       <p>Manage your field listings</p>
       @if (hasFields()) {
-        <div class="stats">
-          <span class="stat-item approved">
-            <mat-icon>check_circle</mat-icon>
-            {{ approvedFieldsCount() }} Approved
-          </span>
-          @if (pendingFieldsCount() > 0) {
-            <span class="stat-item pending">
-              <mat-icon>schedule</mat-icon>
-              {{ pendingFieldsCount() }} Pending
-            </span>
-          }
-        </div>
+      <div class="stats">
+        <span class="stat-item approved">
+          <mat-icon>check_circle</mat-icon>
+          {{ approvedFieldsCount() }} Approved
+        </span>
+        @if (pendingFieldsCount() > 0) {
+        <span class="stat-item pending">
+          <mat-icon>schedule</mat-icon>
+          {{ pendingFieldsCount() }} Pending
+        </span>
+        }
+      </div>
       }
     </div>
 
@@ -26,178 +26,169 @@
   </div>
 
   @if (isLoading()) {
-    <div class="loading-container">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading your fields...</p>
-    </div>
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading your fields...</p>
+  </div>
   }
 
   @if (!isLoading() && error()) {
-    <mat-card class="error-card">
-      <mat-card-content>
-        <div class="error-content">
-          <mat-icon class="error-icon">error_outline</mat-icon>
-          <div>
-            <h3>Failed to Load Fields</h3>
-            <p>{{ error() }}</p>
-          </div>
+  <mat-card class="error-card">
+    <mat-card-content>
+      <div class="error-content">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <div>
+          <h3>Failed to Load Fields</h3>
+          <p>{{ error() }}</p>
         </div>
-        <button mat-raised-button color="primary" (click)="loadOwnerFields()">
-          <mat-icon>refresh</mat-icon>
-          Try Again
-        </button>
-      </mat-card-content>
-    </mat-card>
+      </div>
+      <button mat-raised-button color="primary" (click)="loadOwnerFields()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </mat-card-content>
+  </mat-card>
   }
 
   @if (!isLoading() && !hasFields() && !error()) {
-    <mat-card class="empty-state">
-      <mat-card-content>
-        <mat-icon class="empty-icon">sports_soccer</mat-icon>
-        <h2>No fields yet</h2>
-        <p>Start by adding your first field listing</p>
-        <a routerLink="/field-owner/add-field" mat-raised-button color="primary">
-          <mat-icon>add</mat-icon>
-          Add Your First Field
-        </a>
-      </mat-card-content>
-    </mat-card>
+  <mat-card class="empty-state">
+    <mat-card-content>
+      <mat-icon class="empty-icon">sports_soccer</mat-icon>
+      <h2>No fields yet</h2>
+      <p>Start by adding your first field listing</p>
+      <a routerLink="/field-owner/add-field" mat-raised-button color="primary">
+        <mat-icon>add</mat-icon>
+        Add Your First Field
+      </a>
+    </mat-card-content>
+  </mat-card>
   }
 
   @if (!isLoading() && hasFields()) {
-    <div class="fields-grid">
-      @for (field of fields(); track field.id) {
-        <mat-card class="field-card">
-          <div class="field-image">
-            <img [src]="getMainImage(field)" [alt]="field.name" />
-            <span class="status-badge" [class]="getStatusClass(field)">
-              <mat-icon>{{ getStatusIcon(field) }}</mat-icon>
-              {{ getStatusText(field) }}
-            </span>
+  <div class="fields-grid">
+    @for (field of paginatedFields(); track field.id) {
+    <mat-card class="field-card">
+      <div class="field-image">
+        <img [src]="getMainImage(field)" [alt]="field.name" />
+        <span class="status-badge" [class]="getStatusClass(field)">
+          <mat-icon>{{ getStatusIcon(field) }}</mat-icon>
+          {{ getStatusText(field) }}
+        </span>
+      </div>
+
+      <mat-card-content class="field-content">
+        <h3 class="field-name">{{ field.name }}</h3>
+
+        <div class="field-info">
+          <div class="info-row">
+            <mat-icon>location_city</mat-icon>
+            <span>{{ field.cityName }}</span>
           </div>
+          <div class="info-row">
+            <mat-icon>attach_money</mat-icon>
+            <span>{{ field.pricePerHour }} EGP/hour</span>
+          </div>
+          <div class="info-row">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ field.openAt }}:00 - {{ field.closeAt }}:00</span>
+          </div>
+          <div class="info-row balance-row">
+            <mat-icon>account_balance_wallet</mat-icon>
+            <span><strong>Balance:</strong> {{ field.balance }} EGP</span>
+          </div>
+        </div>
 
-          <mat-card-content class="field-content">
-            <h3 class="field-name">{{ field.name }}</h3>
+        @if (!field.hasApprovalDocument) {
+        <label mat-stroked-button color="primary" class="upload-button"
+          [class.uploading]="uploadingDocId() === field.id" [for]="'doc-' + field.id"
+          (click)="$event.stopPropagation()">
+          @if (uploadingDocId() === field.id) {
+          <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
+          Uploading…
+          } @else {
+          <mat-icon>upload_file</mat-icon>
+          <span>Upload Document</span>
+          }
+        </label>
 
-            <div class="field-info">
-              <div class="info-row">
-                <mat-icon>location_city</mat-icon>
-                <span>{{ field.cityName }}</span>
-              </div>
-              <div class="info-row">
-                <mat-icon>attach_money</mat-icon>
-                <span>{{ field.pricePerHour }} EGP/hour</span>
-              </div>
-              <div class="info-row">
-                <mat-icon>schedule</mat-icon>
-                <span>{{ field.openAt }}:00 - {{ field.closeAt }}:00</span>
-              </div>
-              <div class="info-row balance-row">
-                <mat-icon>account_balance_wallet</mat-icon>
-                <span><strong>Balance:</strong> {{ field.balance }} EGP</span>
-              </div>
-            </div>
+        <input type="file" accept=".pdf" hidden [id]="'doc-' + field.id"
+          (change)="uploadDocument(field.id, $event); $event.stopPropagation()"
+          [disabled]="uploadingDocId() === field.id" />
+        }
 
-            @if (!field.hasApprovalDocument) {
-              <label
-                mat-stroked-button
-                color="primary"
-                class="upload-button"
-                [class.uploading]="uploadingDocId() === field.id"
-                [for]="'doc-' + field.id"
-                (click)="$event.stopPropagation()"
-              >
-                @if (uploadingDocId() === field.id) {
-                  <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
-                  Uploading…
-                } @else {
-                  <mat-icon>upload_file</mat-icon>
-                  <span>Upload Document</span>
-                }
-              </label>
+        <div class="field-actions">
+          <button mat-stroked-button color="primary" class="btn-view"
+            (click)="goToField(field.id); $event.stopPropagation()">
+            <mat-icon>open_in_new</mat-icon>
+            View
+          </button>
+          <button mat-stroked-button color="primary" (click)="editField(field.id); $event.stopPropagation()"
+            [disabled]="field.isApproved !== true"
+            [matTooltip]="field.isApproved !== true ? 'Field must be approved to edit' : 'Edit field'">
+            <mat-icon>edit</mat-icon>
+            Edit
+          </button>
 
-              <input
-                type="file"
-                accept=".pdf"
-                hidden
-                [id]="'doc-' + field.id"
-                (change)="uploadDocument(field.id, $event); $event.stopPropagation()"
-                [disabled]="uploadingDocId() === field.id"
-              />
+          <button mat-stroked-button color="warn" (click)="confirmDelete(field); $event.stopPropagation()"
+            [disabled]="deletingFieldId() === field.id">
+            @if (deletingFieldId() === field.id) {
+            <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
+            } @else {
+            <mat-icon>delete</mat-icon>
             }
+            Delete
+          </button>
+        </div>
 
-            <div class="field-actions">
-              <button
-                mat-stroked-button
-                color="primary"
-                class="btn-view"
-                (click)="goToField(field.id); $event.stopPropagation()"
-              >
-                <mat-icon>open_in_new</mat-icon>
-                View
-              </button>
-              <button
-                mat-stroked-button
-                color="primary"
-                (click)="editField(field.id); $event.stopPropagation()"
-                [disabled]="field.isApproved !== true"
-                [matTooltip]="field.isApproved !== true ? 'Field must be approved to edit' : 'Edit field'"
-              >
-                <mat-icon>edit</mat-icon>
-                Edit
-              </button>
+        <div class="additional-actions">
+          <button mat-flat-button color="accent" (click)="goToFieldReservations(field.id); $event.stopPropagation()"
+            class="full-width-btn">
+            <mat-icon>event</mat-icon>
+            My Reservations
+          </button>
 
-              <button
-                mat-stroked-button
-                color="warn"
-                (click)="confirmDelete(field); $event.stopPropagation()"
-                [disabled]="deletingFieldId() === field.id"
-              >
-                @if (deletingFieldId() === field.id) {
-                  <mat-spinner diameter="16" class="button-spinner"></mat-spinner>
-                } @else {
-                  <mat-icon>delete</mat-icon>
-                }
-                Delete
-              </button>
-            </div>
+          <button mat-flat-button color="primary" (click)="goToWithdrawalHistory(field.id); $event.stopPropagation()"
+            class="full-width-btn">
+            <mat-icon>history</mat-icon>
+            Withdrawal History
+          </button>
 
-            <div class="additional-actions">
-              <button
-                mat-flat-button
-                color="accent"
-                (click)="goToFieldReservations(field.id); $event.stopPropagation()"
-                class="full-width-btn"
-              >
-                <mat-icon>event</mat-icon>
-                My Reservations
-              </button>
+          <button mat-flat-button color="primary" (click)="openWithdrawDialog(field); $event.stopPropagation()"
+            class="full-width-btn" [disabled]="field.balance <= 0"
+            [matTooltip]="field.balance <= 0 ? 'No balance available' : 'Withdraw funds'">
+            <mat-icon>payment</mat-icon>
+            Withdraw
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+  <div class="pagination-wrapper">
+    <div class="pagination-bar">
+      <button mat-icon-button [disabled]="currentPage() === 1" (click)="changePage(currentPage() - 1)" class="nav-btn">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
 
-              <button
-                mat-flat-button
-                color="primary"
-                (click)="goToWithdrawalHistory(field.id); $event.stopPropagation()"
-                class="full-width-btn"
-              >
-                <mat-icon>history</mat-icon>
-                Withdrawal History
-              </button>
+      <div class="page-numbers">
+        @for (p of [].constructor(numberOfPages()); track $index) {
+        <button class="page-num" [class.active]="currentPage() === ($index + 1)" (click)="changePage($index + 1)">
+          {{ $index + 1 }}
+        </button>
+        }
+      </div>
 
-              <button
-                mat-flat-button
-                color="primary"
-                (click)="openWithdrawDialog(field); $event.stopPropagation()"
-                class="full-width-btn"
-                [disabled]="field.balance <= 0"
-                [matTooltip]="field.balance <= 0 ? 'No balance available' : 'Withdraw funds'"
-              >
-                <mat-icon>payment</mat-icon>
-                Withdraw
-              </button>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
+      <button mat-icon-button [disabled]="currentPage() === numberOfPages()" (click)="changePage(currentPage() + 1)"
+        class="nav-btn">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
     </div>
+
+    <span class="page-info">
+      Showing {{ startIndex() + 1 }} - {{ (startIndex() + itemsPerPage() > fields().length) ?
+      fields().length : startIndex() + itemsPerPage() }}
+      of {{ fields().length }} fields
+    </span>
+  </div>
   }
 </div>
