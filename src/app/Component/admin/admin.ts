@@ -332,11 +332,6 @@ export class AdminPanelComponent implements OnInit {
   }
 
   rejectField(field: IField): void {
-    if (!field.isApproved) {
-      this.showError(`Field "${field.name}" is already rejected/pending`);
-      return;
-    }
-
     // Show confirmation dialog
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       width: '400px',
