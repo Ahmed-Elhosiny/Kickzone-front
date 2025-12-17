@@ -17,6 +17,7 @@ export interface IField {
   documentUrl?: string;
   categoryName: string;
   cityName: string;
+  ownerId: number;
   ownerName: string;
   ownerUserName: string;
   fieldImages: IFieldImage[];

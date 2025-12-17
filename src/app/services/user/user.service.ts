@@ -23,6 +23,18 @@ export class UserService {
     return this.http.get<IUserProfile>(`${this.apiUrl}/User/me`);
   }
 
+  // Get user by ID
+  getUserById(id: number): Observable<IUserProfile> {
+    return this.http.get<IUserProfile>(`${this.apiUrl}/User/${id}`);
+  }
+
+  // Get user by username
+  getUserByUsername(username: string): Observable<IUserProfile> {
+    return this.http.get<IUserProfile>(`${this.apiUrl}/User/by-username`, {
+      params: { username }
+    });
+  }
+
   // Update user profile (name, location, phoneNumber)
   updateProfile(data: IPatchProfile): Observable<any> {
     return this.http.patch(`${this.apiUrl}/User/profile`, data);
