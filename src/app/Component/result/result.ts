@@ -32,6 +32,7 @@ export class Result {
   pageSize = signal<number>(4);
   totalCount = signal<number>(0);
   noResultsMessage = signal<string | null>(null);
+  time = signal<string | null>(null);
 
     startIndex = computed(() => {
       return (this.page() - 1) * this.pageSize();
@@ -65,13 +66,14 @@ export class Result {
     const ps = this.pageSize();
     const isApproved = true;
     const tc = this.totalCount();
+    const time = this.time();
 
     this.loading.set(true);
     this.fields.set([]);
     this.noResultsMessage.set(null);
 
     this.filterService
-      .HomeFilter(cty, cat, search, sz, min, max, isApproved, pg, ps)
+      .HomeFilter(cty, cat, search, sz, min, max, isApproved, pg, ps,time)
       .subscribe({
         next: (res: IFieldResponse) => {
           this.fields.set(res.fields);
@@ -119,6 +121,11 @@ export class Result {
 
   updateMax(value: number | null) {
     this.maxPrice.set(value);
+    this.page.set(1);
+  }
+
+  updateTime(value: string | null) {
+    this.time.set(value);
     this.page.set(1);
   }
 

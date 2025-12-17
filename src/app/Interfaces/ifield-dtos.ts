@@ -7,6 +7,7 @@ export interface IFieldFilters {
   minPrice?: number | null;
   maxPrice?: number | null;
   isApproved?: boolean | null;
+  time?: string | null; // ISO 8601 date-time string
 }
 
 // Create field request DTO

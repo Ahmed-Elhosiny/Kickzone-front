@@ -17,9 +17,10 @@ export class FiltrationResultService {
     sizeValue: string | null,
     minPrice: number | null,
     maxPrice: number | null,
-    isApproved: boolean | null,
+    isApproved: boolean | null=true, 
     page = 1,
-    pageSize = 1000
+    pageSize = 1000,
+    time: string | null
   ) {
     // Build request body matching backend FieldFiltersDto
     const body: any = {};
@@ -31,6 +32,7 @@ export class FiltrationResultService {
     if (minPrice !== null) body.minPrice = minPrice;
     if (maxPrice !== null) body.maxPrice = maxPrice;
     if (isApproved !== null) body.isApproved = isApproved;
+    if (time) body.time = time;
 
     const params = new HttpParams()
       .set('page', page.toString())

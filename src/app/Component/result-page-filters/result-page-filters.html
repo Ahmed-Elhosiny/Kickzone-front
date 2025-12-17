@@ -9,6 +9,25 @@
     }
   </div>
 
+  <!-- Time -->
+  <div class="filter-group">
+    <label class="filter-label">Time</label>
+    <mat-form-field appearance="outline" class="filter-input" subscriptSizing="dynamic">
+      <input 
+        matInput 
+        type="datetime-local"
+        [value]="filterTime()" 
+        (change)="updateTimeFilter($any($event.target).value)"
+      />
+      @if (filterTime()) {
+        <button matSuffix mat-icon-button (click)="updateTimeFilter(null)">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+
   <!-- Search -->
   <div class="filter-group">
     <label class="filter-label">Search</label>

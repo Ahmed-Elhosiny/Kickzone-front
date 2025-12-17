@@ -130,3 +130,33 @@
     padding: 10px;
   }
 }
+
+
+/* Customizing the native date-time input appearance */
+input[type="datetime-local"] {
+  font-family: inherit;
+  color: #333;
+  cursor: pointer;
+  /* Removes the default height/border behavior in some browsers */
+  border: none;
+  background: transparent;
+}
+
+/* Adjusting the native "calendar/clock" icon position */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    padding: 0;
+    cursor: pointer;
+    display: block !important;
+    background-size: contain;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff9800" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>');
+    opacity: 0.5;
+    transform: scale(1.5);
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: translateY(-20%) scale(2);
+}
+

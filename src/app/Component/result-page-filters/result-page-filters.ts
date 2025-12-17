@@ -47,6 +47,7 @@ export class ResultPageFilters implements OnInit {
   SelectedCity = output<string | null>();
   minPrice = output<number | null>();
   maxPrice = output<number | null>();
+  time = output<string | null>();
 
   // ===== Signals =====
   readonly searchText = signal<string>('');
@@ -59,6 +60,7 @@ export class ResultPageFilters implements OnInit {
   readonly isLoadingCities = signal(false);
   readonly minPriceValue = signal<number>(0);
   readonly maxPriceValue = signal<number>(1000);
+  readonly filterTime = signal<string | null>(null);
 
   readonly sizes = signal([
     { value: 'Side_2', label: '2 vs 2' },
@@ -75,7 +77,8 @@ export class ResultPageFilters implements OnInit {
     this.selectedCategory() !== null ||
     this.selectedCity() !== null ||
     this.minPriceValue() !== 0 ||
-    this.maxPriceValue() !== 1000
+    this.maxPriceValue() !== 1000 ||
+    this.filterTime() !== null
   );
 
   readonly priceRange = computed(() => 
@@ -88,6 +91,7 @@ export class ResultPageFilters implements OnInit {
     if (this.selectedSize()) count++;
     if (this.selectedCategory()) count++;
     if (this.selectedCity()) count++;
+    if (this.filterTime()) count++;
     if (this.minPriceValue() !== 0 || this.maxPriceValue() !== 1000) count++;
     return count;
   });
@@ -158,6 +162,18 @@ export class ResultPageFilters implements OnInit {
     this.maxPrice.emit(value);
   }
 
+  updateTimeFilter(value: string | null): void {
+    this.filterTime.set(value);
+
+  if (value !== null) {
+    const utcDate = new Date(value).toISOString();
+    this.time.emit(utcDate);
+  }
+  else {
+    this.time.emit(null);
+  }
+}
+
   clearAllFilters(): void {
     this.searchText.set('');
     this.selectedSize.set(null);
@@ -165,6 +181,7 @@ export class ResultPageFilters implements OnInit {
     this.selectedCity.set(null);
     this.minPriceValue.set(0);
     this.maxPriceValue.set(1000);
+      this.filterTime.set(null);
     
     this.searchValue.emit('');
     this.SelectedSize.emit(null);
@@ -172,6 +189,7 @@ export class ResultPageFilters implements OnInit {
     this.SelectedCity.emit(null);
     this.minPrice.emit(0);
     this.maxPrice.emit(1000);
+    this.time.emit(null);
   }
 
   clearSizeFilter(): void {
