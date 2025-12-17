@@ -241,7 +241,7 @@
     } @else {
       <!-- Fields Grid -->
       <div class="fields-grid">
-        @for (field of filteredFields(); track field.id) {
+        @for (field of paginatedFields(); track field.id) {
           <mat-card class="field-card">
             <!-- Field Image -->
             @if (field.fieldImages.length) {
@@ -348,6 +348,38 @@
           </div>
         }
       </div>
+      <div class="pagination-wrapper">
+    <div class="pagination-bar">
+      <button mat-icon-button 
+              [disabled]="currentPage() === 1" 
+              (click)="changePage(currentPage() - 1)"
+              class="nav-btn">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="page-numbers">
+        @for (p of [].constructor(numberOfPages()); track $index) {
+          <button class="page-num" 
+                  [class.active]="currentPage() === ($index + 1)"
+                  (click)="changePage($index + 1)">
+            {{ $index + 1 }}
+          </button>
+        }
+      </div>
+
+      <button mat-icon-button 
+              [disabled]="currentPage() === numberOfPages()" 
+              (click)="changePage(currentPage() + 1)"
+              class="nav-btn">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    
+    <span class="page-info">
+      Showing {{ startIndex() + 1 }} - {{ (startIndex() + itemsPerPage() > filteredFields().length) ? filteredFields().length : startIndex() + itemsPerPage() }} 
+      of {{ filteredFields().length }} fields
+    </span>
+  </div>
     }
   </section>
 </div>

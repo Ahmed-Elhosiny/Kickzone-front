@@ -23,6 +23,7 @@ import { ICategory } from '../../Model/ICategory/icategory';
 import { IField } from '../../Model/IField/ifield';
 
 import { AddItemDialogComponent } from './../../dialogs/add-item/add-item';
+import { MatPaginatedTabHeader } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-admin-panel',
@@ -69,6 +70,8 @@ export class AdminPanelComponent implements OnInit {
   readonly categorySearchTerm = signal<string>('');
   readonly fieldSearchTerm = signal<string>('');
   readonly fieldStatusFilter = signal<'all' | 'approved' | 'pending'>('all');
+  currentPage = signal<number>(1);
+  itemsPerPage = signal<number>(3);
   
   // ===== Computed Values for Filtering =====
   readonly filteredCities = computed(() => {
@@ -85,6 +88,19 @@ export class AdminPanelComponent implements OnInit {
     );
   });
   
+  numberOfPages = computed(() => {
+    return Math.ceil(this.filteredFields().length / this.itemsPerPage());
+  });
+
+  startIndex = computed(() => {
+    return (this.currentPage() - 1) * this.itemsPerPage();
+  });
+
+  changePage(newPage: number): void {
+    if (newPage < 1 || newPage > this.numberOfPages()) return;
+    this.currentPage.set(newPage);
+  }
+
   readonly filteredFields = computed(() => {
     const term = this.fieldSearchTerm().toLowerCase();
     const statusFilter = this.fieldStatusFilter();
@@ -101,6 +117,12 @@ export class AdminPanelComponent implements OnInit {
       return matchesSearch && matchesStatus;
     });
   });
+
+  paginatedFields = computed(() => {
+    const start = this.startIndex();
+    const end = start + this.itemsPerPage();
+    return this.filteredFields().slice(start, end);
+  } );
   
   // ===== Statistics =====
   readonly stats = computed(() => ({
