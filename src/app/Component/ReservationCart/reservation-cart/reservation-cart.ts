@@ -124,10 +124,10 @@ export class ReservationCart implements OnInit {
     next: (response: ICheckoutResponse) => {
       this.isCheckingOut.set(false);
 
-      // if (response.paymentUrl) {
-      //   this.snackBar.open('جاري تحويلك لبوابة الدفع...', 'موافق', { duration: 3000 });
-      //   window.location.href = response.paymentUrl;
-      // } else {
+      if (response.paymentUrl) {
+        this.snackBar.open('Redirecting to payment page ...', 'OK', { duration: 3000 });
+         window.location.href = response.paymentUrl;
+       } else {
         this.snackBar.open(response.message || 'reservation checked out successfully', 'OK', { duration: 5000 });
 
         this.cart.set({
@@ -137,7 +137,7 @@ export class ReservationCart implements OnInit {
             isConfirmed: true
           }))
         });
-      // }
+       }
     },
     error: (err) => {
       this.isCheckingOut.set(false);
