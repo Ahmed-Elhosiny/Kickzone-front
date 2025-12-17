@@ -281,33 +281,35 @@
         </mat-card-content>
 
         <mat-card-actions class="field-actions">
-          <button mat-raised-button color="primary" [disabled]="field.isApproved"
-            [matTooltip]="field.isApproved ? 'Already approved' : 'Approve field'" (click)="approveField(field)">
-            <mat-icon>check_circle</mat-icon>
-            Approve
-          </button>
+          @if (!field.isApproved) {
+            <!-- Pending Field Actions -->
+            <button mat-raised-button color="primary" matTooltip="Approve field" (click)="approveField(field)">
+              <mat-icon>check_circle</mat-icon>
+              Approve
+            </button>
 
-          <button mat-stroked-button color="warn" [disabled]="!field.isApproved"
-            [matTooltip]="!field.isApproved ? 'Already rejected/pending' : 'Reject field'" (click)="rejectField(field)">
-            <mat-icon>cancel</mat-icon>
-            Reject
-          </button>
+            <button mat-stroked-button color="warn" matTooltip="Reject field" (click)="rejectField(field)">
+              <mat-icon>cancel</mat-icon>
+              Reject
+            </button>
+          } @else {
+            <!-- Approved Field Actions -->
+            <button mat-raised-button color="warn" matTooltip="Delete field" (click)="deleteField(field)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
 
-          <button mat-raised-button color="warn" matTooltip="Delete field" (click)="deleteField(field)">
-            <mat-icon>delete</mat-icon>
-            Delete
-          </button>
+            <button mat-stroked-button color="accent" matTooltip="View reservations" (click)="viewReservations(field)">
+              <mat-icon>event</mat-icon>
+              Reservations
+            </button>
 
-          <button mat-stroked-button color="accent" matTooltip="View reservations" (click)="viewReservations(field)">
-            <mat-icon>event</mat-icon>
-            Reservations
-          </button>
-
-          <button mat-stroked-button color="accent" matTooltip="View withdrawal history"
-            (click)="viewWithdrawalHistory(field)">
-            <mat-icon>history</mat-icon>
-            Withdrawals
-          </button>
+            <button mat-stroked-button color="accent" matTooltip="View withdrawal history"
+              (click)="viewWithdrawalHistory(field)">
+              <mat-icon>history</mat-icon>
+              Withdrawals
+            </button>
+          }
         </mat-card-actions>
       </mat-card>
       } @empty {
