@@ -55,10 +55,6 @@ export class ReservationCartService {
         if (newCart) {
           this.cartContent.set(newCart);
         }
-      }),
-      catchError((err) => {
-        console.error('Failed to add item to cart', err);
-        return of(null);
       })
     );
   }

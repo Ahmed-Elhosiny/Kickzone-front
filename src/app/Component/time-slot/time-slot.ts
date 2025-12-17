@@ -134,8 +134,8 @@ export class TimeSlot implements OnInit {
         this.isBooking.set(false);
         if (newCart) {
           const snackBarRef = this.snackBar.open(
-            `تمت إضافة الفترة ${this.getStartTime(slot)} إلى عربة الحجوزات!`,
-            'عرض العربة',
+            `Slot at ${this.getStartTime(slot)} was added to cart!`,
+            'Go to Cart',
             {
               duration: 8000,
               horizontalPosition: 'end',
@@ -156,8 +156,8 @@ export class TimeSlot implements OnInit {
         } else {
 
           this.snackBar.open(
-            'لا يمكن إضافة الفترة. قد تكون محجوزة للتو أو لديك تعارض.',
-            'إغلاق',
+            'Unable to add slot to cart.',
+            'Close',
             { 
               duration: 7000,
               horizontalPosition: 'end',
@@ -175,7 +175,7 @@ export class TimeSlot implements OnInit {
       error: (err) => {
         this.isBooking.set(false);
         console.error('Failed to add item to cart', err);
-        this.snackBar.open('فشل في إضافة الفترة. يرجى التأكد من تسجيل الدخول.', 'إغلاق', {
+        this.snackBar.open('Failed to add item to cart, '+ err.error.message, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
