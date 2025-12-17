@@ -15,6 +15,7 @@ export interface IRefreshRequest {
 
 export interface IRefreshResponse {
   token: string;
-  refreshToken: string;
-  expiresIn: number;
+  expiresAt: string;
+  newRefreshToken: string;
+  newRefreshExpiresAt: string;
 }
