@@ -12,7 +12,7 @@ export const fieldOwnerGuard: CanActivateFn = (route, state) => {
   }
 
   const userRole = authService.getUserRole();
-  if (userRole !== 'FieldOwner' && userRole !== 'Admin') {
+  if (userRole !== 'FieldOwner') {
     router.navigate(['/home']);
     return false;
   }
