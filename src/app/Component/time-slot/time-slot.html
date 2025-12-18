@@ -27,7 +27,7 @@
       </button>
     </div>
 
-    <div class="d-flex justify-content-center gap-2 mb-4">
+<!--     <div class="d-flex justify-content-center gap-2 mb-4">
       <button
         (click)="setPeriod('Morning')"
         class="btn"
@@ -44,7 +44,7 @@
       >
         Afternoon
       </button>
-    </div>
+    </div> -->
 
     <hr class="my-3" />
 
@@ -56,18 +56,19 @@
     } @if (!isLoading()) {
     <div class="schedule-container p-3">
       <div class="slots-list d-flex flex-wrap gap-3 justify-content-center">
-        @if (filteredSlots().length === 0) {
+        @if (dailySlots().length === 0) {
         <div class="alert alert-warning w-100 text-center">
-          No {{ selectedPeriod() }} Hours available for this day.
+          No Slots available for this day.
         </div>
-        } @else { @for (slot of filteredSlots(); track slot.id) {
+        } @else { @for (slot of dailySlots(); track slot.id) {
         <button
             [disabled]="slot.isReserved || isBooking()"
-            (click)="bookTimeSlot(slot)"
+            (click)="bookTimeSlot(slot,slot.isAvailable)"
             class="time-slot-box text-center p-2 rounded border"
             [ngClass]="{
               'slot-available': slot.isAvailable && !slot.isReserved,
-              'slot-booked': slot.isReserved
+              'slot-booked': slot.isReserved,
+              'slot-being-booked': !slot.isAvailable && !slot.isReserved
             }"
         >
 
@@ -76,9 +77,14 @@
           </div>
 
           <div class="status my-1 small">
-            @if (!slot.isAvailable) {
-            <strong class="text-danger">BOOKED</strong>
-            } @else {
+            @if (slot.isReserved) {
+            <strong class="text-dark">BOOKED</strong>
+            } 
+            @else if (!slot.isAvailable && !slot.isReserved) {
+            <strong class="text-dark">BEING BOOKED</strong>
+            }
+            @else  {
+            <strong class="text-white">AVAILABLE</strong>
             <div class="fw-bold">
               {{ fieldSignal().pricePerHour | currency : 'EGP' : 'symbol' : '1.0-2' }}
             </div>
@@ -87,7 +93,7 @@
 
           <div
             class="duration small"
-            [ngClass]="{ 'text-white': slot.isAvailable, 'text-muted': !slot.isAvailable }"
+            [ngClass]="{ 'text-white': slot.isAvailable, 'text-dark': !slot.isAvailable }"
           >
             60 min
           </div>

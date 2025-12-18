@@ -10,11 +10,13 @@ export class SignalrService {
 
   startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.apiUrl}/SlotsReservationHub`) // your API url
+      .withUrl(`${environment.apiUrl}/SlotsReservationHub`,{withCredentials: true}) // your API url
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start();
+    this.hubConnection.start()
+    .then(() => console.log('SignalR connected'))
+    .catch(err => console.error('SignalR error:', err));
   }
 
   onSlotsUpdated(callback: () => void) {

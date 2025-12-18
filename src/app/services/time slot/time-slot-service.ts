@@ -49,6 +49,23 @@ export class TimeSlotService {
     );
   }
 
+
+  getDateTimeSlots(fieldId: number, date: string): Observable<ITimeSlot[]> {
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);
+
+    const params = {
+      fieldId: fieldId.toString(),
+      StartDateUTC: startDate.toISOString(),
+      EndDateUTC: endDate.toISOString(),
+    };
+
+    return this.http.get<ITimeSlot[]>(`${this.apiUrl}/date`, { params });
+  }
+
+
   getTimeSlotWithReservation(id: number): Observable<ITimeSlot> {
     return this.http.get<ITimeSlot>(`${this.apiUrl}/${id}/with-reservation`).pipe(
       catchError((error) => {

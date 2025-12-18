@@ -33,8 +33,6 @@ import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialo
   styleUrl: './field-details.css',
 })
 export class FieldDetails implements OnInit, OnDestroy {
-  private signalr = inject(SignalrService);
-
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fieldService = inject(FieldService);
@@ -110,16 +108,7 @@ export class FieldDetails implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.signalr.startConnection();
-
-  this.signalr.onSlotsUpdated(() => {
-    const id = this.fieldId();
-    if (id) {
-      this.fieldService.getFieldById(id).subscribe(res => {
-        this.field.set(res);
-      });
-    }
-  });
+   
     this.routeSubscription = this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
       if (isNaN(id) || id <= 0) {
@@ -133,7 +122,6 @@ export class FieldDetails implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalr.stopConnection();
     this.routeSubscription?.unsubscribe();
   }
 
