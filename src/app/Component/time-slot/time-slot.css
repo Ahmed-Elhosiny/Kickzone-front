@@ -35,3 +35,16 @@
 .time-slot-box:disabled {
   pointer-events: none;
 }
+
+.card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.changeDay-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: bold;
+}

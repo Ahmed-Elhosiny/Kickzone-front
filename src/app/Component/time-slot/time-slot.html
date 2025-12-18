@@ -1,5 +1,5 @@
 <div class="card shadow-sm time-slot-card">
-  <div class="card-header bg-primary text-white text-center">
+  <div class="card-header">
     <h2 class="h5 mb-0">Book Online at {{ fieldSignal().name }}</h2>
   </div>
 
@@ -8,7 +8,7 @@
       <button
         (click)="changeDay(-1)"
         aria-label="Previous Day"
-        class="btn btn-primary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale"
+        class="btn btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale changeDay-btn"
       >
         <i class="bi bi-chevron-left"></i>
         Previous
@@ -20,31 +20,12 @@
       <button
         (click)="changeDay(1)"
         aria-label="Next Day"
-        class="btn btn-primary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale"
+        class="btn btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale changeDay-btn"
       >
         Next
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
-
-<!--     <div class="d-flex justify-content-center gap-2 mb-4">
-      <button
-        (click)="setPeriod('Morning')"
-        class="btn"
-        [class.btn-primary]="selectedPeriod() === 'Morning'"
-        [class.btn-outline-primary]="selectedPeriod() !== 'Morning'"
-      >
-        Morning
-      </button>
-      <button
-        (click)="setPeriod('Afternoon')"
-        class="btn"
-        [class.btn-primary]="selectedPeriod() === 'Afternoon'"
-        [class.btn-outline-primary]="selectedPeriod() !== 'Afternoon'"
-      >
-        Afternoon
-      </button>
-    </div> -->
 
     <hr class="my-3" />
 
