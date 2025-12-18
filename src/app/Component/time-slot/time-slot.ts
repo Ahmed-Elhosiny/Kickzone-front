@@ -1,7 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit, signal, effect, computed, inject, input, DestroyRef } from '@angular/core';
+import { Component, signal, effect, computed, inject, input, DestroyRef } from '@angular/core';
 import { TimeSlotService } from '../../services/time slot/time-slot-service';
-import { Period } from '../../Model/ITimeSlot/day-schedule';
 import { ITimeSlot } from '../../Model/ITimeSlot/itime-slot';
 import { IField } from '../../Model/IField/ifield';
 import { ReservationCartService } from '../../services/ReservationCart/reservation-cart';
@@ -18,6 +17,7 @@ import { SignalrService } from '../../services/signalr/signalr-service';
   providers: [TimeSlotService],
 })
 export class TimeSlot  {
+
   fieldSignal = input.required<IField>();
   private timeSlotService = inject(TimeSlotService);
   private cartService = inject(ReservationCartService);
@@ -27,23 +27,16 @@ export class TimeSlot  {
   private destroyRef = inject(DestroyRef);
 
   selectedDate = signal<Date>(new Date());
-
-  /*   selectedPeriod = signal<Period>('Morning'); */
   dailySlots = signal<ITimeSlot[]>([]);
   isLoading = signal<boolean>(false);
   isBooking = signal<boolean>(false);
-
-  // trigger signal for updating time slots
   triggerUpdate = signal(0);
 
   constructor() {
 
     this.selectedDate.set(new Date());
-
-    // Connect to real-time hub
     this.signalrService.startConnection();
 
-    // Listen for updates
     this.signalrService.onSlotsUpdated(() => {
         this.triggerUpdate.update(n => n + 1);
     });
@@ -52,10 +45,8 @@ export class TimeSlot  {
       this.signalrService.stopConnection();
     });
 
-    // Effect to fetch time slots when field or date changes
-
     effect(() => {
-      this.triggerUpdate(); // depend on trigger
+      this.triggerUpdate();
       const fieldId = this.fieldSignal().id;
       const date = this.selectedDate();
 
@@ -66,19 +57,16 @@ export class TimeSlot  {
     });
   }
 
-
   fetchTimeSlotsForDay(fieldId: number, dateString: string): void {
     this.isLoading.set(true);
     this.dailySlots.set([]);
 
     this.timeSlotService.getDateTimeSlots(fieldId, dateString).subscribe({
       next: (slots) => {
-        console.log('Fetched slots for', dateString, slots);
         this.dailySlots.set(slots);
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Failed to fetch daily slots', err.error);
         this.snackBar.open('Failed to load time slots: ' + err.error.message, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
@@ -96,45 +84,9 @@ export class TimeSlot  {
     this.selectedDate.set(newDate);
   }
 
-  /*   setPeriod(period: Period): void {
-      this.selectedPeriod.set(period);
-    } */
-
-  /*   private isMorningSlot(slot: ITimeSlot): boolean {
-      const hour = new Date(slot.startAtDateTime).getUTCHours();
-      return hour < 12;
-    }
-  
-    private isAfternoonSlot(slot: ITimeSlot): boolean {
-      const hour = new Date(slot.startAtDateTime).getUTCHours();
-      return hour >= 12;
-    } */
-
   private formatDateForApi(date: Date): string {
-    return date.toISOString().split('T')[0]; // YYYY-MM-DD
+    return date.toISOString().split('T')[0];
   }
-
-  /*  filteredSlots = computed<ITimeSlot[]>(() => {
-      const period = this.selectedPeriod(); 
-     const selected = this.selectedDate();
- 
-     return this.dailySlots()
-       .filter((slot) => {
-         const slotDate = new Date(slot.startAtDateTime);
- 
-         const sameDay =
-           slotDate.getFullYear() === selected.getFullYear() &&
-           slotDate.getMonth() === selected.getMonth() &&
-           slotDate.getDate() === selected.getDate();
- 
-         if (!sameDay) return false;
- 
-         return period === 'Morning' ? this.isMorningSlot(slot) : this.isAfternoonSlot(slot);
-       })
-       .sort(
-         (a, b) => new Date(a.startAtDateTime).getTime() - new Date(b.startAtDateTime).getTime()
-       );
-   }); */
 
   getStartTime(slot: ITimeSlot): string {
     return new Date(slot.startAtDateTime).toLocaleTimeString('en-US', {
@@ -153,7 +105,6 @@ export class TimeSlot  {
     this.isBooking.set(true);
     const slotId = slot.id;
 
-    // try adding to cart
     if (available) {
 
       this.cartService.addItem(slotId).subscribe({
@@ -170,7 +121,6 @@ export class TimeSlot  {
                 panelClass: ['success-snackbar'],
               }
             );
-
 
             snackBarRef.onAction().subscribe(() => {
               this.router.navigate(['/reservation-cart']);
@@ -197,7 +147,6 @@ export class TimeSlot  {
         },
         error: (err) => {
           this.isBooking.set(false);
-          console.error('Failed to add item to cart', err);
           this.snackBar.open('Failed to add item to cart, ' + err.error.message, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
@@ -207,14 +156,13 @@ export class TimeSlot  {
         },
       });
 
-    }
+    } else {
 
-    // try removing from cart
-    else {
       this.cartService.removeItem(slotId).subscribe({
         next: (newCart) => {
           this.isBooking.set(false);
           if (newCart) {
+
             const snackBarRef = this.snackBar.open(
               `Slot at ${this.getStartTime(slot)} was removed from cart!`,
               'Go to Cart',
@@ -225,7 +173,6 @@ export class TimeSlot  {
                 panelClass: ['success-snackbar'],
               }
             );
-
 
             snackBarRef.onAction().subscribe(() => {
               this.router.navigate(['/reservation-cart']);
@@ -252,7 +199,6 @@ export class TimeSlot  {
         },
         error: (err) => {
           this.isBooking.set(false);
-          console.error('Failed to remove item from cart', err);
           this.snackBar.open('Failed to remove item from cart, ' + err.error.message, 'Close', {
             duration: 5000,
             horizontalPosition: 'end',
@@ -264,4 +210,53 @@ export class TimeSlot  {
       });
     }
   }
+
+  displaySlots = computed(() => {
+    const now = new Date();
+
+    return this.dailySlots().filter(slot => {
+      const slotDate = new Date(slot.startAtDateTime);
+
+      const isDayFinished =
+        slotDate.getFullYear() < now.getFullYear() ||
+        (slotDate.getFullYear() === now.getFullYear() && slotDate.getMonth() < now.getMonth()) ||
+        (slotDate.getFullYear() === now.getFullYear() &&
+         slotDate.getMonth() === now.getMonth() &&
+         slotDate.getDate() < now.getDate());
+
+      if (isDayFinished) return false;
+
+      const isToday = slotDate.toDateString() === now.toDateString();
+      if (isToday && slotDate <= now) return false;
+
+      return true;
+    });
+  });
+
+  hasPreviousDays = computed(() => {
+  const now = new Date();
+
+  return this.dailySlots().some(slot => {
+    const slotDate = new Date(slot.startAtDateTime);
+
+    const isBeforeToday =
+      slotDate.getFullYear() < now.getFullYear() ||
+      (slotDate.getFullYear() === now.getFullYear() && slotDate.getMonth() < now.getMonth()) ||
+      (slotDate.getFullYear() === now.getFullYear() &&
+       slotDate.getMonth() === now.getMonth() &&
+       slotDate.getDate() < now.getDate());
+
+    return isBeforeToday;
+  });
+});
+
+canGoPrevious = computed(() => {
+  const today = new Date();
+  const sel = this.selectedDate();
+  return sel > today;
+});
+
+
+
+
 }

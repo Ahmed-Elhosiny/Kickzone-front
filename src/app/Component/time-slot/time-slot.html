@@ -5,14 +5,18 @@
 
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
-      <button
-        (click)="changeDay(-1)"
-        aria-label="Previous Day"
-        class="btn btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale changeDay-btn"
-      >
-        <i class="bi bi-chevron-left"></i>
-        Previous
-      </button>
+     <button
+          *ngIf="canGoPrevious()"
+          (click)="changeDay(-1)"
+          aria-label="Previous Day"
+          class="btn btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-2 shadow-sm hover-scale changeDay-btn"
+        >
+          <i class="bi bi-chevron-left"></i>
+          Previous
+    </button>
+
+
+
 
       <span class="fw-bold text-center h4 mb-0">
         {{ selectedDate() | date : 'EEE, MMM d' }}
@@ -37,11 +41,15 @@
     } @if (!isLoading()) {
     <div class="schedule-container p-3">
       <div class="slots-list d-flex flex-wrap gap-3 justify-content-center">
-        @if (dailySlots().length === 0) {
-        <div class="alert alert-warning w-100 text-center">
-          No Slots available for this day.
-        </div>
-        } @else { @for (slot of dailySlots(); track slot.id) {
+      @if(displaySlots().length === 0) {
+      <div class="alert alert-warning w-100 text-center">
+        No Slots available for this day.
+      </div>
+        }
+        @else {
+      @for (slot of displaySlots(); track slot.id) {
+
+
         <button
             [disabled]="slot.isReserved || isBooking()"
             (click)="bookTimeSlot(slot,slot.isAvailable)"
@@ -60,7 +68,7 @@
           <div class="status my-1 small">
             @if (slot.isReserved) {
             <strong class="text-dark">BOOKED</strong>
-            } 
+            }
             @else if (!slot.isAvailable && !slot.isReserved) {
             <strong class="text-dark">BEING BOOKED</strong>
             }
