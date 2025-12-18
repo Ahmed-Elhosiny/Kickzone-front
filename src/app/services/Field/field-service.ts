@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 import { IField } from '../../Model/IField/ifield';
@@ -27,11 +27,15 @@ export class FieldService {
       .set('page', page)
       .set('pageSize', pageSize);
 
-    return this.http.get<IField[]>(`${this.apiUrl}/all`, { params });
+    return this.http.get<IField[]>(`${this.apiUrl}/all`, { params }).pipe(
+      map(fields => this.transformFieldsResponse(fields))
+    );
   }
 
   getFieldById(id: number): Observable<IField> {
-    return this.http.get<IField>(`${this.apiUrl}/${id}`);
+    return this.http.get<IField>(`${this.apiUrl}/${id}`).pipe(
+      map(field => this.transformFieldResponse(field))
+    );
   }
 
   getFieldsByOwner(
@@ -46,8 +50,47 @@ export class FieldService {
     return this.http.get<IField[]>(
       `${this.apiUrl}/owner/${ownerId}`,
       { params }
+    ).pipe(
+      map(fields => this.transformFieldsResponse(fields))
     );
   }
+
+
+  private transformFieldsResponse(fields: IField[]): IField[] {
+    return fields.map(field => ({
+      ...field,
+      openAt: this.convertUtcHourToLocal(field.openAt),
+      closeAt: this.convertUtcHourToLocal(field.closeAt)
+    }));
+  }
+
+  private transformFieldResponse(field: IField): IField {
+    return {
+      ...field,
+      openAt: this.convertUtcHourToLocal(field.openAt),
+      closeAt: this.convertUtcHourToLocal(field.closeAt)
+    };
+  }
+
+  private convertUtcHourToLocal(utcHour: number): number {
+    // 1. Create a date object at 00:00 UTC today
+    const date = new Date();
+    date.setUTCHours(utcHour, 0, 0, 0);
+
+    // 2. Get the hour in the user's local timezone
+    return date.getHours();
+  }
+
+  private convertLocalHourToUtc(localHour: number): number {
+    // 1. Create a date object at 00:00 local time today
+    const date = new Date();
+    date.setHours(localHour, 0, 0, 0);
+
+    // 2. Get the hour in UTC timezone
+    return date.getUTCHours();
+  }
+
+
 
   getFieldPdf(id: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/${id}/pdf`, {
@@ -94,8 +137,8 @@ export class FieldService {
 
     formData.append('pricePerHour', fieldData.pricePerHour.toString());
     formData.append('size', fieldData.size);
-    formData.append('openAt', fieldData.openAt.toString());
-    formData.append('closeAt', fieldData.closeAt.toString());
+    formData.append('openAt', this.convertLocalHourToUtc(fieldData.openAt).toString());
+    formData.append('closeAt', this.convertLocalHourToUtc(fieldData.closeAt).toString());
 
     fieldData.images.forEach((image) => {
       formData.append('images', image, image.name);
@@ -127,11 +170,11 @@ export class FieldService {
     }
 
     if (fieldData.openAt !== undefined) {
-      formData.append('openAt', fieldData.openAt.toString());
+      formData.append('openAt', this.convertLocalHourToUtc(fieldData.openAt).toString());
     }
 
     if (fieldData.closeAt !== undefined) {
-      formData.append('closeAt', fieldData.closeAt.toString());
+      formData.append('closeAt', this.convertLocalHourToUtc(fieldData.closeAt).toString());
     }
 
     if (fieldData.newImages?.length) {

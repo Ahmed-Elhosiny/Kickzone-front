@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { IFieldResponse } from '../../Model/IField/ifield-response';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +39,31 @@ export class FiltrationResultService {
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
 
-    return this.http.post<IFieldResponse>(`${this.apiUrl}/Fields/filtered`, body, { params });
+    return this.http.post<IFieldResponse>(`${this.apiUrl}/Fields/filtered`, body, { params }).pipe(
+      // Transform openAt and closeAt from UTC to local time
+      map(response => this.transformResponse(response))
+      );
   }
+
+  private transformResponse(response: IFieldResponse): IFieldResponse {
+    return {
+      ...response,
+      fields: response.fields.map(field => ({
+        ...field,
+        openAt: this.convertUtcHourToLocal(field.openAt),
+        closeAt: this.convertUtcHourToLocal(field.closeAt)
+      }))
+    };
+  }
+
+  private convertUtcHourToLocal(utcHour: number): number {
+    // 1. Create a date object at 00:00 UTC today
+    const date = new Date();
+    date.setUTCHours(utcHour, 0, 0, 0);
+
+    // 2. Get the hour in the user's local timezone
+    return date.getHours(); 
+  }
+
 }
 
