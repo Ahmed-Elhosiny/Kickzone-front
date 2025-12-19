@@ -1,26 +1,37 @@
-import { Component, inject, signal, effect, OnInit, OnDestroy, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { catchError, of } from 'rxjs';
+
 import { FieldService } from '../../services/Field/field-service';
 import { IField } from '../../Model/IField/ifield';
-import { CommonModule, CurrencyPipe, ViewportScroller } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TimeSlot } from '../time-slot/time-slot';
-import { catchError, of, Subscription } from 'rxjs';
+
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { SignalrService } from '../../services/signalr/signalr-service';
-import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialogs/user-contact-info/user-contact-info';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
+import {
+  UserContactInfoComponent,
+  UserContactInfoDialogData
+} from '../../dialogs/user-contact-info/user-contact-info';
+
+type UiState = 'loading' | 'error' | 'ready';
 
 @Component({
   selector: 'app-field-details',
   standalone: true,
   imports: [
-    CurrencyPipe,
     CommonModule,
+    CurrencyPipe,
     TimeSlot,
     MatSnackBarModule,
     MatButtonModule,
@@ -32,176 +43,121 @@ import { UserContactInfoComponent, UserContactInfoDialogData } from '../../dialo
   templateUrl: './field-details.html',
   styleUrl: './field-details.css',
 })
-export class FieldDetails implements OnInit, OnDestroy {
+export class FieldDetails {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fieldService = inject(FieldService);
-  private sanitizer = inject(DomSanitizer);
-  private scroller = inject(ViewportScroller);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
+  // ================= STATE =================
+  fieldId = signal<number>(0);
   field = signal<IField | null>(null);
-  fieldId = signal<number | null>(null);
-  isLoading = signal<boolean>(true);
-  hasError = signal<boolean>(false);
-  errorMessage = signal<string>('');
-  selectedImageIndex = signal<number>(0);
 
-  private routeSubscription?: Subscription;
+  uiState = signal<UiState>('loading');
+  errorMessage = signal('');
 
-  // Computed values for better reactivity
-  hasImages = computed(() => {
-    const fieldData = this.field();
-    return fieldData && fieldData.fieldImages && fieldData.fieldImages.length > 0;
-  });
+  selectedImageIndex = signal(0);
 
-  currentImage = computed(() => {
-    const fieldData = this.field();
-    const index = this.selectedImageIndex();
-    if (fieldData && fieldData.fieldImages && fieldData.fieldImages.length > 0) {
-      return fieldData.fieldImages[index];
-    }
-    return null;
-  });
+  // ================= COMPUTED =================
+  hasImages = computed(() =>
+    (this.field()?.fieldImages?.length ?? 0) > 0
+  );
 
+  currentImage = computed(() =>
+    this.field()?.fieldImages?.[this.selectedImageIndex()]
+  );
+
+  // ================= INIT =================
   constructor() {
-    effect(() => {
-      const id = this.fieldId();
-
-      if (id !== null) {
-        this.isLoading.set(true);
-        this.hasError.set(false);
-
-        this.fieldService.getFieldById(id).pipe(
-          catchError((error) => {
-            console.error('Error fetching field:', error);
-            this.hasError.set(true);
-            this.isLoading.set(false);
-
-            if (error.status === 404) {
-              this.errorMessage.set('Field not found. It may have been removed.');
-            } else if (error.status === 0) {
-              this.errorMessage.set('Cannot connect to server. Please check your connection.');
-            } else {
-              this.errorMessage.set('Failed to load field details. Please try again.');
-            }
-
-            this.snackBar.open(this.errorMessage(), 'Close', {
-              duration: 5000,
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              panelClass: ['error-snackbar']
-            });
-
-            return of(null);
-          })
-        ).subscribe((res) => {
-          if (res) {
-            this.field.set(res);
-            this.selectedImageIndex.set(0);
-          }
-          this.isLoading.set(false);
-        });
-      }
-    });
-  }
-
-  ngOnInit(): void {
-   
-    this.routeSubscription = this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
-      if (isNaN(id) || id <= 0) {
-        this.hasError.set(true);
-        this.errorMessage.set('Invalid field ID');
-        this.isLoading.set(false);
+      if (!id || id <= 0) {
+        this.fail('Invalid field ID');
         return;
       }
       this.fieldId.set(id);
+      this.loadField();
     });
   }
 
-  ngOnDestroy(): void {
-    this.routeSubscription?.unsubscribe();
+  // ================= DATA =================
+  private loadField() {
+    this.uiState.set('loading');
+
+    this.fieldService.getFieldById(this.fieldId()).pipe(
+      catchError(err => {
+        this.fail(this.mapError(err));
+        return of(null);
+      })
+    ).subscribe(field => {
+      if (!field) return;
+
+      this.field.set(field);
+      this.selectedImageIndex.set(0);
+      this.uiState.set('ready');
+    });
   }
 
-  getSafeMapUrl(location: string, city: string): SafeResourceUrl {
-    const address = `${location}, ${city}`;
-    const googleMapsUrl = `https://maps.google.com/maps?q=${encodeURIComponent(
-      address
-    )}&output=embed`;
-    return this.sanitizer.bypassSecurityTrustResourceUrl(googleMapsUrl);
+  private fail(message: string) {
+    this.errorMessage.set(message);
+    this.uiState.set('error');
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
+    });
   }
 
-  scrollToMap(): void {
-    this.scroller.scrollToAnchor('google-map');
+  private mapError(err: any): string {
+    if (err.status === 404) return 'Field not found';
+    if (err.status === 0) return 'Server unreachable';
+    return 'Failed to load field details';
   }
 
-  goBack(): void {
+  // ================= UI ACTIONS =================
+  goBack() {
     this.router.navigate(['/result']);
   }
 
-  selectImage(index: number): void {
-    const fieldData = this.field();
-    if (fieldData && fieldData.fieldImages && index >= 0 && index < fieldData.fieldImages.length) {
-      this.selectedImageIndex.set(index);
+  selectImage(index: number) {
+    this.selectedImageIndex.set(index);
+  }
+
+  nextImage() {
+    const images = this.field()?.fieldImages ?? [];
+    this.selectedImageIndex.update(i => (i + 1) % images.length);
+  }
+
+  prevImage() {
+    const images = this.field()?.fieldImages ?? [];
+    this.selectedImageIndex.update(i =>
+      i === 0 ? images.length - 1 : i - 1
+    );
+  }
+
+  openMap() {
+    const link = this.field()?.locationLink;
+    if (link) {
+      window.open(link, '_blank');
     }
   }
 
-  nextImage(): void {
-    const fieldData = this.field();
-    if (fieldData && fieldData.fieldImages && fieldData.fieldImages.length > 0) {
-      const currentIndex = this.selectedImageIndex();
-      const nextIndex = (currentIndex + 1) % fieldData.fieldImages.length;
-      this.selectedImageIndex.set(nextIndex);
-    }
-  }
+  openOwnerContact(event?: Event) {
+    event?.stopPropagation();
+    const f = this.field();
+    if (!f) return;
 
-  previousImage(): void {
-    const fieldData = this.field();
-    if (fieldData && fieldData.fieldImages && fieldData.fieldImages.length > 0) {
-      const currentIndex = this.selectedImageIndex();
-      const previousIndex = currentIndex === 0 ? fieldData.fieldImages.length - 1 : currentIndex - 1;
-      this.selectedImageIndex.set(previousIndex);
-    }
+    this.dialog.open(UserContactInfoComponent, {
+      data: {
+        userId: f.ownerId,
+        username: f.ownerUserName
+      } as UserContactInfoDialogData
+    });
   }
 
   formatSize(size: string): string {
-    return size.replace('Side_', '') + ' vs ' + size.replace('Side_', '');
-  }
-
-  openUserContactInfo(event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    const fieldData = this.field();
-    console.log('Field data:', fieldData);
-    console.log('Owner ID:', fieldData?.ownerId);
-    console.log('Owner Username:', fieldData?.ownerUserName);
-    
-    if (fieldData?.ownerId) {
-      this.dialog.open(UserContactInfoComponent, {
-        data: { userId: fieldData.ownerId } as UserContactInfoDialogData,
-      });
-    } else if (fieldData?.ownerUserName) {
-      this.dialog.open(UserContactInfoComponent, {
-        data: { username: fieldData.ownerUserName } as UserContactInfoDialogData,
-      });
-    } else {
-      this.snackBar.open('Owner information is not available', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'end',
-        verticalPosition: 'top'
-      });
-    }
-  }
-
-  openMapInNewTab(): void {
-    const fieldData = this.field();
-    if (fieldData) {
-      const address = `${fieldData.location}, ${fieldData.cityName}`;
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-      window.open(url, '_blank');
-    }
+    const s = size.replace('Side_', '');
+    return `${s} vs ${s}`;
   }
 }
