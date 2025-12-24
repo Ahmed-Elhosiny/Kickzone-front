@@ -40,8 +40,9 @@ export interface IRequestEmailChange {
 }
 
 export interface IConfirmEmailChange {
+  userId: number;
+  Token: string;
   newEmail: string;
-  token: string;
 }
 
 export interface IChangeUsername {
@@ -50,11 +51,6 @@ export interface IChangeUsername {
 
 export interface IRequestEmailChange {
   newEmail: string;
-}
-
-export interface IConfirmEmailChange {
-  newEmail: string;
-  token: string;
 }
 
 // Availability check interface
