@@ -252,6 +252,7 @@ export class UserProfileComponent implements OnInit {
         duration: 2000,
         horizontalPosition: 'end',
         verticalPosition: 'top',
+        panelClass: ['info-snackbar']
       });
       return;
     }

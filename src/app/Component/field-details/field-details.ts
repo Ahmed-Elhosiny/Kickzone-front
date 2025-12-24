@@ -105,7 +105,8 @@ export class FieldDetails {
     this.snackBar.open(message, 'Close', {
       duration: 4000,
       horizontalPosition: 'end',
-      verticalPosition: 'top'
+      verticalPosition: 'top',
+      panelClass: ['error-snackbar']
     });
   }
 

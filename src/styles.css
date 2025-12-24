@@ -64,11 +64,11 @@ body {
 }
 
 .success-snackbar .mat-mdc-snack-bar-label::before {
-  content: 'check_circle';
-  font-family: 'Material Icons' !important;
-  font-size: 20px !important;
+  content: '✓';
+  font-size: 18px !important;
   color: #10b981 !important;
   flex-shrink: 0;
+  font-weight: bold;
 }
 
 /* Error Snackbar */
@@ -83,9 +83,8 @@ body {
 }
 
 .error-snackbar .mat-mdc-snack-bar-label::before {
-  content: 'error';
-  font-family: 'Material Icons' !important;
-  font-size: 20px !important;
+  content: '⚠';
+  font-size: 18px !important;
   color: #dc2626 !important;
   flex-shrink: 0;
 }
@@ -102,11 +101,11 @@ body {
 }
 
 .info-snackbar .mat-mdc-snack-bar-label::before {
-  content: 'info';
-  font-family: 'Material Icons' !important;
-  font-size: 20px !important;
+  content: 'ℹ';
+  font-size: 18px !important;
   color: #2563eb !important;
   flex-shrink: 0;
+  font-weight: bold;
 }
 
 /* Warning Snackbar */
@@ -121,11 +120,11 @@ body {
 }
 
 .warning-snackbar .mat-mdc-snack-bar-label::before {
-  content: 'warning';
-  font-family: 'Material Icons' !important;
-  font-size: 20px !important;
+  content: '⚠';
+  font-size: 18px !important;
   color: #f59e0b !important;
   flex-shrink: 0;
+  font-weight: bold;
 }
 
 /* Snackbar Close Button */
