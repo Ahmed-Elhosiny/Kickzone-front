@@ -1,7 +1,7 @@
 <div class="confirm-container">
   <mat-card class="confirm-card">
     <!-- Loading State -->
-    @if (isLoading) {
+    @if (isLoading()) {
     <div class="loading-state">
       <mat-spinner diameter="60"></mat-spinner>
       <h2>Confirming Email Change...</h2>
@@ -10,14 +10,14 @@
     }
 
     <!-- Success State -->
-    @if (!isLoading && isSuccess) {
+    @if (!isLoading() && isSuccess()) {
     <div class="success-state">
       <div class="icon-container success">
         <mat-icon>check_circle</mat-icon>
       </div>
       <h2>Email Changed Successfully!</h2>
       <p>Your email has been updated to:</p>
-      <p class="new-email">{{ newEmail }}</p>
+      <p class="new-email">{{ newEmail() }}</p>
       <p class="subtitle">Please login again with your new email address.</p>
       
       <div class="action-buttons">
@@ -30,13 +30,13 @@
     }
 
     <!-- Error State -->
-    @if (!isLoading && !isSuccess) {
+    @if (!isLoading() && !isSuccess()) {
     <div class="error-state">
       <div class="icon-container error">
         <mat-icon>error</mat-icon>
       </div>
       <h2>Email Change Failed</h2>
-      <p class="error-message">{{ errorMessage }}</p>
+      <p class="error-message">{{ errorMessage() }}</p>
       <p class="subtitle">The confirmation link may be invalid or expired.</p>
       
       <div class="action-buttons">
