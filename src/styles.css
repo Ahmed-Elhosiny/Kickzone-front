@@ -42,14 +42,13 @@ body {
 /* Snackbar Label Container */
 .mat-mdc-snack-bar-label {
   padding: 16px 20px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  display: block !important;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   font-size: 15px !important;
   font-weight: 400 !important;
   line-height: 1.5 !important;
   letter-spacing: 0.01em !important;
+  color: #000000 !important;
 }
 
 /* Success Snackbar */
@@ -60,15 +59,12 @@ body {
 }
 
 .success-snackbar .mat-mdc-snack-bar-label {
-  color: #065f46 !important;
+  color: #000000 !important;
+  font-weight: 500 !important;
 }
 
 .success-snackbar .mat-mdc-snack-bar-label::before {
-  content: '✓';
-  font-size: 18px !important;
-  color: #10b981 !important;
-  flex-shrink: 0;
-  font-weight: bold;
+  content: '';
 }
 
 /* Error Snackbar */
@@ -79,7 +75,8 @@ body {
 }
 
 .error-snackbar .mat-mdc-snack-bar-label {
-  color: #991b1b !important;
+  color: #000000 !important;
+  font-weight: 500 !important;
 }
 
 .error-snackbar .mat-mdc-snack-bar-label::before {
@@ -97,15 +94,12 @@ body {
 }
 
 .info-snackbar .mat-mdc-snack-bar-label {
-  color: #1e40af !important;
+  color: #000000 !important;
+  font-weight: 500 !important;
 }
 
 .info-snackbar .mat-mdc-snack-bar-label::before {
-  content: 'ℹ';
-  font-size: 18px !important;
-  color: #2563eb !important;
-  flex-shrink: 0;
-  font-weight: bold;
+  content: '';
 }
 
 /* Warning Snackbar */
@@ -116,15 +110,12 @@ body {
 }
 
 .warning-snackbar .mat-mdc-snack-bar-label {
-  color: #92400e !important;
+  color: #000000 !important;
+  font-weight: 500 !important;
 }
 
 .warning-snackbar .mat-mdc-snack-bar-label::before {
-  content: '⚠';
-  font-size: 18px !important;
-  color: #f59e0b !important;
-  flex-shrink: 0;
-  font-weight: bold;
+  content: '';
 }
 
 /* Snackbar Close Button */
