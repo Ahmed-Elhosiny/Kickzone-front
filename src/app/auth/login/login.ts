@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -25,9 +25,9 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './login.css',
 })
 export class LoginComponent {
-  loading = false;
-  serverError: string | null = null;
-  showPassword = false;
+  loading = signal(false);
+  serverError = signal<string | null>(null);
+  showPassword = signal(false);
   private platformId = inject(PLATFORM_ID);
   private snackBar = inject(MatSnackBar);
   private fb = inject(FormBuilder);
@@ -44,20 +44,20 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    this.serverError = null;
+    this.serverError.set(null);
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
 
     const { emailOrUserName, password } = this.loginForm.value;
 
     this.auth.login({ emailOrUserName, password }).subscribe({
       next: (response) => {
-        this.loading = false;
+        this.loading.set(false);
         
         console.log('=== Login Success Debug ===');
         console.log('Login response received:', !!response);
@@ -76,7 +76,7 @@ export class LoginComponent {
         this.router.navigate(['/home']);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         console.error('Login failed:', err);
         
         // Extract error message from backend response
@@ -91,7 +91,7 @@ export class LoginComponent {
           errorMessage = err.error.title;
         }
         
-        this.serverError = errorMessage;
+        this.serverError.set(errorMessage);
         this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
@@ -103,6 +103,6 @@ export class LoginComponent {
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.set(!this.showPassword());
   }
 }

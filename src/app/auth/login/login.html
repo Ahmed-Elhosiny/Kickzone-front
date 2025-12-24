@@ -38,7 +38,7 @@
           <input
             id="password"
             formControlName="password"
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
             class="form-input password-input"
             placeholder="Enter your password"
             [class.invalid]="
@@ -52,7 +52,7 @@
             mat-icon-button
             aria-label="Toggle password visibility"
           >
-            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
         @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
@@ -67,14 +67,14 @@
         <a class="forgot-password" [routerLink]="['/forgot-password']"> Forgot Password? </a>
       </div>
 
-      <button type="submit" class="login-button" [disabled]="loginForm.invalid || loading">
-        @if (!loading) {
+      <button type="submit" class="login-button" [disabled]="loginForm.invalid || loading()">
+        @if (!loading()) {
         <span class="button-content">
           <mat-icon>login</mat-icon>
           <span>Sign In</span>
         </span>
         }
-        @if (loading) {
+        @if (loading()) {
         <span class="button-content loading">
           <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
           <span>Signing in...</span>
