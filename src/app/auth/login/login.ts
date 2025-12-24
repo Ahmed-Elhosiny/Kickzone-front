@@ -81,17 +81,9 @@ export class LoginComponent {
         
         // Extract error message from backend response
         let errorMessage = 'Login failed. Please check your credentials.';
-        if (err?.error?.errors) {
-          // Validation errors
-          const errors = err.error.errors;
-          errorMessage = Object.values(errors).flat().join(', ');
-        } else if (err?.error?.message) {
-          errorMessage = err.error.message;
-        } else if (err?.error?.title) {
-          errorMessage = err.error.title;
-        }
-        
+      
         this.serverError.set(errorMessage);
+        this.snackBar.dismiss();
         this.snackBar.open(errorMessage, 'Close', {
           duration: 5000,
           horizontalPosition: 'end',
