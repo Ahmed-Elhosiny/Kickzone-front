@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -29,39 +30,60 @@ export class ConfirmEmailChangeComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  isLoading = true;
-  isSuccess = false;
-  errorMessage = '';
-  email = '';
-  newEmail = '';
-  token = '';
+  // Use signals for reactive state
+  isLoading = signal(true);
+  isSuccess = signal(false);
+  errorMessage = signal('');
+  userId = signal<number | null>(null);
+  newEmail = signal('');
+  Token = signal('');
+
+  // Convert queryParams to a signal
+  private queryParams = toSignal(this.route.queryParams);
+
+  constructor() {
+    // Use effect to react to query params changes
+    effect(() => {
+      const params = this.queryParams();
+      if (params) {
+        console.log('Query params received:', params);
+        this.userId.set(params['userId'] ? parseInt(params['userId'], 10) : null);
+        this.newEmail.set(params['newEmail'] || '');
+        this.Token.set(decodeURIComponent(params['token'] || ''));
+
+        console.log('Extracted values - userId:', this.userId(), 'newEmail:', this.newEmail(), 'Token:', this.Token() ? 'present' : 'missing');
+
+        if (!this.userId() || !this.newEmail() || !this.Token()) {
+          console.log('Validation failed: missing required parameters');
+          this.isLoading.set(false);
+          this.errorMessage.set('Invalid confirmation link. Required parameters are missing.');
+          return;
+        }
+
+        console.log('Proceeding to confirm email change');
+        this.confirmEmailChange();
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-      this.newEmail = params['newEmail'] || '';
-      this.token = params['token'] || '';
-
-      if (!this.email || !this.newEmail || !this.token) {
-        this.isLoading = false;
-        this.errorMessage = 'Invalid confirmation link. Required parameters are missing.';
-        return;
-      }
-
-      this.confirmEmailChange();
-    });
+    // No longer needed
   }
 
   confirmEmailChange(): void {
     const data: IConfirmEmailChange = {
-      newEmail: this.newEmail,
-      token: this.token
+      userId: this.userId()!,
+      Token: this.Token(),
+      newEmail: this.newEmail()
     };
 
+    console.log('Sending data to confirm email change:', data);
+
     this.userService.confirmEmailChange(data).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.isSuccess = true;
+      next: (response) => {
+        console.log('Email change confirmed successfully:', response);
+        this.isLoading.set(false);
+        this.isSuccess.set(true);
         this.snackBar.open('Email changed! Login with your new email', 'Close', {
           duration: 6000,
           horizontalPosition: 'end',
@@ -70,10 +92,11 @@ export class ConfirmEmailChangeComponent implements OnInit {
         });
       },
       error: (err) => {
-        this.isLoading = false;
-        this.isSuccess = false;
-        this.errorMessage = err.error?.message || err.error || 'Failed to confirm email change. The link may be invalid or expired.';
-        this.snackBar.open(this.errorMessage, 'Close', {
+        console.error('Error confirming email change:', err);
+        this.isLoading.set(false);
+        this.isSuccess.set(false);
+        this.errorMessage.set(err.error?.message || err.error || 'Failed to confirm email change. The link may be invalid or expired.');
+        this.snackBar.open(this.errorMessage(), 'Close', {
           duration: 7000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
