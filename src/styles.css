@@ -80,10 +80,7 @@ body {
 }
 
 .error-snackbar .mat-mdc-snack-bar-label::before {
-  content: '⚠';
-  font-size: 18px !important;
-  color: #dc2626 !important;
-  flex-shrink: 0;
+  content: '';
 }
 
 /* Info Snackbar */
