@@ -209,10 +209,10 @@ export class RegisterComponent {
         
         // Extract error message from backend response
         let errorMessage = 'Registration failed. Please try again.';
-        if (err?.error?.errors) {
+        if (err?.error?.errors && Object.keys(err.error.errors).length > 0) {
           // Validation errors from backend
           const errors = err.error.errors;
-          console.log('Found errors object:', errors);
+          console.log('Found errors object with content:', errors);
           const errorArray = Object.entries(errors).map(([field, messages]: [string, any]) => {
             return `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
           });
