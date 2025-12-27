@@ -201,7 +201,7 @@
           <input
             id="password"
             formControlName="password"
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
             class="form-input password-input"
             placeholder="Create a strong password"
             [class.invalid]="f['password'].touched && f['password'].errors"
@@ -213,7 +213,7 @@
             mat-icon-button
             aria-label="Toggle password visibility"
           >
-            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
         @if (f['password'].touched && f['password'].errors?.['required']) {
@@ -239,7 +239,7 @@
           <input
             id="confirmPassword"
             formControlName="confirmPassword"
-            [type]="showConfirmPassword ? 'text' : 'password'"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
             class="form-input password-input"
             placeholder="Re-enter your password"
             [class.invalid]="f['confirmPassword'].touched && (f['confirmPassword'].errors || registerForm.errors?.['passwordMismatch'])"
@@ -251,7 +251,7 @@
             mat-icon-button
             aria-label="Toggle confirm password visibility"
           >
-            <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
         @if (f['confirmPassword'].touched && f['confirmPassword'].errors?.['required']) {
@@ -268,14 +268,14 @@
         }
       </div>
 
-      <button type="submit" class="register-button" [disabled]="registerForm.invalid || loading">
-        @if (!loading) {
+      <button type="submit" class="register-button" [disabled]="registerForm.invalid || loading()">
+        @if (!loading()) {
         <span class="button-content">
           <mat-icon>how_to_reg</mat-icon>
           <span>Create Account</span>
         </span>
         }
-        @if (loading) {
+        @if (loading()) {
         <span class="button-content loading">
           <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
           <span>Creating account...</span>

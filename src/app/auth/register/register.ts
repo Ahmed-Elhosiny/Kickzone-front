@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -35,9 +35,9 @@ import { map, catchError, debounceTime, distinctUntilChanged, switchMap } from '
   ],
 })
 export class RegisterComponent {
-  loading = false;
-  showPassword = false;
-  showConfirmPassword = false;
+  loading = signal(false);
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
   private snackBar = inject(MatSnackBar);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -174,12 +174,12 @@ export class RegisterComponent {
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
     const { confirmPassword, ...user } = this.registerForm.value;
 
     this.authService.register(user as IRegister).subscribe({
       next: (res) => {
-        this.loading = false;
+        this.loading.set(false);
         console.log('Registration successful:', res);
         
         // Store email for email confirmation process
@@ -198,7 +198,7 @@ export class RegisterComponent {
         }, 2000);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         console.error('Registration error:', err);
         
         // Extract error message from backend response
@@ -227,10 +227,10 @@ export class RegisterComponent {
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update(value => !value);
   }
 
   toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
+    this.showConfirmPassword.update(value => !value);
   }
 }
