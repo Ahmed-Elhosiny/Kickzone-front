@@ -228,6 +228,30 @@
           Password must be at least 6 characters
         </div>
         }
+        @if (f['password'].touched && f['password'].errors?.['passwordNoDigit']) {
+        <div class="error-message">
+          <mat-icon class="error-icon">error</mat-icon>
+          Password must contain at least one number
+        </div>
+        }
+        @if (f['password'].touched && f['password'].errors?.['passwordNoLowercase']) {
+        <div class="error-message">
+          <mat-icon class="error-icon">error</mat-icon>
+          Password must contain at least one lowercase letter
+        </div>
+        }
+        @if (f['password'].touched && f['password'].errors?.['passwordNoUppercase']) {
+        <div class="error-message">
+          <mat-icon class="error-icon">error</mat-icon>
+          Password must contain at least one uppercase letter
+        </div>
+        }
+        @if (f['password'].touched && f['password'].errors?.['passwordNoNonAlphanumeric']) {
+        <div class="error-message">
+          <mat-icon class="error-icon">error</mat-icon>
+          Password must contain at least one special character
+        </div>
+        }
       </div>
 
       <div class="form-group">

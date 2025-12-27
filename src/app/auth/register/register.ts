@@ -63,7 +63,14 @@ export class RegisterComponent {
         name: ['', [Validators.required, Validators.maxLength(200)]],
         location: [''],  // Optional field
         role: ['User', Validators.required],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', [
+          Validators.required, 
+          Validators.minLength(6),
+          this.passwordValidators.hasDigit,
+          this.passwordValidators.hasLowercase,
+          this.passwordValidators.hasUppercase,
+          this.passwordValidators.hasNonAlphanumeric
+        ]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.passwordMatchValidator }
@@ -80,6 +87,37 @@ export class RegisterComponent {
 
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
+
+  // Custom password validators
+  passwordValidators = {
+    hasDigit: (control: AbstractControl): { [key: string]: boolean } | null => {
+      const value = control.value;
+      if (!value) return null;
+      const hasDigit = /\d/.test(value);
+      return hasDigit ? null : { passwordNoDigit: true };
+    },
+
+    hasLowercase: (control: AbstractControl): { [key: string]: boolean } | null => {
+      const value = control.value;
+      if (!value) return null;
+      const hasLowercase = /[a-z]/.test(value);
+      return hasLowercase ? null : { passwordNoLowercase: true };
+    },
+
+    hasUppercase: (control: AbstractControl): { [key: string]: boolean } | null => {
+      const value = control.value;
+      if (!value) return null;
+      const hasUppercase = /[A-Z]/.test(value);
+      return hasUppercase ? null : { passwordNoUppercase: true };
+    },
+
+    hasNonAlphanumeric: (control: AbstractControl): { [key: string]: boolean } | null => {
+      const value = control.value;
+      if (!value) return null;
+      const hasNonAlphanumeric = /[^a-zA-Z0-9]/.test(value);
+      return hasNonAlphanumeric ? null : { passwordNoNonAlphanumeric: true };
+    }
+  };
 
   // Async validator for email availability
   emailAvailabilityValidator(): AsyncValidatorFn {
