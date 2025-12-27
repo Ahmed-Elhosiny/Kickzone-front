@@ -200,21 +200,34 @@ export class RegisterComponent {
       error: (err) => {
         this.loading.set(false);
         console.error('Registration error:', err);
+        console.error('Error details:', {
+          status: err?.status,
+          statusText: err?.statusText,
+          error: err?.error,
+          message: err?.message
+        });
         
         // Extract error message from backend response
         let errorMessage = 'Registration failed. Please try again.';
         if (err?.error?.errors) {
           // Validation errors from backend
           const errors = err.error.errors;
+          console.log('Found errors object:', errors);
           const errorArray = Object.entries(errors).map(([field, messages]: [string, any]) => {
             return `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
           });
           errorMessage = errorArray.join('\n');
         } else if (err?.error?.message) {
+          console.log('Found error.message:', err.error.message);
           errorMessage = err.error.message;
         } else if (err?.error?.title) {
+          console.log('Found error.title:', err.error.title);
           errorMessage = err.error.title;
+        } else {
+          console.log('No specific error format found, using default message');
         }
+        
+        console.log('Final errorMessage:', errorMessage);
         
         this.snackBar.open(errorMessage, 'Close', {
           duration: 6000,
