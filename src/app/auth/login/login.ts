@@ -58,7 +58,7 @@ export class LoginComponent {
     this.auth.login({ emailOrUserName, password }).subscribe({
       next: (response) => {
         this.loading.set(false);
-        
+
         console.log('=== Login Success Debug ===');
         console.log('Login response received:', !!response);
         console.log('Token received:', !!response?.token);
@@ -66,7 +66,7 @@ export class LoginComponent {
         console.log('Token stored:', !!this.auth.getToken());
         console.log('Is authenticated:', this.auth.isAuthenticated());
         console.log('=========================');
-        
+
         this.snackBar.open('Login successful! Welcome back', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
@@ -78,14 +78,24 @@ export class LoginComponent {
       error: (err) => {
         this.loading.set(false);
         console.error('Login failed:', err);
-        
+
         // Extract error message from backend response
         let errorMessage = 'Login failed. Please check your credentials.';
-      
-        this.serverError.set(errorMessage);
-        this.snackBar.dismiss();
+        if (err?.error?.errors && Object.keys(err.error.errors).length > 0) {
+          // Validation errors from backend
+          const errors = err.error.errors;
+          const errorArray = Object.entries(errors).map(([field, messages]: [string, any]) => {
+            return `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
+          });
+          errorMessage = errorArray.join('\n');
+        } else if (err?.error?.message) {
+          errorMessage = err.error.message;
+        } else if (err?.error?.title) {
+          errorMessage = err.error.title;
+        }
+
         this.snackBar.open(errorMessage, 'Close', {
-          duration: 5000,
+          duration: 6000,
           horizontalPosition: 'end',
           verticalPosition: 'top',
           panelClass: ['error-snackbar'],
