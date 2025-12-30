@@ -48,15 +48,15 @@ export class RegisterComponent {
   constructor() {
     this.registerForm = this.fb.group(
       {
-        email: ['', 
+        email: ['',
           [Validators.required, Validators.email],
           [this.emailAvailabilityValidator()]
         ],
-        userName: ['', 
+        userName: ['',
           [Validators.required, Validators.minLength(3)],
           [this.usernameAvailabilityValidator()]
         ],
-        phoneNumber: ['', 
+        phoneNumber: ['',
           [Validators.required, Validators.pattern(/^(010|012|015|011)[0-9]{8}$/)],
           [this.phoneAvailabilityValidator()]
         ],
@@ -64,7 +64,7 @@ export class RegisterComponent {
         location: [''],  // Optional field
         role: ['User', Validators.required],
         password: ['', [
-          Validators.required, 
+          Validators.required,
           Validators.minLength(6),
           this.passwordValidators.hasDigit,
           this.passwordValidators.hasLowercase,
@@ -129,16 +129,14 @@ export class RegisterComponent {
       return of(control.value).pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap(email => 
+        switchMap(email =>
           this.authService.checkAvailability({ email }).pipe(
             map(response => {
-              console.log('Email availability response:', response);
               // Backend returns: { emailAvailable: true/false }
               const isAvailable = response?.emailAvailable === true;
               return isAvailable ? null : { emailTaken: true };
             }),
             catchError((err) => {
-              console.error('Email availability check error:', err);
               return of(null); // If error, don't block registration
             })
           )
@@ -157,16 +155,14 @@ export class RegisterComponent {
       return of(control.value).pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap(username => 
+        switchMap(username =>
           this.authService.checkAvailability({ username }).pipe(
             map(response => {
-              console.log('Username availability response:', response);
               // Backend returns: { usernameAvailable: true/false }
               const isAvailable = response?.usernameAvailable === true;
               return isAvailable ? null : { usernameTaken: true };
             }),
             catchError((err) => {
-              console.error('Username availability check error:', err);
               return of(null);
             })
           )
@@ -185,16 +181,14 @@ export class RegisterComponent {
       return of(control.value).pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap(phone => 
+        switchMap(phone =>
           this.authService.checkAvailability({ phone }).pipe(
             map(response => {
-              console.log('Phone availability response:', response);
               // Backend returns: { phoneAvailable: true/false }
               const isAvailable = response?.phoneAvailable === true;
               return isAvailable ? null : { phoneTaken: true };
             }),
             catchError((err) => {
-              console.error('Phone availability check error:', err);
               return of(null);
             })
           )
@@ -218,13 +212,12 @@ export class RegisterComponent {
     this.authService.register(user as IRegister).subscribe({
       next: (res) => {
         this.loading.set(false);
-        console.log('Registration successful:', res);
-        
+
         // Store email for email confirmation process
         if (typeof window !== 'undefined' && localStorage) {
           localStorage.setItem('pending_email_confirmation', user.email);
         }
-        
+
         this.snackBar.open('Account created! Check your email to verify', 'Close', {
           duration: 6000,
           horizontalPosition: 'end',
@@ -237,10 +230,11 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        console.error('Registration error:', err);
-        
+
         // Extract error message from backend response
         let errorMessage = 'Registration failed. Please try again.';
+        this.snackBar.dismiss();
+
         if (err?.error?.errors && Object.keys(err.error.errors).length > 0) {
           // Validation errors from backend
           const errors = err.error.errors;
@@ -253,7 +247,7 @@ export class RegisterComponent {
         } else if (err?.error?.title) {
           errorMessage = err.error.title;
         }
-        
+
         this.snackBar.open(errorMessage, 'Close', {
           duration: 6000,
           horizontalPosition: 'end',

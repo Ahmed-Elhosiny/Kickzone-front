@@ -59,14 +59,6 @@ export class LoginComponent {
       next: (response) => {
         this.loading.set(false);
 
-        console.log('=== Login Success Debug ===');
-        console.log('Login response received:', !!response);
-        console.log('Token received:', !!response?.token);
-        console.log('Refresh token received:', !!response?.refreshToken);
-        console.log('Token stored:', !!this.auth.getToken());
-        console.log('Is authenticated:', this.auth.isAuthenticated());
-        console.log('=========================');
-
         this.snackBar.open('Login successful! Welcome back', 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
@@ -77,10 +69,11 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        console.error('Login failed:', err);
 
         // Extract error message from backend response
         let errorMessage = 'Login failed. Please check your credentials.';
+        this.serverError.set(errorMessage);
+        this.snackBar.dismiss();
         if (err?.error?.errors && Object.keys(err.error.errors).length > 0) {
           // Validation errors from backend
           const errors = err.error.errors;
