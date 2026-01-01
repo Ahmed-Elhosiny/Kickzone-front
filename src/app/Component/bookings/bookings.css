@@ -119,6 +119,41 @@
   font-size: 16px;
 }
 
+/*
+=======================
+   Pending State Styles
+======================= */
+
+/* 1. Change the card background and border */
+.reservation-card.is-pending {
+  background: linear-gradient(145deg, #fdefb7, #f3d66d); /* Warmer, yellowish tint */
+  border: 1px dashed #fbbf24; /* Dashed border suggests 'incomplete' */
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.1);
+}
+
+/* 2. Change icon colors for pending state */
+.reservation-card.is-pending .card-header mat-icon {
+  color: #b66305; /* Darker amber */
+}
+
+/* 3. Optional: Add a subtle grayscale or opacity to the body */
+.reservation-card.is-pending .card-body {
+  opacity: 1;
+}
+
+/* 4. Style for the status badge (if you added it) */
+.status-badge {
+  margin-left: auto;
+  font-size: 11px;
+  text-transform: uppercase;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid #fcd34d;
+}
+
+
 /* =======================
    Responsive Design
 ======================= */

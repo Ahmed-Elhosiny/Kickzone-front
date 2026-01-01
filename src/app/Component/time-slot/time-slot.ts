@@ -85,7 +85,7 @@ export class TimeSlot  {
   }
 
   private formatDateForApi(date: Date): string {
-    return date.toISOString().split('T')[0];
+    return date.toString();
   }
 
   getStartTime(slot: ITimeSlot): string {
