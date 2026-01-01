@@ -17,8 +17,10 @@
     
     <!-- Category Badge -->
     @if (field()?.categoryName) {
-      <div class="category-badge">
-        <mat-chip class="category-chip">{{ field()?.categoryName }}</mat-chip>
+      <div class="category-badge-wrapper">
+        <div class="category-badge-enhanced">
+          <span class="category-badge-text">{{ field()?.categoryName }}</span>
+        </div>
       </div>
     }
     
