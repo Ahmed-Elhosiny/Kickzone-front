@@ -20,10 +20,13 @@
 <div class="reservations-grid">
 
   @for(r of reservations(); track r.id){
-  <div class="reservation-card">
+  <div class="reservation-card" [class.is-pending]="r.status === 'Pending'">
     <div class="card-header">
       <mat-icon>sports_soccer</mat-icon>
       <span>{{ r.fieldName }}</span>
+      @if(r.status === 'Pending') {
+        <span class="status-badge">Pending</span>
+      }
     </div>
 
     <div class="card-body">
