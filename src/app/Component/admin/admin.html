@@ -274,10 +274,17 @@
 
         <mat-card-content>
           <!-- Status Badge -->
-          <mat-chip [class]="field.isApproved ? 'status-chip approved' : 'status-chip pending'">
-            <mat-icon>{{ field.isApproved ? 'check_circle' : 'pending' }}</mat-icon>
-            {{ field.isApproved ? 'Approved' : 'Pending' }}
-          </mat-chip>
+          <div class="status-badge-wrapper">
+            <div [class]="field.isApproved ? 'status-badge status-approved' : 'status-badge status-pending'">
+              <span class="status-badge-icon">
+                <mat-icon>{{ field.isApproved ? 'check_circle' : 'schedule' }}</mat-icon>
+              </span>
+              <span class="status-badge-content">
+                <span class="status-badge-label">{{ field.isApproved ? 'Approved' : 'Pending Review' }}</span>
+                <span class="status-badge-sublabel">{{ field.isApproved ? 'Ready for bookings' : 'Awaiting approval' }}</span>
+              </span>
+            </div>
+          </div>
 
           <!-- Document Button -->
           @if (field.hasApprovalDocument) {
